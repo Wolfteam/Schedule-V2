@@ -70,7 +70,7 @@ function Header() {
                 <Grid container justify="center" alignItems="center">
                     <Grid item>
                         <h1 className={classes.title}>
-                            <List fontSize="large" /> {translations.schedules}
+                            {translations.schedules}
                         </h1>
                     </Grid>
                 </Grid>

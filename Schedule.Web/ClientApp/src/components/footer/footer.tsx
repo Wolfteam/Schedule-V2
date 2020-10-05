@@ -5,7 +5,7 @@ import { GitHub } from '@material-ui/icons';
 
 const useStyle = makeStyles((theme) => ({
     footer: {
-        position: 'absolute',
+        position: 'fixed',
         bottom: '0',
         width: '100% !important',
         height: '100px !important',

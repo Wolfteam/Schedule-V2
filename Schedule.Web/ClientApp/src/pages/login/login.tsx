@@ -18,7 +18,7 @@ import {
 } from '@material-ui/core';
 import { AccountCircle, LockOutlined, Visibility, VisibilityOff } from '@material-ui/icons';
 import React, { useContext, useState } from 'react'
-import { Redirect, useHistory } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import validator from 'validator';
 import { AuthContext } from '../../contexts/auth-context';
 import { TranslationContext } from '../../contexts/translations-context';
@@ -40,7 +40,7 @@ interface State {
 
 const useStyles = makeStyles((theme) => ({
     paper: {
-        marginTop: theme.spacing(8),
+        marginTop: theme.spacing(2),
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
@@ -136,7 +136,7 @@ function Login() {
     const showPasswordError = !formState.isPasswordValid && formState.isPasswordDirty;
     const enableSubmitButton = formState.isEmailValid && formState.isPasswordValid && !formState.isBusy;
     // if (formState.isAuthenticated) {
-        
+
     //     return <Redirect to={HomePath} />;
     // }
 
@@ -207,20 +207,19 @@ function Login() {
         <CssBaseline />
         <Grid className={classes.paper} container direction="column" justify="center" alignItems="center">
             <Card variant="elevation" elevation={5}>
-                {testBtn}
                 <CardContent>
                     <Grid container direction="column" justify="center" alignItems="center">
-                        <Grid item md={12}>
+                        <Grid item sm={12}>
                             <Avatar className={classes.avatar}>
                                 <LockOutlined />
                             </Avatar>
                         </Grid>
-                        <Grid item md={12}>
+                        <Grid item sm={12}>
                             <Typography component="h1" variant="h5">
                                 {translations.signIn}
                             </Typography>
                         </Grid>
-                        <Grid item md={12}>
+                        <Grid item sm={12}>
                             <form className={classes.form} noValidate >
                                 <fieldset disabled={formState.isBusy} style={{ borderColor: 'transparent' }}>
                                     {emailInput}
@@ -242,7 +241,7 @@ function Login() {
                                 </fieldset>
                             </form>
                         </Grid>
-                        <Grid item md={12}>
+                        <Grid item sm={12}>
                             <Link href="#" variant="body2">
                                 {translations.forgotPassword}
                             </Link>
