@@ -23,6 +23,8 @@ interface IStrings extends LocalizedStringsMethods {
     hoursPlanification: string;
     welcomeX: string;
     currentAcademicPeriod: string;
+    profesors: string;
+    loadAvailability: string;
 }
 
 const translations: IStrings = new LocalizedStrings({
@@ -49,6 +51,8 @@ const translations: IStrings = new LocalizedStrings({
         hoursPlanification: 'Hours planification',
         welcomeX: 'Welcome {0}',
         currentAcademicPeriod: 'Current academic period',
+        profesors: 'Profesors',
+        loadAvailability: 'Load availability',
     },
     es: {
         schedules: "Schedules",
@@ -73,6 +77,8 @@ const translations: IStrings = new LocalizedStrings({
         hoursPlanification: 'Planificación de horas',
         welcomeX: 'Bienvenido {0}',
         currentAcademicPeriod: 'Periódo académico actual',
+        profesors: 'Profesores',
+        loadAvailability: 'Cargar disponibilidad',
     },
 });
 

@@ -7,7 +7,7 @@ import {
     Theme, Grid
 } from '@material-ui/core';
 import React, { useContext, useState } from 'react'
-import { Menu, List } from '@material-ui/icons';
+import { Menu } from '@material-ui/icons';
 import grey from '@material-ui/core/colors/grey';
 import Drawer from '../drawer/drawer'
 import { AuthContext } from '../../contexts/auth-context';
@@ -42,7 +42,7 @@ function Header() {
 
     const [state, setState] = useState<State>({ isDrawerOpened: false, isDrawerVisible: true });
 
-    const [authState, _] = useContext(AuthContext);
+    const [authState] = useContext(AuthContext);
 
     const handleMenuClick = () => {
         handleDrawerChange(true);

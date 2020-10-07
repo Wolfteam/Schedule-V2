@@ -1,9 +1,6 @@
-import React from 'react'
+import React, { useContext, useEffect } from 'react'
 import {
-    Accordion,
-    AccordionSummary,
     Avatar,
-    Button,
     Collapse,
     createStyles,
     Divider,
@@ -14,8 +11,7 @@ import {
     ListItemText,
     makeStyles,
     SwipeableDrawer,
-    Theme,
-    Typography
+    Theme
 } from '@material-ui/core';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
@@ -41,6 +37,7 @@ import { ExpandLess, ExpandMore } from '@material-ui/icons';
 import { IconProp } from '@fortawesome/fontawesome-svg-core';
 import { useHistory } from 'react-router-dom';
 import * as routes from '../../routes';
+import { AuthContext } from '../../contexts/auth-context';
 
 interface Props {
     isDrawerOpen: boolean,
@@ -49,6 +46,7 @@ interface Props {
 
 interface State {
     expanded: Map<number, boolean>;
+    keyPressed: Map<string, boolean>;
 }
 
 interface DrawerItem {
@@ -86,10 +84,43 @@ const useStyles = makeStyles((theme: Theme) =>
 
 function Drawer(props: Props) {
     const classes = useStyles();
+    const [authContext] = useContext(AuthContext);
     const [state, setState] = React.useState<State>({
-        expanded: new Map<number, boolean>()
+        expanded: new Map<number, boolean>(),
+        keyPressed: new Map<string, boolean>(Object.entries({
+            "Control": false,
+            "Shift": false
+        }))
     });
     const history = useHistory();
+
+    const handleKeyPress = (isKeyDown: boolean) => (e: KeyboardEvent) => {
+        const key = e.key;
+        const keys = Array.from(state.keyPressed.keys());
+
+        if (!keys.includes(key) || !authContext?.isAuthenticated) {
+            return;
+        }
+
+        const keyPressed = state.keyPressed.set(key, isKeyDown);
+        const allWerePressed = Array.from(keyPressed.values()).every(e => e);
+
+        if (allWerePressed && isKeyDown) {
+            props.onDrawerStateChanged(true);
+        }
+        setState({ ...state, keyPressed });
+    };
+
+    useEffect(() => {
+        document.addEventListener('keydown', handleKeyPress(true));
+        document.addEventListener('keyup', handleKeyPress(false));
+
+        return () => {
+            document.removeEventListener('keydown', handleKeyPress(true));
+            document.removeEventListener('keyup', handleKeyPress(false));
+        };
+
+    }, [authContext?.isAuthenticated]);
 
     const toggleDrawer = (open: boolean) => (event: React.KeyboardEvent | React.MouseEvent) => {
         if (
@@ -110,7 +141,7 @@ function Drawer(props: Props) {
             expandedState.delete(item.id);
         }
         expandedState = expandedState.set(item.id, expanded);
-        setState({ expanded: expandedState });
+        setState({ ...state, expanded: expandedState });
     };
 
     const handleItemClick = (item: DrawerItem, isParent: boolean) => {

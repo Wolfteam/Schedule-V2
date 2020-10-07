@@ -18,10 +18,10 @@ function Home() {
         <CssBaseline />
         <Grid container direction="row" justify="center" alignItems="center" spacing={5}>
             <PageTitle title={welcomeMsg} />
-            <Grid item xs={12} sm={6}>
+            <Grid item xs={12} sm={12} md={6}>
                 <Downloads />
             </Grid>
-            <Grid item xs={12} sm={6}>
+            <Grid item xs={12} sm={12} md={6}>
                 <CurrentAcademicPeriod />
             </Grid>
         </Grid>

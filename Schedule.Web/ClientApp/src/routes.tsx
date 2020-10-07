@@ -3,22 +3,22 @@ import { Switch, Route, useRouteMatch, Redirect } from "react-router-dom";
 
 import { AuthContext } from "./contexts/auth-context";
 
-import Availability from "./pages/availability/availability";
-import ChangePassword from "./pages/change-password/change-password";
-import Careers from "./pages/db/careers";
-import CareersPeriod from "./pages/db/careers-period";
-import Classrooms from "./pages/db/clasrooms";
-import Priorities from "./pages/db/priorities";
-import Sections from "./pages/db/sections";
-import Semesters from "./pages/db/semesters";
-import SubjectClassroomTypes from "./pages/db/subject-classroom-types";
-import Subjects from "./pages/db/subjects";
-import Teachers from "./pages/db/teachers";
-import TeacherSubject from "./pages/db/teachers-subjects";
-import Users from "./pages/db/users";
-import Home from "./pages/home/home";
-import Login from "./pages/login/login";
-import NotFound from "./pages/not-found/not-found";
+const Availability = React.lazy(() => import("./pages/availability/availability"));
+const ChangePassword = React.lazy(() => import("./pages/change-password/change-password"));
+const Careers = React.lazy(() => import("./pages/db/careers"));
+const CareersPeriod = React.lazy(() => import("./pages/db/careers-period"));
+const Classrooms = React.lazy(() => import("./pages/db/clasrooms"));
+const Priorities = React.lazy(() => import("./pages/db/priorities"));
+const Sections = React.lazy(() => import("./pages/db/sections"));
+const Semesters = React.lazy(() => import("./pages/db/semesters"));
+const SubjectClassroomTypes = React.lazy(() => import("./pages/db/subject-classroom-types"));
+const Subjects = React.lazy(() => import("./pages/db/subjects"));
+const Teachers = React.lazy(() => import("./pages/db/teachers"));
+const TeacherSubject = React.lazy(() => import("./pages/db/teachers-subjects"));
+const Users = React.lazy(() => import("./pages/db/users"));
+const Home = React.lazy(() => import("./pages/home/home"));
+const Login = React.lazy(() => import("./pages/login/login"));
+const NotFound = React.lazy(() => import("./pages/not-found/not-found"));
 
 export const LoginPath = '/login';
 export const HomePath = "/";
@@ -37,7 +37,7 @@ export const teachersPath = '/db/teachers';
 export const usersPath = '/db/users';
 
 export const AppRoutes: React.FC = () => {
-    const [authContext, _] = useContext(AuthContext);
+    const [authContext] = useContext(AuthContext);
 
     const routes = authContext && authContext.isAuthenticated
         ? <AdminAppRoutes />

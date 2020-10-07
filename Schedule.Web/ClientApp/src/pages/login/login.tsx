@@ -1,3 +1,4 @@
+import React, { useContext, useState } from 'react'
 import {
     Avatar,
     Button,
@@ -17,9 +18,9 @@ import {
     LinearProgress
 } from '@material-ui/core';
 import { AccountCircle, LockOutlined, Visibility, VisibilityOff } from '@material-ui/icons';
-import React, { useContext, useState } from 'react'
 import { useHistory } from 'react-router-dom';
 import validator from 'validator';
+
 import { AuthContext } from '../../contexts/auth-context';
 import { TranslationContext } from '../../contexts/translations-context';
 import * as routes from '../../routes';
@@ -40,7 +41,7 @@ interface State {
 
 const useStyles = makeStyles((theme) => ({
     paper: {
-        marginTop: theme.spacing(2),
+        // marginTop: theme.spacing(2),
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',

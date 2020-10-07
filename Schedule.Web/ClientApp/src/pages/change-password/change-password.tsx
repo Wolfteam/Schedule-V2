@@ -22,7 +22,7 @@ import translations from '../../services/translations';
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
-        root: {
+        card: {
             marginTop: '20px',
             padding: '20px 20px 0px 20px'
         },
@@ -94,7 +94,7 @@ function ChangePassword() {
     const showCurrentPasswordError = !state.isCurrentPasswordValid && state.isCurrentPasswordDirty;
     const showNewPasswordError = !state.isNewPasswordValid && state.isNewPasswordDirty;
     const showNewPasswordConfirmError = !state.isNewPasswordConfirmValid && state.isNewPasswordConfirmDirty;
-    const enableSubmitBtn = !showCurrentPasswordError && !showNewPasswordError && !showNewPasswordConfirmError;
+    const enableSubmitBtn = state.isCurrentPasswordValid && state.isNewPasswordValid && state.isNewPasswordConfirmValid;
 
     const showPasswordBtn = (prop: keyof State) => {
         const show = state[prop];
@@ -116,7 +116,7 @@ function ChangePassword() {
         <PageTitle title="Cambio de contraseña" />
         <Grid container justify="center" alignItems="center">
             <Grid item sm={6}>
-                <Card className={classes.root}>
+                <Card className={classes.card}>
                     <CardContent>
                         <form noValidate>
                             <TextField variant="outlined"
