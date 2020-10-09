@@ -5,7 +5,7 @@ import {
     TableCell,
     Theme,
 } from '@material-ui/core';
-import * as responses from '../../models/responses';
+import * as responses from '../../models';
 import * as enums from '../../enums';
 
 const useStyles = makeStyles((theme: Theme) =>

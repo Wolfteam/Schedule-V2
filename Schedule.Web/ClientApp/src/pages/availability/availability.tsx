@@ -7,7 +7,7 @@ import {
 import translations from '../../services/translations';
 import PageTitle from '../../components/page-title/page-title';
 
-import * as responses from '../../models/responses';
+import * as responses from '../../models';
 import * as enums from '../../enums';
 import AvailabilityTable from '../../components/availability/availability-table';
 import AvailabilityTeachersCard from '../../components/availability/availability-teachers-card';

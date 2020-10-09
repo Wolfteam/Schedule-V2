@@ -15,7 +15,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Autocomplete } from '@material-ui/lab';
 import translations from '../../services/translations';
 
-import * as responses from '../../models/responses';
+import * as responses from '../../models';
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -59,7 +59,7 @@ function AvailabilityTeachersCard(props: Props) {
                         options={props.teachers}
                         getOptionLabel={(teacher: responses.ITeacherResponseDto) => `${teacher.name} ${teacher.lastName}`}
                         style={{ marginTop: '7px' }}
-                        renderInput={(params: any) => <TextField {...params} label={translations.profesors} variant="outlined" />} />
+                        renderInput={(params: any) => <TextField {...params} label={translations.teachers} variant="outlined" />} />
                 </Grid>
 
                 <Grid item>

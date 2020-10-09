@@ -1,6 +1,7 @@
 import React, { Fragment, Suspense } from 'react';
 import { CircularProgress, Container, Grid } from '@material-ui/core';
 import { BrowserRouter } from 'react-router-dom';
+import { SnackbarProvider } from 'notistack';
 
 import Footer from '../components/footer/footer';
 import Header from '../components/header/header';
@@ -19,17 +20,19 @@ function App() {
 
   return <Fragment>
     <AuthContextProvider>
-      <TranslationContextProvider>
-        <BrowserRouter>
-          <Header />
-          <Suspense fallback={loading}>
-            <div style={{ marginTop: '20px', marginBottom: '120px' }}>
-              <AppRoutes />
-            </div>
-          </Suspense>
-          <Footer />
-        </BrowserRouter>
-      </TranslationContextProvider>
+      <SnackbarProvider>
+        <TranslationContextProvider>
+          <BrowserRouter>
+            <Header />
+            <Suspense fallback={loading}>
+              <div style={{ marginTop: '20px', marginBottom: '120px' }}>
+                <AppRoutes />
+              </div>
+            </Suspense>
+            <Footer />
+          </BrowserRouter>
+        </TranslationContextProvider>
+      </SnackbarProvider>
     </AuthContextProvider>
   </Fragment>;
 }

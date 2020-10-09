@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from 'react'
+import React, { PureComponent } from 'react'
 import {
     Avatar,
     Collapse,
@@ -9,9 +9,10 @@ import {
     ListItem,
     ListItemIcon,
     ListItemText,
-    makeStyles,
     SwipeableDrawer,
-    Theme
+    Theme,
+    WithStyles,
+    withStyles
 } from '@material-ui/core';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
@@ -35,94 +36,81 @@ import {
 import translations from '../../services/translations'
 import { ExpandLess, ExpandMore } from '@material-ui/icons';
 import { IconProp } from '@fortawesome/fontawesome-svg-core';
-import { useHistory } from 'react-router-dom';
+import { RouteComponentProps, withRouter } from 'react-router-dom';
 import * as routes from '../../routes';
 import { AuthContext } from '../../contexts/auth-context';
 
-interface Props {
-    isDrawerOpen: boolean,
-    onDrawerStateChanged: (isOpen: boolean) => void
+const styles = (theme: Theme) => createStyles({
+    fullName: {
+        margin: '10px 0px 0px 10px'
+    },
+    username: {
+        margin: '0px 0px 0px 10px'
+    },
+    avatarBg: {
+        color: 'white',
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat',
+        width: '100%',
+        backgroundImage: 'url(https://scontent.fuio7-1.fna.fbcdn.net/v/t31.0-8/1049096_10201132489971690_72266505_o.jpg?_nc_cat=100&_nc_sid=e3f864&_nc_eui2=AeEDI9ZbJ9xZ2PYvILX3pHNyE-9tPqnKST4T720-qcpJPnQmr1b1-mk_UOluDKOvkrY&_nc_ohc=b4Nkl8VneNsAX8bKKNn&_nc_ht=scontent.fuio7-1.fna&oh=7b69e78d5466d234dc10e3e25c1100e2&oe=5F9A5974)'
+    },
+    largeAvatar: {
+        width: theme.spacing(10),
+        height: theme.spacing(10),
+    },
+    nestedListItem: {
+        paddingLeft: theme.spacing(4),
+    },
+});
+
+interface Props extends RouteComponentProps<any>, WithStyles<typeof styles> {
+    readonly isDrawerOpen: boolean,
+    readonly onDrawerStateChanged: (isOpen: boolean) => void;
 }
 
 interface State {
-    expanded: Map<number, boolean>;
-    keyPressed: Map<string, boolean>;
+    readonly expanded: Map<number, boolean>;
+    readonly keyPressed: Map<string, boolean>;
 }
 
 interface DrawerItem {
-    id: number;
-    text: string;
-    subItems: DrawerItem[];
-    icon: IconProp;
-    route: string;
+    readonly id: number;
+    readonly text: string;
+    readonly subItems: DrawerItem[];
+    readonly icon: IconProp;
+    readonly route: string;
 }
 
-const useStyles = makeStyles((theme: Theme) =>
-    createStyles({
-        fullName: {
-            margin: '10px 0px 0px 10px'
-        },
-        username: {
-            margin: '0px 0px 0px 10px'
-        },
-        avatarBg: {
-            color: 'white',
-            backgroundPosition: 'center',
-            backgroundRepeat: 'no-repeat',
-            width: '100%',
-            backgroundImage: 'url(https://scontent.fuio7-1.fna.fbcdn.net/v/t31.0-8/1049096_10201132489971690_72266505_o.jpg?_nc_cat=100&_nc_sid=e3f864&_nc_eui2=AeEDI9ZbJ9xZ2PYvILX3pHNyE-9tPqnKST4T720-qcpJPnQmr1b1-mk_UOluDKOvkrY&_nc_ohc=b4Nkl8VneNsAX8bKKNn&_nc_ht=scontent.fuio7-1.fna&oh=7b69e78d5466d234dc10e3e25c1100e2&oe=5F9A5974)'
-        },
-        largeAvatar: {
-            width: theme.spacing(10),
-            height: theme.spacing(10),
-        },
-        nestedListItem: {
-            paddingLeft: theme.spacing(4),
-        },
-    }),
-);
-
-function Drawer(props: Props) {
-    const classes = useStyles();
-    const [authContext] = useContext(AuthContext);
-    const [state, setState] = React.useState<State>({
+class Drawer extends PureComponent<Props, State> {
+    state: State = {
         expanded: new Map<number, boolean>(),
         keyPressed: new Map<string, boolean>(Object.entries({
             "Control": false,
             "Shift": false
         }))
-    });
-    const history = useHistory();
+    };
+    static contextType = AuthContext;
+    context!: React.ContextType<typeof AuthContext>;
 
-    const handleKeyPress = (isKeyDown: boolean) => (e: KeyboardEvent) => {
+    handleKeyPress = (isKeyDown: boolean) => (e: KeyboardEvent) => {
         const key = e.key;
-        const keys = Array.from(state.keyPressed.keys());
+        const keys = Array.from(this.state.keyPressed.keys());
+        const [authContext] = this.context;
 
-        if (!keys.includes(key) || !authContext?.isAuthenticated) {
+        if (!keys.includes(key) || !authContext.isAuthenticated) {
             return;
         }
 
-        const keyPressed = state.keyPressed.set(key, isKeyDown);
+        const keyPressed = this.state.keyPressed.set(key, isKeyDown);
         const allWerePressed = Array.from(keyPressed.values()).every(e => e);
 
         if (allWerePressed && isKeyDown) {
-            props.onDrawerStateChanged(true);
+            this.props.onDrawerStateChanged(true);
         }
-        setState({ ...state, keyPressed });
+        this.setState({ keyPressed });
     };
 
-    useEffect(() => {
-        document.addEventListener('keydown', handleKeyPress(true));
-        document.addEventListener('keyup', handleKeyPress(false));
-
-        return () => {
-            document.removeEventListener('keydown', handleKeyPress(true));
-            document.removeEventListener('keyup', handleKeyPress(false));
-        };
-
-    }, [authContext?.isAuthenticated]);
-
-    const toggleDrawer = (open: boolean) => (event: React.KeyboardEvent | React.MouseEvent) => {
+    toggleDrawer = (open: boolean) => (event: React.KeyboardEvent | React.MouseEvent) => {
         if (
             event &&
             event.type === 'keydown' &&
@@ -130,34 +118,34 @@ function Drawer(props: Props) {
         ) {
             return;
         }
-        props.onDrawerStateChanged(open);
+        this.props.onDrawerStateChanged(open);
     };
 
-    const handleExpandedItemClick = (item: DrawerItem) => {
-        let expandedState = state.expanded;
+    handleExpandedItemClick = (item: DrawerItem): void => {
+        let expandedState = new Map<number, boolean>(this.state.expanded);
         let expanded = true;
         if (expandedState.has(item.id)) {
             expanded = !expandedState.get(item.id) ?? true;
             expandedState.delete(item.id);
         }
         expandedState = expandedState.set(item.id, expanded);
-        setState({ ...state, expanded: expandedState });
+        this.setState({ expanded: expandedState });
     };
 
-    const handleItemClick = (item: DrawerItem, isParent: boolean) => {
+    handleItemClick(item: DrawerItem, isParent: boolean): void {
         if (item.subItems.length === 0 || !isParent) {
-            console.log(`Pushing to route = ${item.route}`);
-            props.onDrawerStateChanged(false);
+            this.props.onDrawerStateChanged(false);
+            const { history } = this.props!;
             history.push(item.route);
             return;
         }
 
-        handleExpandedItemClick(item);
+        this.handleExpandedItemClick(item);
     };
 
-    const buildItem = (item: DrawerItem, isParent: boolean = true) => {
+    buildItem = (item: DrawerItem, isParent: boolean = true) => {
         const hasSubItems = item.subItems.length > 0;
-        const areItemsExpanded = state.expanded.get(item.id) ?? false;
+        const areItemsExpanded = this.state.expanded.get(item.id) ?? false;
 
         const expandedControl = hasSubItems
             ? areItemsExpanded
@@ -166,13 +154,13 @@ function Drawer(props: Props) {
             : null;
 
         const subItems = item.subItems.map((subItem) => {
-            return buildItem(subItem, false);
+            return this.buildItem(subItem, false);
         });
 
-        const childClass = isParent ? '' : classes.nestedListItem;
+        const childClass = isParent ? '' : this.props.classes.nestedListItem;
         const parent = <ListItem button
             key={item.id}
-            onClick={() => handleItemClick(item, isParent)}
+            onClick={() => this.handleItemClick(item, isParent)}
             className={childClass}>
             <ListItemIcon>
                 <FontAwesomeIcon icon={item.icon} size="2x" />
@@ -193,153 +181,156 @@ function Drawer(props: Props) {
                     {subItems}
                 </List>
             </Collapse>
-        </React.Fragment>
+        </React.Fragment>;
     }
 
-    const items: DrawerItem[] = [
-        {
-            id: 1,
-            text: translations.home,
-            icon: faHome,
-            subItems: [],
-            route: routes.HomePath
-        },
-        {
-            id: 2,
-            text: 'Cargar Disponibilidad',
-            icon: faTasks,
-            subItems: [],
-            route: routes.availabilityPath
-        },
-        {
-            id: 3,
-            text: 'Editar Base de Datos',
-            icon: faDatabase,
-            route: '',
-            subItems: [
-                {
-                    id: 5,
-                    text: 'Aulas',
-                    icon: faSchool,
-                    subItems: [],
-                    route: routes.classRoomsPath
-                },
-                {
-                    id: 6,
-                    text: 'Carreras',
-                    icon: faGraduationCap,
-                    subItems: [],
-                    route: routes.careersPath
-                },
-                {
-                    id: 7,
-                    text: 'Materias',
-                    icon: faChalkboard,
-                    subItems: [],
-                    route: routes.subjectsPath
-                },
-                {
-                    id: 8,
-                    text: 'Periodo Carrera',
-                    icon: faCalendarDay,
-                    subItems: [],
-                    route: routes.careersPeriodPath
-                },
-                {
-                    id: 9,
-                    text: 'Prioridades',
-                    icon: faExclamationCircle,
-                    subItems: [],
-                    route: routes.prioritiesPath
-                },
-                {
-                    id: 10,
-                    text: 'Profesores',
-                    icon: faChalkboardTeacher,
-                    subItems: [],
-                    route: routes.teachersPath
-                },
-                {
-                    id: 11,
-                    text: 'Profesores - Materias',
-                    icon: faAddressBook,
-                    subItems: [],
-                    route: routes.teachersPerSubjectsPath
-                },
-                {
-                    id: 12,
-                    text: 'Secciones',
-                    icon: faProjectDiagram,
-                    subItems: [],
-                    route: routes.sectionsPath
-                },
-                {
-                    id: 13,
-                    text: 'Semestres',
-                    icon: faHourglassStart,
-                    subItems: [],
-                    route: routes.semestersPath
-                },
-                {
-                    id: 14,
-                    text: 'Tipo Aula - Materia',
-                    icon: faAddressCard,
-                    subItems: [],
-                    route: routes.sbujectClassroomTypePath
-                },
-                {
-                    id: 15,
-                    text: 'Usuarios',
-                    icon: faUsers,
-                    subItems: [],
-                    route: routes.usersPath
-                },
-            ]
-        },
-        {
-            id: 4,
-            text: translations.changePassword,
-            icon: faLock,
-            subItems: [],
-            route: routes.ChangePasswordPath
-        }
-    ];
+    componentDidMount() {
+        document.addEventListener('keydown', this.handleKeyPress(true));
+        document.addEventListener('keyup', this.handleKeyPress(false));
+    }
 
-    const listItems = items.map((item, index) => buildItem(item));
+    componentWillUnmount() {
+        document.removeEventListener('keydown', this.handleKeyPress(true));
+        document.removeEventListener('keyup', this.handleKeyPress(false));
+    }
 
-    return <div>
-        <React.Fragment>
+    render() {
+        const items: DrawerItem[] = [
+            {
+                id: 1,
+                text: translations.home,
+                icon: faHome,
+                subItems: [],
+                route: routes.HomePath
+            },
+            {
+                id: 2,
+                text: translations.loadAvailability,
+                icon: faTasks,
+                subItems: [],
+                route: routes.availabilityPath
+            },
+            {
+                id: 3,
+                text: translations.others,
+                icon: faDatabase,
+                route: '',
+                subItems: [
+                    {
+                        id: 5,
+                        text: translations.classrooms,
+                        icon: faSchool,
+                        subItems: [],
+                        route: routes.classRoomsPath
+                    },
+                    {
+                        id: 6,
+                        text: translations.careers,
+                        icon: faGraduationCap,
+                        subItems: [],
+                        route: routes.careersPath
+                    },
+                    {
+                        id: 7,
+                        text: translations.subjects,
+                        icon: faChalkboard,
+                        subItems: [],
+                        route: routes.subjectsPath
+                    },
+                    {
+                        id: 8,
+                        text: translations.careerPeriod,
+                        icon: faCalendarDay,
+                        subItems: [],
+                        route: routes.careersPeriodPath
+                    },
+                    {
+                        id: 9,
+                        text: translations.priorities,
+                        icon: faExclamationCircle,
+                        subItems: [],
+                        route: routes.prioritiesPath
+                    },
+                    {
+                        id: 10,
+                        text: translations.teachers,
+                        icon: faChalkboardTeacher,
+                        subItems: [],
+                        route: routes.teachersPath
+                    },
+                    {
+                        id: 11,
+                        text: `${translations.teachers} - ${translations.subjects}`,
+                        icon: faAddressBook,
+                        subItems: [],
+                        route: routes.teachersPerSubjectsPath
+                    },
+                    {
+                        id: 12,
+                        text: translations.sections,
+                        icon: faProjectDiagram,
+                        subItems: [],
+                        route: routes.sectionsPath
+                    },
+                    {
+                        id: 13,
+                        text: translations.semesters,
+                        icon: faHourglassStart,
+                        subItems: [],
+                        route: routes.semestersPath
+                    },
+                    {
+                        id: 14,
+                        text: `${translations.classrooms} - ${translations.subjects}`,
+                        icon: faAddressCard,
+                        subItems: [],
+                        route: routes.sbujectClassroomTypePath
+                    },
+                    {
+                        id: 15,
+                        text: translations.users,
+                        icon: faUsers,
+                        subItems: [],
+                        route: routes.usersPath
+                    },
+                ]
+            },
+            {
+                id: 4,
+                text: translations.changePassword,
+                icon: faLock,
+                subItems: [],
+                route: routes.ChangePasswordPath
+            }
+        ];
+
+        const listItems = items.map((item, index) => this.buildItem(item));
+
+        return <React.Fragment>
             <SwipeableDrawer
                 anchor='left'
-                open={props.isDrawerOpen}
-                onClose={toggleDrawer(false)}
-                onOpen={toggleDrawer(true)}
-                style={{ minWidth: '300px' }}>
-                <div
-                    role="presentation"
-                // onClick={toggleDrawer(false)}
-                // onKeyDown={toggleDrawer(false)}
-                >
-                    <Grid container alignItems="center" style={{ minHeight: '120px' }}>
-                        <Grid item className={classes.avatarBg}>
-                            <Avatar className={classes.largeAvatar} alt="Cindy Baker" src="https://avatars3.githubusercontent.com/u/1976115?s=400&u=075b0e713462b1649c2123a1f1ffeca8b11c8783&v=4" />
-                            <p className={classes.fullName}>Efrain Bastidas Berrios</p>
-                            <p className={classes.username}>Wolfteam20</p>
-                        </Grid>
+                open={this.props.isDrawerOpen}
+                onClose={this.toggleDrawer(false)}
+                onOpen={this.toggleDrawer(true)}>
+                <Grid container alignItems="center" style={{ minHeight: '120px', minWidth: '320px' }}>
+                    <Grid item className={this.props.classes.avatarBg}>
+                        <Avatar className={this.props.classes.largeAvatar} alt="Cindy Baker" src="https://avatars3.githubusercontent.com/u/1976115?s=400&u=075b0e713462b1649c2123a1f1ffeca8b11c8783&v=4" />
+                        <p className={this.props.classes.fullName}>Efrain Bastidas Berrios</p>
+                        <p className={this.props.classes.username}>Wolfteam20</p>
                     </Grid>
-                    <Divider />
-                    <List>
-                        {listItems}
-                    </List>
-                    <Divider />
-                    <ListItem button >
-                        <ListItemIcon><FontAwesomeIcon size="2x" icon={faSignOutAlt} /></ListItemIcon>
-                        <ListItemText primary="Cerrar Sesión" />
-                    </ListItem>
-                </div>
+                </Grid>
+                <Divider />
+                <List>
+                    {listItems}
+                </List>
+                <Divider />
+                <ListItem button>
+                    <ListItemIcon><FontAwesomeIcon size="2x" icon={faSignOutAlt} /></ListItemIcon>
+                    <ListItemText primary={translations.logout} />
+                </ListItem>
             </SwipeableDrawer>
-        </React.Fragment>
-    </div>
+        </React.Fragment>;
+    }
 }
 
-export default Drawer;
+export default withStyles(styles)(withRouter(Drawer));

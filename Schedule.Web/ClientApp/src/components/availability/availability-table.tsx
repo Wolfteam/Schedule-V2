@@ -12,10 +12,11 @@ import {
     TableBody
 } from '@material-ui/core';
 import { academicHours, getHourText, isAcademicHourBetweenRange, isLunchHour } from '../../utils/academic-hours';
-import * as responses from '../../models/responses';
+import * as responses from '../../models';
 import * as enums from '../../enums';
 import { grey } from '@material-ui/core/colors';
 import AvailabilityCell from './availability-cell';
+import translations from '../../services/translations';
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -123,13 +124,13 @@ function AvailabilityTable(props: Props) {
 
     const tableHead = <TableHead>
         <TableRow>
-            <TableCell align="center">Hora</TableCell>
-            <TableCell align="center">Lunes</TableCell>
-            <TableCell align="center">Martes</TableCell>
-            <TableCell align="center">Miercoles</TableCell>
-            <TableCell align="center">Jueves</TableCell>
-            <TableCell align="center">Viernes</TableCell>
-            <TableCell align="center">Sabado</TableCell>
+            <TableCell align="center">{translations.hour}</TableCell>
+            <TableCell align="center">{translations.monday}</TableCell>
+            <TableCell align="center">{translations.tuesday}</TableCell>
+            <TableCell align="center">{translations.wednesday}</TableCell>
+            <TableCell align="center">{translations.thursday}</TableCell>
+            <TableCell align="center">{translations.friday}</TableCell>
+            <TableCell align="center">{translations.saturday}</TableCell>
         </TableRow>
     </TableHead>;
 
@@ -138,18 +139,44 @@ function AvailabilityTable(props: Props) {
         if (isLunchHour(hour)) {
             return <TableRow key={hour}>
                 <TableCell align="center">{text}</TableCell>
-                <TableCell align="center" className={classes.lunchHour} colSpan={6}>Hora de almuerzo</TableCell>
+                <TableCell align="center"
+                    className={classes.lunchHour}
+                    colSpan={6}>{translations.lunchHour}</TableCell>
             </TableRow>;
         }
 
         return <TableRow key={hour}>
             <TableCell align="center" className="hour">{text}</TableCell>
-            <AvailabilityCell availability={props.availability} day={enums.Day.monday} hour={hour} onCellClick={handleCellClick} />
-            <AvailabilityCell availability={props.availability} day={enums.Day.tuesday} hour={hour} onCellClick={handleCellClick} />
-            <AvailabilityCell availability={props.availability} day={enums.Day.wednesday} hour={hour} onCellClick={handleCellClick} />
-            <AvailabilityCell availability={props.availability} day={enums.Day.thursday} hour={hour} onCellClick={handleCellClick} />
-            <AvailabilityCell availability={props.availability} day={enums.Day.friday} hour={hour} onCellClick={handleCellClick} />
-            <AvailabilityCell availability={props.availability} day={enums.Day.saturday} hour={hour} onCellClick={handleCellClick} />
+            <AvailabilityCell
+                availability={props.availability}
+                day={enums.Day.monday}
+                hour={hour}
+                onCellClick={handleCellClick} />
+            <AvailabilityCell
+                availability={props.availability}
+                day={enums.Day.tuesday}
+                hour={hour}
+                onCellClick={handleCellClick} />
+            <AvailabilityCell
+                availability={props.availability}
+                day={enums.Day.wednesday}
+                hour={hour}
+                onCellClick={handleCellClick} />
+            <AvailabilityCell
+                availability={props.availability}
+                day={enums.Day.thursday}
+                hour={hour}
+                onCellClick={handleCellClick} />
+            <AvailabilityCell
+                availability={props.availability}
+                day={enums.Day.friday}
+                hour={hour}
+                onCellClick={handleCellClick} />
+            <AvailabilityCell
+                availability={props.availability}
+                day={enums.Day.saturday}
+                hour={hour}
+                onCellClick={handleCellClick} />
         </TableRow>
     });
 

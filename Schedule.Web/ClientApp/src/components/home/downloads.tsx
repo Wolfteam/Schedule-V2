@@ -45,7 +45,7 @@ function Downloads() {
         <Divider />
         <CardActions className={classes.buttonContainer}>
             <Button className={classes.button} size="small">{translations.academicPlanification}</Button>
-            <Button className={classes.button} size="small">{translations.clasroomsPlanification}</Button>
+            <Button className={classes.button} size="small">{translations.classroomsPlanification}</Button>
             <Button className={classes.button} size="small">{translations.hoursPlanification}</Button>
         </CardActions>
     </Card>;
