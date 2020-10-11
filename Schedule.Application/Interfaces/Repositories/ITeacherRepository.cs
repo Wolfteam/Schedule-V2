@@ -1,5 +1,5 @@
 ﻿using Schedule.Domain.Entities;
-using Schedule.Shared.Interfaces.Dto;
+using Schedule.Domain.Interfaces.Dto;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 

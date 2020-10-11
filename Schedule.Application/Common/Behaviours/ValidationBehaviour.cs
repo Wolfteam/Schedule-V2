@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using ValidationException = Schedule.Shared.Exceptions.ValidationException;
 
 namespace Schedule.Application.Common.Behaviours
 {
@@ -19,7 +20,7 @@ namespace Schedule.Application.Common.Behaviours
 
         public async Task<TResponse> Handle(TRequest request, CancellationToken cancellationToken, RequestHandlerDelegate<TResponse> next)
         {
-            if (!_validators.Any()) 
+            if (!_validators.Any())
                 return await next();
             var context = new ValidationContext<TRequest>(request);
 

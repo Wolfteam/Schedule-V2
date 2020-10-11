@@ -1,5 +1,6 @@
 ﻿using MediatR.Pipeline;
 using Microsoft.Extensions.Logging;
+using Schedule.Domain.Interfaces.Managers;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -8,29 +9,18 @@ namespace Schedule.Application.Common.Behaviours
     public class LoggingBehaviour<TRequest> : IRequestPreProcessor<TRequest>
     {
         private readonly ILogger _logger;
-        //private readonly ICurrentUserService _currentUserService;
-        //private readonly IIdentityService _identityService;
+        private readonly IDefaultAppUserManager _userManager;
 
-        public LoggingBehaviour(ILogger<TRequest> logger)
+        public LoggingBehaviour(ILogger<TRequest> logger, IDefaultAppUserManager userManager)
         {
             _logger = logger;
-            //_currentUserService = currentUserService;
-            //_identityService = identityService;
+            _userManager = userManager;
         }
 
         public Task Process(TRequest request, CancellationToken cancellationToken)
         {
             var requestName = typeof(TRequest).Name;
-            var userId = /*_currentUserService.UserId ??*/ string.Empty;
-            string userName = string.Empty;
-
-            if (!string.IsNullOrEmpty(userId))
-            {
-                //userName = await _identityService.GetUserNameAsync(userId);
-            }
-
-            _logger.LogInformation("CleanArchitecture Request: {Name} {@UserId} {@UserName} {@Request}",
-                requestName, userId, userName, request);
+            _logger.LogInformation("Handling request: {Name} for {@UserName} {@Request}", requestName, _userManager.Username, request);
             return Task.CompletedTask;
         }
     }
