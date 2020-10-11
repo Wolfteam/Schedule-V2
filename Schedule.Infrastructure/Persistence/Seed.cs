@@ -7,7 +7,7 @@ namespace Schedule.Infrastructure.Persistence
 {
     public static class Seed
     {
-        public static Task Init(AppDbContext dbContext)
+        public static async Task Init(AppDbContext dbContext)
         {
             var periods = new List<Period>
             {
@@ -30,7 +30,7 @@ namespace Schedule.Infrastructure.Persistence
 
             var classroomTypes = new[]
             {
-                "Teoria", "Laboratorio de Sistemas Eléctricos", "Laboratorio de Sistemas de Comunicación",
+                "Teoria", "Laboratorio de Sistemas Eléctricos", "Laboratorio de Convertidores Eléctricos", "Laboratorio de Sistemas de Comunicación",
                 "Laboratorio de Electrónica Industrial", "Laboratorio de Sistemas Digitales II",
                 "Laboratorio de Sistemas Digitales I", "Laboratorio de Computación", "Laboratorio de Sistemas Electrónicos I y II",
                 "Laboratorio de Sistemas Digitales III", "Laboratorio de Sistemas de Control II",
@@ -52,7 +52,7 @@ namespace Schedule.Infrastructure.Persistence
             };
             dbContext.Priorities.AddRange(priorities);
 
-            var semesters = new[] { "3", "4", "5", "6", "7", "8", "9", "Electiva Cod-41", "Electiva Cod-43", "Electiva Cod-44", "Electiva Cod-46", "Otros" }
+            var semesters = new[] { "1", "2", "3", "4", "5", "6", "7", "8", "9", "Electiva Cod-41", "Electiva Cod-43", "Electiva Cod-44", "Electiva Cod-46", "Otros" }
                 .Select(s => new Semester { Name = s })
                 .ToList();
             dbContext.Semesters.AddRange(semesters);
@@ -169,7 +169,7 @@ namespace Schedule.Infrastructure.Persistence
             };
             dbContext.Teachers.AddRange(teachers);
 
-            return dbContext.SaveChangesAsync();
+            await dbContext.SaveChangesAsync();
         }
     }
 }

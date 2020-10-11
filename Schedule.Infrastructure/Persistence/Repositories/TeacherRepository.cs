@@ -1,12 +1,12 @@
-﻿using Schedule.Application.Interfaces.Repositories;
+﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
+using Schedule.Application.Interfaces.Repositories;
 using Schedule.Domain.Entities;
-using Schedule.Shared.Interfaces.Dto;
+using Schedule.Domain.Interfaces.Dto;
+using Schedule.Shared.Extensions;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using AutoMapper;
-using Microsoft.EntityFrameworkCore;
-using Schedule.Shared.Extensions;
 
 namespace Schedule.Infrastructure.Persistence.Repositories
 {
@@ -22,6 +22,15 @@ namespace Schedule.Infrastructure.Persistence.Repositories
             where TMapTo : class, new()
         {
             var query = Context.Teachers.AsQueryable();
+            if (!string.IsNullOrEmpty(request.SearchTerm))
+            {
+                var searchTerm = request.SearchTerm;
+                query = query.Where(t =>
+                    t.FirstName.Contains(searchTerm) ||
+                    t.FirstLastName.Contains(searchTerm) ||
+                    t.IdentifierNumber.ToString().Contains(searchTerm));
+            }
+
             return query.Paginate<Teacher, TMapTo>(request, response, _mapper.ConfigurationProvider).ToListAsync();
         }
     }

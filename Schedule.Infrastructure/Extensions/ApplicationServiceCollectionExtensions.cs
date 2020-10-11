@@ -26,6 +26,7 @@ namespace Schedule.Infrastructure.Extensions
             {
                 options.UseMySql(config.GetConnectionString("DefaultConnection"), o =>
                 {
+                    o.MigrationsAssembly(typeof(AppDbContext).Assembly.FullName);
                     o.SchemaBehavior(MySqlSchemaBehavior.Translate, AppConstants.GenerateTableSchema);
                     o.MigrationsHistoryTable($"{AppDbContext.ScheduleDbScheme}{AppConstants.MigrationsTableName}" /*, options.DefaultSchema*/);
                 });
@@ -35,7 +36,18 @@ namespace Schedule.Infrastructure.Extensions
 
         private static IServiceCollection AddAppRepos(this IServiceCollection services)
         {
+            services.AddScoped<ICareerRepository, CareerRepository>();
+            services.AddScoped<IClassroomRepository, ClassroomRepository>();
+            services.AddScoped<IClassroomTypePerSubjectRepository, ClassroomTypePerSubjectRepository>();
+            services.AddScoped<IPeriodRepository, PeriodRepository>();
+            services.AddScoped<IPeriodSectionRepository, PeriodSectionRepository>();
+            services.AddScoped<IPriorityRepository, PriorityRepository>();
+            services.AddScoped<ISemesterRepository, SemesterRepository>();
+            services.AddScoped<ISubjectRepository, SubjectRepository>();
+            services.AddScoped<ITeacherAvailabilityRepository, TeacherAvailabilityRepository>();
+            services.AddScoped<ITeacherPerSubjectRepository, TeacherPerSubjectRepository>();
             services.AddScoped<ITeacherRepository, TeacherRepository>();
+            services.AddScoped<ITeacherScheduleRepository, TeacherScheduleRepository>();
             return services;
         }
 

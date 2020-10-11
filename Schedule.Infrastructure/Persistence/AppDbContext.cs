@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Schedule.Application.Interfaces.Managers;
 using Schedule.Domain.Entities;
+using Schedule.Domain.Interfaces.Managers;
 using System;
 using System.Linq;
 using System.Threading;
@@ -12,7 +12,7 @@ namespace Schedule.Infrastructure.Persistence
     {
         public const string ScheduleDbScheme = "sch";
 
-        private readonly IAppUserManager _appUserManager;
+        private readonly IDefaultAppUserManager _appUserManager;
 
         #region Properties
         public DbSet<Career> Careers { get; set; }
@@ -31,7 +31,7 @@ namespace Schedule.Infrastructure.Persistence
 
         public AppDbContext(
             DbContextOptions options,
-            IAppUserManager appUserManager)
+            IDefaultAppUserManager appUserManager)
             : base(options)
         {
             _appUserManager = appUserManager;
