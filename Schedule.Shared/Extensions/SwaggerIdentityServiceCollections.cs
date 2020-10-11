@@ -17,7 +17,7 @@ namespace Schedule.Shared.Extensions
             string xmlFileName,
             string version = "V1")
         {
-            var settings = config.GetSection(nameof(SwaggerSettings)).Get<SwaggerSettings>();
+            var swaggerSettings = config.GetSection(nameof(SwaggerSettings)).Get<SwaggerSettings>();
 
             var apiInfo = new OpenApiInfo
             {
@@ -26,7 +26,7 @@ namespace Schedule.Shared.Extensions
                 Description = $"This is the {apiName} api"
             };
 
-            var (oauthScheme, oauthSecReq, oauthSecScheme) = BuildOauth(settings);
+            var (oauthScheme, oauthSecReq, oauthSecScheme) = BuildOauth(swaggerSettings);
 
             var (bearerScheme, bearerSecReq, bearerSecScheme) = BuildBearer();
 

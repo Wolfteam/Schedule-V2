@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using AutoMapper.QueryableExtensions;
-using Schedule.Shared.Interfaces.Dto;
+using Schedule.Domain.Interfaces.Dto;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;

@@ -1,0 +1,43 @@
+﻿using FluentValidation.Results;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+namespace Schedule.Shared.Exceptions
+{
+    public class ValidationException : Exception
+    {
+        public IDictionary<string, string[]> Errors { get; }
+
+        public string Error
+        {
+            get
+            {
+                var errors = Errors.Values.SelectMany(kvp => kvp).Distinct().ToList();
+                return string.Join(Environment.NewLine, errors);
+            }
+        }
+
+        public ValidationException()
+            : base("One or more validation failures have occurred.")
+        {
+            Errors = new Dictionary<string, string[]>();
+        }
+
+        public ValidationException(IEnumerable<ValidationFailure> failures)
+            : this()
+        {
+            Errors = failures
+                .GroupBy(e => e.PropertyName, e => e.ErrorMessage)
+                .ToDictionary(failureGroup => failureGroup.Key, failureGroup => failureGroup.ToArray());
+        }
+
+        private ValidationException(string message) : base(message)
+        {
+        }
+
+        private ValidationException(string message, Exception innerException) : base(message, innerException)
+        {
+        }
+    }
+}

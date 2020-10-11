@@ -17,7 +17,7 @@ namespace Schedule.Shared.Extensions
             app.UseSwaggerUI(c =>
             {
                 // To serve the Swagger UI at the app's root (http://localhost:<random_port>/)
-                c.SwaggerEndpoint("../swagger/v1/swagger.json", $"{apiName} {version}");
+                c.SwaggerEndpoint($"../swagger/{version}/swagger.json", $"{apiName} {version}");
                 c.DocumentTitle = $"{apiName} API";
 
                 c.OAuthClientId(settings.SwaggerClientId);
