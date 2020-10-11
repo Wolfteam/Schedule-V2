@@ -4,7 +4,7 @@ namespace Schedule.Domain.Entities
 {
     public class PeriodSection : BaseEntity
     {
-        public int NumerOfSections { get; set; }
+        public int NumberOfSections { get; set; }
         public int MaxNumberOfStudents { get; set; }
 
         public long SubjectId { get; set; }
