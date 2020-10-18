@@ -1,6 +1,6 @@
 ﻿namespace Schedule.Domain.Entities
 {
-    public class TeacherPerSubject : BaseEntity
+    public class TeacherSubject : BaseEntity
     {
         public long TeacherId { get; set; }
         public Teacher Teacher { get; set; }

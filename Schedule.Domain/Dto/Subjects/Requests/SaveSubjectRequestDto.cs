@@ -2,7 +2,6 @@
 {
     public class SaveSubjectRequestDto
     {
-        public long Id { get; set; }
         public int Code { get; set; }
         public string Name { get; set; }
         public int TotalAcademicHours { get; set; }

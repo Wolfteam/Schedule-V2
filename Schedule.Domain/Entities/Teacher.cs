@@ -2,7 +2,7 @@
 
 namespace Schedule.Domain.Entities
 {
-    public class Teacher : BaseEntity
+    public class Teacher : BaseEntityWithSchool
     {
         public int IdentifierNumber { get; set; }
         public string FirstName { get; set; }
@@ -12,18 +12,24 @@ namespace Schedule.Domain.Entities
 
         public long PriorityId { get; set; }
         public Priority Priority { get; set; }
-        public ICollection<TeacherAvailability> Availabilities { get;  } = new List<TeacherAvailability>();
+        public ICollection<TeacherAvailability> Availabilities { get; } = new List<TeacherAvailability>();
         public ICollection<TeacherSchedule> Schedules { get; } = new List<TeacherSchedule>();
-        public ICollection<TeacherPerSubject> Subjects { get; } = new List<TeacherPerSubject>();
+        public ICollection<TeacherSubject> Subjects { get; } = new List<TeacherSubject>();
 
-        public static Teacher NewTeacher(int identifierNumber, string firstName, string lastName, long priorityId)
+        public static Teacher NewTeacher(
+            int identifierNumber,
+            string firstName,
+            string lastName,
+            long priorityId,
+            long schoolId)
         {
             return new Teacher
             {
                 IdentifierNumber = identifierNumber,
                 FirstName = firstName,
                 FirstLastName = lastName,
-                PriorityId = priorityId
+                PriorityId = priorityId,
+                SchoolId = schoolId
             };
         }
     }

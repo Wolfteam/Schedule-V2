@@ -2,7 +2,7 @@
 
 namespace Schedule.Domain.Entities
 {
-    public class Subject : BaseEntity
+    public class Subject : BaseEntityWithSchool
     {
         public int Code { get; set; }
         public string Name { get; set; }
@@ -16,10 +16,18 @@ namespace Schedule.Domain.Entities
         public Semester Semester { get; set; }
 
         public long ClassroomTypePerSubjectId { get; set; }
-        public ClassroomTypePerSubject ClassroomTypePerSubject { get; set; }
-        public ICollection<TeacherPerSubject> Teachers { get; } = new List<TeacherPerSubject>();
+        public ClassroomSubject ClassroomTypePerSubject { get; set; }
+        public ICollection<TeacherSubject> Teachers { get; } = new List<TeacherSubject>();
 
-        public static Subject NewSubject(int code, string name, long semesterId, long classroomTypeId, long careerId, int totalHours, int hoursPerWeek)
+        public static Subject NewSubject(
+            int code,
+            string name,
+            long semesterId,
+            long classroomTypeId,
+            long careerId,
+            int totalHours,
+            int hoursPerWeek,
+            long schoolId)
         {
             return new Subject
             {
@@ -29,7 +37,8 @@ namespace Schedule.Domain.Entities
                 ClassroomTypePerSubjectId = classroomTypeId,
                 CareerId = careerId,
                 TotalAcademicHours = totalHours,
-                AcademicHoursPerWeek = hoursPerWeek
+                AcademicHoursPerWeek = hoursPerWeek,
+                SchoolId = schoolId
             };
         }
     }

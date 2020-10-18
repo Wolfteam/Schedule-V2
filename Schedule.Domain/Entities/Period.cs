@@ -2,7 +2,7 @@
 
 namespace Schedule.Domain.Entities
 {
-    public class Period : BaseEntity
+    public class Period : BaseEntityWithSchool
     {
         public string Name { get; set; }
         public bool IsActive { get; set; }

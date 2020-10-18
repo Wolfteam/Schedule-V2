@@ -2,7 +2,7 @@
 
 namespace Schedule.Domain.Entities
 {
-    public class Priority : BaseEntity
+    public class Priority : BaseEntityWithSchool
     {
         public string Name { get; set; }
         public int HoursToComplete { get; set; }

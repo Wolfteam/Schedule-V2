@@ -2,7 +2,7 @@
 
 namespace Schedule.Domain.Entities
 {
-    public class ClassroomTypePerSubject : BaseEntity
+    public class ClassroomSubject : BaseEntityWithSchool
     {
         public string Name { get; set; }
 
