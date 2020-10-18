@@ -8,14 +8,15 @@ namespace Schedule.Application.Interfaces.Services
     {
         ICareerRepository Careers { get; }
         IClassroomRepository Classrooms { get; }
-        IClassroomTypePerSubjectRepository ClassroomTypes { get; }
+        IClassroomSubjectRepository ClassroomSubject { get; }
         IPeriodRepository Periods { get; }
         IPeriodSectionRepository PeriodSection { get; }
         IPriorityRepository Priorities { get; }
+        ISchoolRepository Schools { get; }
         ISemesterRepository Semesters { get; }
         ISubjectRepository Subjects { get; }
         ITeacherAvailabilityRepository TeacherAvailabilities { get; }
-        ITeacherPerSubjectRepository TeacherPerSubjects { get; }
+        ITeacherSubjectRepository TeacherSubjects { get; }
         ITeacherRepository Teachers { get; }
         ITeacherScheduleRepository TeacherSchedules { get; }
 

@@ -7,7 +7,9 @@ namespace Schedule.Application.Interfaces.Repositories
 {
     public interface IPeriodRepository : IRepository<Period>
     {
-        Task<List<TMapTo>> GetAll<TMapTo>(IPaginatedRequestDto request, IPaginatedResponseDto response)
+        Task<List<TMapTo>> GetAll<TMapTo>(long schoolId, IPaginatedRequestDto request, IPaginatedResponseDto response)
             where TMapTo : class, new();
+
+        Task InactiveAllPeriods(long schoolId);
     }
 }

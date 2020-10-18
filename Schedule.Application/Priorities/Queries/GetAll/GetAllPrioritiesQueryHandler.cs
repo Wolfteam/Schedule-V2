@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
+using Schedule.Application.Interfaces.Managers;
 using Schedule.Application.Interfaces.Services;
 using Schedule.Domain.Dto;
 using Schedule.Domain.Dto.Priorities.Responses;
@@ -11,15 +12,16 @@ namespace Schedule.Application.Priorities.Queries.GetAll
     {
         public GetAllPrioritiesQueryHandler(
             ILogger<GetAllPrioritiesQueryHandler> logger,
-            IAppDataService appDataService)
-            : base(logger, appDataService)
+            IAppDataService appDataService,
+            IAppUserManager appUserManager)
+            : base(logger, appDataService, appUserManager)
         {
         }
 
         public override async Task<PaginatedResponseDto<GetAllPrioritiesResponseDto>> Handle(GetAllPrioritiesQuery request, CancellationToken cancellationToken)
         {
             var response = new PaginatedResponseDto<GetAllPrioritiesResponseDto>();
-            response.Result = await AppDataService.Priorities.GetAll<GetAllPrioritiesResponseDto>(request.Dto, response);
+            response.Result = await AppDataService.Priorities.GetAll<GetAllPrioritiesResponseDto>(AppUserManager.SchoolId, request.Dto, response);
             response.Succeed = true;
             return response;
         }

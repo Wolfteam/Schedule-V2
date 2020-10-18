@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.Extensions.Logging;
+using Schedule.Application.Interfaces.Managers;
 using Schedule.Application.Interfaces.Services;
 using Schedule.Domain.Dto;
 using Schedule.Domain.Dto.Subjects.Responses;
@@ -15,15 +16,16 @@ namespace Schedule.Application.Subjects.Commands.Update
         public UpdateSubjectCommandHandler(
             ILogger<UpdateSubjectCommand> logger,
             IAppDataService appDataService,
+            IAppUserManager appUserManager,
             IMapper mapper)
-            : base(logger, appDataService)
+            : base(logger, appDataService, appUserManager)
         {
             _mapper = mapper;
         }
 
         public override async Task<ApiResponseDto<GetAllSubjectsResponseDto>> Handle(UpdateSubjectCommand request, CancellationToken cancellationToken)
         {
-            var subject = await AppDataService.Subjects.FirstOrDefaultAsync(s => s.Id == request.Id);
+            var subject = await AppDataService.Subjects.FirstOrDefaultAsync(s => s.Id == request.Id && s.SchoolId == AppUserManager.SchoolId);
             if (subject == null)
             {
                 var msg = $"SubjectId = {request.Id} does not exist";
@@ -31,11 +33,11 @@ namespace Schedule.Application.Subjects.Commands.Update
                 throw new NotFoundException(msg);
             }
 
-            await AppDataService.Subjects.CheckBeforeSaving(request.Dto.SemesterId, request.Dto.CareerId, request.Dto.ClassroomTypePerSubjectId);
+            await AppDataService.Subjects.CheckBeforeSaving(AppUserManager.SchoolId, request.Dto.SemesterId, request.Dto.CareerId, request.Dto.ClassroomTypePerSubjectId);
 
             if (subject.Code != request.Dto.Code)
             {
-                bool codeIsBeingUsed = await AppDataService.Subjects.ExistsAsync(s => s.Code == request.Dto.Code);
+                bool codeIsBeingUsed = await AppDataService.Subjects.ExistsAsync(s => s.Code == request.Dto.Code && s.SchoolId == AppUserManager.SchoolId);
                 if (codeIsBeingUsed)
                 {
                     var msg = $"Code = {request.Dto.Code} is being used";

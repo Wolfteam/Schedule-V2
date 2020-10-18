@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
+using Schedule.Application.Interfaces.Managers;
 using Schedule.Application.Interfaces.Services;
 using Schedule.Domain.Dto;
 using Schedule.Shared.Exceptions;
@@ -11,14 +12,15 @@ namespace Schedule.Application.Subjects.Commands.Delete
     {
         public DeleteSubjectCommandHandler(
             ILogger<DeleteSubjectCommandHandler> logger,
-            IAppDataService appDataService)
-            : base(logger, appDataService)
+            IAppDataService appDataService,
+            IAppUserManager appUserManager)
+            : base(logger, appDataService, appUserManager)
         {
         }
 
         public override async Task<EmptyResponseDto> Handle(DeleteSubjectCommand request, CancellationToken cancellationToken)
         {
-            var subject = await AppDataService.Subjects.FirstOrDefaultAsync(s => s.Id == request.Id);
+            var subject = await AppDataService.Subjects.FirstOrDefaultAsync(s => s.Id == request.Id && s.SchoolId == AppUserManager.SchoolId);
             if (subject == null)
             {
                 var msg = $"SubjectId = {request.Id} was not found";

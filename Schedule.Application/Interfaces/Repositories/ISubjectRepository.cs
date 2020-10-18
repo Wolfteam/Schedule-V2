@@ -7,9 +7,9 @@ namespace Schedule.Application.Interfaces.Repositories
 {
     public interface ISubjectRepository : IRepository<Subject>
     {
-        Task<List<TMapTo>> GetAll<TMapTo>(IPaginatedRequestDto request, IPaginatedResponseDto response)
+        Task<List<TMapTo>> GetAll<TMapTo>(long schoolId, IPaginatedRequestDto request, IPaginatedResponseDto response)
             where TMapTo : class, new();
 
-        Task CheckBeforeSaving(long semesterId, long careerId, long classroomTypeId);
+        Task CheckBeforeSaving(long schoolId, long semesterId, long careerId, long classroomTypeId);
     }
 }

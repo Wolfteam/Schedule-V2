@@ -2,7 +2,7 @@
 
 namespace Schedule.Application.Interfaces.Repositories
 {
-    public interface IClassroomTypePerSubjectRepository : IRepository<ClassroomTypePerSubject>
+    public interface ISchoolRepository : IRepository<School>
     {
     }
 }

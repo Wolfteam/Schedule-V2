@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.Extensions.Logging;
+using Schedule.Application.Interfaces.Managers;
 using Schedule.Application.Interfaces.Services;
 using Schedule.Domain.Dto;
 using Schedule.Domain.Dto.Teachers.Responses;
@@ -15,15 +16,16 @@ namespace Schedule.Application.Teachers.Commands.Update
         public UpdateTeacherCommandHandler(
             ILogger<UpdateTeacherCommandHandler> logger,
             IAppDataService appDataService,
+            IAppUserManager appUserManager,
             IMapper mapper)
-            : base(logger, appDataService)
+            : base(logger, appDataService, appUserManager)
         {
             _mapper = mapper;
         }
 
         public override async Task<ApiResponseDto<GetAllTeacherResponseDto>> Handle(UpdateTeacherCommand request, CancellationToken cancellationToken)
         {
-            var teacher = await AppDataService.Teachers.FirstOrDefaultAsync(t => t.Id == request.Id);
+            var teacher = await AppDataService.Teachers.FirstOrDefaultAsync(t => t.Id == request.Id && t.SchoolId == AppUserManager.SchoolId);
             if (teacher == null)
             {
                 var msg = $"TeacherId = {request.Id} was not found";
@@ -33,7 +35,7 @@ namespace Schedule.Application.Teachers.Commands.Update
 
             if (teacher.IdentifierNumber != request.Dto.IdentifierNumber)
             {
-                bool idNumberIsBeingUsed = await AppDataService.Teachers.ExistsAsync(t => t.IdentifierNumber == request.Dto.IdentifierNumber);
+                bool idNumberIsBeingUsed = await AppDataService.Teachers.ExistsAsync(t => t.IdentifierNumber == request.Dto.IdentifierNumber && t.SchoolId == AppUserManager.SchoolId);
                 if (idNumberIsBeingUsed)
                 {
                     var msg = $"IdentifierNumber = {request.Dto.IdentifierNumber} is being used";
@@ -42,7 +44,7 @@ namespace Schedule.Application.Teachers.Commands.Update
                 }
             }
 
-            bool priorityExists = await AppDataService.Priorities.ExistsAsync(p => p.Id == request.Dto.PriorityId);
+            bool priorityExists = await AppDataService.Priorities.ExistsAsync(p => p.Id == request.Dto.PriorityId && p.SchoolId == AppUserManager.SchoolId);
             if (!priorityExists)
             {
                 var msg = $"PriorityId = {request.Dto.PriorityId} does not exist";

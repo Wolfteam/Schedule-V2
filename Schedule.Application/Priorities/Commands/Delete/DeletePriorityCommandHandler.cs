@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
+using Schedule.Application.Interfaces.Managers;
 using Schedule.Application.Interfaces.Services;
 using Schedule.Domain.Dto;
 using Schedule.Shared.Exceptions;
@@ -11,14 +12,15 @@ namespace Schedule.Application.Priorities.Commands.Delete
     {
         public DeletePriorityCommandHandler(
             ILogger<DeletePriorityCommand> logger,
-            IAppDataService appDataService)
-            : base(logger, appDataService)
+            IAppDataService appDataService,
+            IAppUserManager appUserManager)
+            : base(logger, appDataService, appUserManager)
         {
         }
 
         public override async Task<EmptyResponseDto> Handle(DeletePriorityCommand request, CancellationToken cancellationToken)
         {
-            var priority = await AppDataService.Priorities.FirstOrDefaultAsync(p => p.Id == request.Id);
+            var priority = await AppDataService.Priorities.FirstOrDefaultAsync(p => p.Id == request.Id && p.SchoolId == AppUserManager.SchoolId);
             if (priority == null)
             {
                 var msg = $"PriorityId = {request.Id} was not found";
@@ -26,7 +28,7 @@ namespace Schedule.Application.Priorities.Commands.Delete
                 throw new NotFoundException(msg);
             }
 
-            bool isBeingUsed = await AppDataService.Teachers.ExistsAsync(t => t.PriorityId == request.Id);
+            bool isBeingUsed = await AppDataService.Teachers.ExistsAsync(t => t.PriorityId == request.Id && t.SchoolId == AppUserManager.SchoolId);
 
             if (isBeingUsed)
             {

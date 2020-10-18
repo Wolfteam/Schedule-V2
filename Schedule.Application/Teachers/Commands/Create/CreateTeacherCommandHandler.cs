@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.Extensions.Logging;
+using Schedule.Application.Interfaces.Managers;
 using Schedule.Application.Interfaces.Services;
 using Schedule.Domain.Dto;
 using Schedule.Domain.Dto.Teachers.Responses;
@@ -16,15 +17,16 @@ namespace Schedule.Application.Teachers.Commands.Create
         public CreateTeacherCommandHandler(
             ILogger<CreateTeacherCommand> logger,
             IAppDataService appDataService,
+            IAppUserManager appUserManager,
             IMapper mapper)
-            : base(logger, appDataService)
+            : base(logger, appDataService, appUserManager)
         {
             _mapper = mapper;
         }
 
         public override async Task<ApiResponseDto<GetAllTeacherResponseDto>> Handle(CreateTeacherCommand request, CancellationToken cancellationToken)
         {
-            bool idNumberExists = await AppDataService.Teachers.ExistsAsync(t => t.IdentifierNumber == request.Dto.IdentifierNumber);
+            bool idNumberExists = await AppDataService.Teachers.ExistsAsync(t => t.IdentifierNumber == request.Dto.IdentifierNumber && t.SchoolId == AppUserManager.SchoolId);
             if (idNumberExists)
             {
                 var msg = $"IdentificationNumber = {request.Dto.IdentifierNumber} already exists";
@@ -32,7 +34,7 @@ namespace Schedule.Application.Teachers.Commands.Create
                 throw new InvalidRequestException(msg);
             }
 
-            bool priorityExists = await AppDataService.Priorities.ExistsAsync(p => p.Id == request.Dto.PriorityId);
+            bool priorityExists = await AppDataService.Priorities.ExistsAsync(p => p.Id == request.Dto.PriorityId && p.SchoolId == AppUserManager.SchoolId);
             if (!priorityExists)
             {
                 var msg = $"PriorityId = {request.Dto.PriorityId} does not exist";
@@ -41,6 +43,7 @@ namespace Schedule.Application.Teachers.Commands.Create
             }
 
             var teacher = _mapper.Map<Teacher>(request.Dto);
+            teacher.SchoolId = AppUserManager.SchoolId;
             AppDataService.Teachers.Add(teacher);
 
             await AppDataService.SaveChangesAsync();

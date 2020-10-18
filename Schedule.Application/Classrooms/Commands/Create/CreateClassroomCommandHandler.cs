@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.Extensions.Logging;
+using Schedule.Application.Interfaces.Managers;
 using Schedule.Application.Interfaces.Services;
 using Schedule.Domain.Dto;
 using Schedule.Domain.Dto.Classrooms.Responses;
@@ -16,15 +17,16 @@ namespace Schedule.Application.Classrooms.Commands.Create
         public CreateClassroomCommandHandler(
             ILogger<CreateClassroomCommand> logger,
             IAppDataService appDataService,
+            IAppUserManager appUserManager,
             IMapper mapper)
-            : base(logger, appDataService)
+            : base(logger, appDataService, appUserManager)
         {
             _mapper = mapper;
         }
 
         public override async Task<ApiResponseDto<GetAllClassroomsResponseDto>> Handle(CreateClassroomCommand request, CancellationToken cancellationToken)
         {
-            bool classroomExists = await AppDataService.Classrooms.ExistsAsync(c => c.Name == request.Dto.Name);
+            bool classroomExists = await AppDataService.Classrooms.ExistsAsync(c => c.Name == request.Dto.Name && c.SchoolId == AppUserManager.SchoolId);
             if (classroomExists)
             {
                 var msg = $"Classroom = {request.Dto.Name} already exists";
@@ -32,7 +34,7 @@ namespace Schedule.Application.Classrooms.Commands.Create
                 throw new InvalidRequestException(msg);
             }
 
-            bool typeExists = await AppDataService.ClassroomTypes.ExistsAsync(c => c.Id == request.Dto.ClassroomTypePerSubjectId);
+            bool typeExists = await AppDataService.ClassroomSubject.ExistsAsync(c => c.Id == request.Dto.ClassroomTypePerSubjectId && c.SchoolId == AppUserManager.SchoolId);
             if (!typeExists)
             {
                 var msg = $"No type was found for class room type id = {request.Dto.ClassroomTypePerSubjectId}";
@@ -41,6 +43,7 @@ namespace Schedule.Application.Classrooms.Commands.Create
             }
 
             var classroom = _mapper.Map<Classroom>(request.Dto);
+            classroom.SchoolId = AppUserManager.SchoolId;
             AppDataService.Classrooms.Add(classroom);
             await AppDataService.SaveChangesAsync();
             return new ApiResponseDto<GetAllClassroomsResponseDto>(_mapper.Map<GetAllClassroomsResponseDto>(classroom));

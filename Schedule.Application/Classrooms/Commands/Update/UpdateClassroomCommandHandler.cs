@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.Extensions.Logging;
+using Schedule.Application.Interfaces.Managers;
 using Schedule.Application.Interfaces.Services;
 using Schedule.Domain.Dto;
 using Schedule.Domain.Dto.Classrooms.Responses;
@@ -15,15 +16,16 @@ namespace Schedule.Application.Classrooms.Commands.Update
         public UpdateClassroomCommandHandler(
             ILogger<UpdateClassroomCommandHandler> logger,
             IAppDataService appDataService,
+            IAppUserManager appUserManager,
             IMapper mapper)
-            : base(logger, appDataService)
+            : base(logger, appDataService, appUserManager)
         {
             _mapper = mapper;
         }
 
         public override async Task<ApiResponseDto<GetAllClassroomsResponseDto>> Handle(UpdateClassroomCommand request, CancellationToken cancellationToken)
         {
-            var classroom = await AppDataService.Classrooms.FirstOrDefaultAsync(c => c.Id == request.Id);
+            var classroom = await AppDataService.Classrooms.FirstOrDefaultAsync(c => c.Id == request.Id && c.SchoolId == AppUserManager.SchoolId);
             if (classroom == null)
             {
                 var msg = $"ClassroomId = {request.Id} does not exist";

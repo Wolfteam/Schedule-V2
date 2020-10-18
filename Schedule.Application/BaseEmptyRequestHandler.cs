@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using Microsoft.Extensions.Logging;
+using Schedule.Application.Interfaces.Managers;
 using Schedule.Application.Interfaces.Services;
 using Schedule.Domain.Dto;
 using System.Threading;
@@ -12,11 +13,13 @@ namespace Schedule.Application
     {
         protected readonly ILogger Logger;
         protected readonly IAppDataService AppDataService;
+        protected readonly IAppUserManager AppUserManager;
 
-        protected BaseEmptyRequestHandler(ILogger logger, IAppDataService appDataService)
+        protected BaseEmptyRequestHandler(ILogger logger, IAppDataService appDataService, IAppUserManager appUserManager)
         {
             Logger = logger;
             AppDataService = appDataService;
+            AppUserManager = appUserManager;
         }
 
         public abstract Task<EmptyResponseDto> Handle(TQuery request, CancellationToken cancellationToken);
