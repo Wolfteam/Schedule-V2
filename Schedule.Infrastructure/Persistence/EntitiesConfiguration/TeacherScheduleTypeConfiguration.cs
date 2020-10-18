@@ -9,7 +9,7 @@ namespace Schedule.Infrastructure.Persistence.EntitiesConfiguration
         {
             base.Configure(builder);
 
-            builder.HasIndex(b => new {b.PeriodId, b.Day, b.TeacherId, b.StartHour, b.EndHour}).IsUnique();
+            builder.HasIndex(b => new { b.PeriodId, b.Day, b.TeacherId, b.StartHour, b.EndHour }).IsUnique();
         }
     }
 }

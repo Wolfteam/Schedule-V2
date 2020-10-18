@@ -18,10 +18,10 @@ namespace Schedule.Infrastructure.Persistence.Repositories
             _mapper = mapper;
         }
 
-        public Task<List<TMapTo>> GetAll<TMapTo>(IPaginatedRequestDto request, IPaginatedResponseDto response)
+        public Task<List<TMapTo>> GetAll<TMapTo>(long schoolId, IPaginatedRequestDto request, IPaginatedResponseDto response)
             where TMapTo : class, new()
         {
-            var query = Context.Periods.AsQueryable();
+            var query = Context.Periods.Where(p => p.SchoolId == schoolId);
             if (!string.IsNullOrEmpty(request.SearchTerm))
             {
                 var searchTerm = request.SearchTerm;
@@ -29,6 +29,16 @@ namespace Schedule.Infrastructure.Persistence.Repositories
             }
 
             return query.Paginate<Period, TMapTo>(request, response, _mapper.ConfigurationProvider).ToListAsync();
+        }
+
+        public async Task InactiveAllPeriods(long schoolId)
+        {
+            var periods = await Context.Periods
+                .Where(p => p.SchoolId == schoolId)
+                .ToListAsync();
+
+            foreach (var period in periods)
+                period.IsActive = false;
         }
     }
 }

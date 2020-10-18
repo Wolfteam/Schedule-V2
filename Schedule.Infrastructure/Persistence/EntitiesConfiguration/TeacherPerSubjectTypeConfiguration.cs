@@ -3,12 +3,12 @@ using Schedule.Domain.Entities;
 
 namespace Schedule.Infrastructure.Persistence.EntitiesConfiguration
 {
-    public class TeacherPerSubjectTypeConfiguration : BaseTypeConfiguration<TeacherPerSubject>
+    public class TeacherPerSubjectTypeConfiguration : BaseTypeConfiguration<TeacherSubject>
     {
-        public override void Configure(EntityTypeBuilder<TeacherPerSubject> builder)
+        public override void Configure(EntityTypeBuilder<TeacherSubject> builder)
         {
             base.Configure(builder);
-            builder.HasIndex(b => new {b.TeacherId, b.SubjectId}).IsUnique();
+            builder.HasIndex(b => new { b.TeacherId, b.SubjectId }).IsUnique();
         }
     }
 }

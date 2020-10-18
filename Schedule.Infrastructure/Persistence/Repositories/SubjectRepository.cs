@@ -19,10 +19,10 @@ namespace Schedule.Infrastructure.Persistence.Repositories
             _mapper = mapper;
         }
 
-        public Task<List<TMapTo>> GetAll<TMapTo>(IPaginatedRequestDto request, IPaginatedResponseDto response)
+        public Task<List<TMapTo>> GetAll<TMapTo>(long schoolId, IPaginatedRequestDto request, IPaginatedResponseDto response)
             where TMapTo : class, new()
         {
-            var query = Context.Subjects.AsQueryable();
+            var query = Context.Subjects.Where(s => s.SchoolId == schoolId);
             if (!string.IsNullOrEmpty(request.SearchTerm))
             {
                 var searchTerm = request.SearchTerm;
@@ -36,26 +36,26 @@ namespace Schedule.Infrastructure.Persistence.Repositories
             return query.Paginate<Subject, TMapTo>(request, response, _mapper.ConfigurationProvider).ToListAsync();
         }
 
-        public async Task CheckBeforeSaving(long semesterId, long careerId, long classroomTypeId)
+        public async Task CheckBeforeSaving(long schoolId, long semesterId, long careerId, long classroomTypeId)
         {
-            bool semesterExists = await Context.Semesters.AnyAsync(s => s.Id == semesterId);
+            bool semesterExists = await Context.Semesters.AnyAsync(s => s.Id == semesterId && s.SchoolId == schoolId);
             if (!semesterExists)
             {
-                var msg = $"SemesterId = {semesterId} was not found";
+                var msg = $"SemesterId = {semesterId} was not found for schoolId = {schoolId}";
                 throw new NotFoundException(msg);
             }
 
-            bool careerExists = await Context.Careers.AnyAsync(s => s.Id == careerId);
+            bool careerExists = await Context.Careers.AnyAsync(s => s.Id == careerId && s.SchoolId == schoolId);
             if (!careerExists)
             {
-                var msg = $"CareerId = {careerId} was not found";
+                var msg = $"CareerId = {careerId} was not found for schoolId = {schoolId}";
                 throw new NotFoundException(msg);
             }
 
-            bool classroomTypeExists = await Context.ClassroomTypePerSubject.AnyAsync(c => c.Id == classroomTypeId);
+            bool classroomTypeExists = await Context.ClassroomTypePerSubject.AnyAsync(c => c.Id == classroomTypeId && c.SchoolId == schoolId);
             if (!classroomTypeExists)
             {
-                var msg = $"ClassroomTypeId = {classroomTypeId} was not found";
+                var msg = $"ClassroomTypeId = {classroomTypeId} was not found for schoolId = {schoolId}";
                 throw new NotFoundException(msg);
             }
         }

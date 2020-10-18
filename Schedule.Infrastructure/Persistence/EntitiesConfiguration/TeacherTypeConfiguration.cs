@@ -8,7 +8,7 @@ namespace Schedule.Infrastructure.Persistence.EntitiesConfiguration
         public override void Configure(EntityTypeBuilder<Teacher> builder)
         {
             base.Configure(builder);
-            builder.HasIndex(b => b.IdentifierNumber).IsUnique();
+            builder.HasIndex(b => new { b.SchoolId, b.IdentifierNumber }).IsUnique();
 
             builder.Property(b => b.FirstName).IsRequired().HasMaxLength(50);
             builder.Property(b => b.SecondName).HasMaxLength(50);

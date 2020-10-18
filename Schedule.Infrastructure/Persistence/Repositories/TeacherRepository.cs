@@ -18,10 +18,10 @@ namespace Schedule.Infrastructure.Persistence.Repositories
             _mapper = mapper;
         }
 
-        public Task<List<TMapTo>> GetAll<TMapTo>(IPaginatedRequestDto request, IPaginatedResponseDto response)
+        public Task<List<TMapTo>> GetAll<TMapTo>(long schoolId, IPaginatedRequestDto request, IPaginatedResponseDto response)
             where TMapTo : class, new()
         {
-            var query = Context.Teachers.AsQueryable();
+            var query = Context.Teachers.Where(t => t.SchoolId == schoolId);
             if (!string.IsNullOrEmpty(request.SearchTerm))
             {
                 var searchTerm = request.SearchTerm;

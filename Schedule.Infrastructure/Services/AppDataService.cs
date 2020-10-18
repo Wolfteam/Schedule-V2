@@ -18,14 +18,15 @@ namespace Schedule.Infrastructure.Services
         #region Properties
         public ICareerRepository Careers { get; }
         public IClassroomRepository Classrooms { get; }
-        public IClassroomTypePerSubjectRepository ClassroomTypes { get; }
+        public IClassroomSubjectRepository ClassroomSubject { get; }
         public IPeriodRepository Periods { get; }
         public IPeriodSectionRepository PeriodSection { get; }
         public IPriorityRepository Priorities { get; }
+        public ISchoolRepository Schools { get; }
         public ISemesterRepository Semesters { get; }
         public ISubjectRepository Subjects { get; }
         public ITeacherAvailabilityRepository TeacherAvailabilities { get; }
-        public ITeacherPerSubjectRepository TeacherPerSubjects { get; }
+        public ITeacherSubjectRepository TeacherSubjects { get; }
         public ITeacherRepository Teachers { get; }
         public ITeacherScheduleRepository TeacherSchedules { get; }
         #endregion
@@ -35,14 +36,15 @@ namespace Schedule.Infrastructure.Services
             ILogger<AppDataService> logger,
             ICareerRepository careers,
             IClassroomRepository classrooms,
-            IClassroomTypePerSubjectRepository classroomTypes,
+            IClassroomSubjectRepository classroomTypes,
             IPeriodRepository periods,
             IPeriodSectionRepository periodSection,
             IPriorityRepository priorities,
+            ISchoolRepository schools,
             ISemesterRepository semesters,
             ISubjectRepository subjects,
             ITeacherAvailabilityRepository teacherAvailabilities,
-            ITeacherPerSubjectRepository teacherPerSubjects,
+            ITeacherSubjectRepository teacherPerSubjects,
             ITeacherRepository teachers,
             ITeacherScheduleRepository teacherSchedules)
         {
@@ -50,14 +52,15 @@ namespace Schedule.Infrastructure.Services
             _logger = logger;
             Careers = careers;
             Classrooms = classrooms;
-            ClassroomTypes = classroomTypes;
+            ClassroomSubject = classroomTypes;
             Periods = periods;
             PeriodSection = periodSection;
             Priorities = priorities;
+            Schools = schools;
             Semesters = semesters;
             Subjects = subjects;
             TeacherAvailabilities = teacherAvailabilities;
-            TeacherPerSubjects = teacherPerSubjects;
+            TeacherSubjects = teacherPerSubjects;
             Teachers = teachers;
             TeacherSchedules = teacherSchedules;
         }

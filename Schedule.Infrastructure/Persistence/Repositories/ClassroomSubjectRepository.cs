@@ -10,10 +10,10 @@ using System.Threading.Tasks;
 
 namespace Schedule.Infrastructure.Persistence.Repositories
 {
-    public class ClassroomRepository : Repository<Classroom>, IClassroomRepository
+    public class ClassroomSubjectRepository : Repository<ClassroomSubject>, IClassroomSubjectRepository
     {
         private readonly IMapper _mapper;
-        public ClassroomRepository(AppDbContext context, IMapper mapper) : base(context)
+        public ClassroomSubjectRepository(AppDbContext context, IMapper mapper) : base(context)
         {
             _mapper = mapper;
         }
@@ -21,14 +21,14 @@ namespace Schedule.Infrastructure.Persistence.Repositories
         public Task<List<TMapTo>> GetAll<TMapTo>(long schoolId, IPaginatedRequestDto request, IPaginatedResponseDto response)
             where TMapTo : class, new()
         {
-            var query = Context.Classrooms.Where(c => c.SchoolId == schoolId);
+            var query = Context.ClassroomTypePerSubject.Where(c => c.SchoolId == schoolId);
             if (!string.IsNullOrEmpty(request.SearchTerm))
             {
                 var searchTerm = request.SearchTerm;
-                query = query.Where(t => t.Name.Contains(searchTerm) || t.Capacity.ToString().Contains(searchTerm));
+                query = query.Where(t => t.Name.Contains(searchTerm));
             }
 
-            return query.Paginate<Classroom, TMapTo>(request, response, _mapper.ConfigurationProvider).ToListAsync();
+            return query.Paginate<ClassroomSubject, TMapTo>(request, response, _mapper.ConfigurationProvider).ToListAsync();
         }
     }
 }

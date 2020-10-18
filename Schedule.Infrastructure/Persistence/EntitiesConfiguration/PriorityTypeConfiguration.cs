@@ -9,7 +9,7 @@ namespace Schedule.Infrastructure.Persistence.EntitiesConfiguration
         {
             base.Configure(builder);
             builder.Property(b => b.Name).IsRequired().HasMaxLength(100);
-            builder.HasIndex(b => b.Name).IsUnique();
+            builder.HasIndex(b => new { b.SchoolId, b.Name }).IsUnique();
         }
     }
 }

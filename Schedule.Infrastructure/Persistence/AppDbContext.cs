@@ -17,15 +17,16 @@ namespace Schedule.Infrastructure.Persistence
         #region Properties
         public DbSet<Career> Careers { get; set; }
         public DbSet<Classroom> Classrooms { get; set; }
-        public DbSet<ClassroomTypePerSubject> ClassroomTypePerSubject { get; set; }
+        public DbSet<ClassroomSubject> ClassroomTypePerSubject { get; set; }
         public DbSet<Period> Periods { get; set; }
         public DbSet<PeriodSection> PeriodSection { get; set; }
         public DbSet<Priority> Priorities { get; set; }
+        public DbSet<School> Schools { get; set; }
         public DbSet<Semester> Semesters { get; set; }
         public DbSet<Subject> Subjects { get; set; }
         public DbSet<Teacher> Teachers { get; set; }
         public DbSet<TeacherAvailability> TeacherAvailabilities { get; set; }
-        public DbSet<TeacherPerSubject> TeacherPerSubjects { get; set; }
+        public DbSet<TeacherSubject> TeacherPerSubjects { get; set; }
         public DbSet<TeacherSchedule> TeacherSchedules { get; set; }
         #endregion
 
