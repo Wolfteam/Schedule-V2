@@ -8,6 +8,7 @@
 
         public const string SchedulePermissionsClaim = "permissions.schedule";
         public const string LanguageClaim = "language";
+        public const string SchoolClaim = "school";
 
         public static string GenerateTableSchema(string schema, string entityName)
             => $"{schema ?? "dbo"}_{entityName}";
