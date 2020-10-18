@@ -11,7 +11,12 @@ namespace Schedule.Api.Common
         {
             var logs = new List<FileToLog>
             {
-                new FileToLog(typeof(TeacherController), "controllers_teacher")
+                new FileToLog(typeof(TeacherController), "controllers_classroom"),
+                new FileToLog(typeof(TeacherController), "controllers_periods"),
+                new FileToLog(typeof(TeacherController), "controllers_subjects"),
+                new FileToLog(typeof(TeacherController), "controllers_teacher"),
+                //Others
+                new FileToLog(typeof(Startup), "app_startup"),
             };
 
             logs.SetupLogging();

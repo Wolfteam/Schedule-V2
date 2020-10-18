@@ -1,13 +1,17 @@
 ﻿using FluentValidation;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.IdentityModel.Logging;
 using Newtonsoft.Json;
 using Schedule.Api.Managers;
 using Schedule.Application.Interfaces.Managers;
+using Schedule.Domain.Interfaces.Managers;
+using Schedule.Shared.Authorization;
 using Schedule.Shared.Models.Settings;
 using System;
 using System.Globalization;
@@ -18,8 +22,10 @@ namespace Schedule.Api.Common.Extensions
     {
         public static IServiceCollection AddApi(this IServiceCollection services, IConfiguration config)
         {
+#if DEBUG || STAGING
+            IdentityModelEventSource.ShowPII = true;
+#endif
             var settings = config.GetSection(nameof(IdentityServerSettings)).Get<IdentityServerSettings>();
-
             if (string.IsNullOrEmpty(settings.Authority))
                 throw new ArgumentNullException(nameof(settings.Authority));
 
@@ -71,20 +77,29 @@ namespace Schedule.Api.Common.Extensions
             });
 
             return services.AddFluentValidation()
-                .AddAppServices();
+                .AddAppManagers()
+                .AddAuthHandlers();
         }
 
         private static IServiceCollection AddFluentValidation(this IServiceCollection services)
         {
-            services.AddValidatorsFromAssemblyContaining<IAppUserManager>(ServiceLifetime.Scoped);
+            services.AddValidatorsFromAssemblyContaining<IDefaultAppUserManager>(ServiceLifetime.Scoped);
             services.AddScoped<IValidatorFactory, ServiceProviderValidatorFactory>();
 
             return services;
         }
 
-        private static IServiceCollection AddAppServices(this IServiceCollection services)
+        private static IServiceCollection AddAppManagers(this IServiceCollection services)
         {
+            services.AddTransient<IDefaultAppUserManager, AppUserManager>();
             services.AddTransient<IAppUserManager, AppUserManager>();
+            return services;
+        }
+
+        private static IServiceCollection AddAuthHandlers(this IServiceCollection services)
+        {
+            services.AddSingleton<IAuthorizationPolicyProvider, AuthorizationPolicyProvider>();
+            services.AddSingleton<IAuthorizationHandler, SchedulePermissionHandler>();
             return services;
         }
     }

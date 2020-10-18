@@ -5,9 +5,12 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Schedule.Api.Common.Extensions;
 using Schedule.Application;
-using Schedule.Infrastructure.Extensions;
+using Schedule.Infrastructure;
 using Schedule.Shared.Extensions;
+using Schedule.Shared.Middleware;
 using Schedule.Shared.Models.Settings;
+using System;
+using System.IO;
 
 namespace Schedule.Api
 {
@@ -16,9 +19,12 @@ namespace Schedule.Api
         private const string SwaggerApiName = "Schedule";
         public IConfiguration Configuration { get; }
 
+        //To add a new migration, in package manager select the infrastructure project and in  the debug tab select the api project
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
+            //this is required, otherwise logs are not created
+            Directory.SetCurrentDirectory(AppDomain.CurrentDomain.BaseDirectory);
         }
 
         public void ConfigureServices(IServiceCollection services)
@@ -36,7 +42,7 @@ namespace Schedule.Api
                 app.UseDeveloperExceptionPage();
             }
 
-            app.ApplyMigrations(Configuration);
+            app.UseAndApplyAppMigrations(Configuration);
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseRouting();
@@ -46,10 +52,10 @@ namespace Schedule.Api
                     .AllowAnyHeader()
                     .AllowCredentials()
             );
-            //app.UseMiddleware<ExceptionHandlerMiddleware>();
+            app.UseMiddleware<ExceptionHandlerMiddleware>();
             app.UseAuthentication();
             app.UseAuthorization();
-            //app.UseMiddleware<AppStatusMiddleware>();
+            app.UseMiddleware<AppStatusMiddleware>();
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapDefaultControllerRoute();

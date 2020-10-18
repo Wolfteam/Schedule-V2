@@ -1,0 +1,258 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Schedule.Api</name>
+    </assembly>
+    <members>
+        <member name="M:Schedule.Api.Controllers.ClassroomController.GetAllClassrooms(Schedule.Domain.Dto.Classrooms.Requests.GetAllClassroomsRequestDto)">
+            <summary>
+            Gets a paginated list of classrooms
+            </summary>
+            <param name="dto">The request filter</param>
+            <response code="200">A paginated list of classrooms</response>
+            <response code="400">If some of the properties in the request are not valid</response>
+            <returns>A paginated list of classrooms</returns>
+        </member>
+        <member name="M:Schedule.Api.Controllers.ClassroomController.CreateClassroom(Schedule.Domain.Dto.Classrooms.Requests.SaveClassroomRequestDto)">
+            <summary>
+            Creates a new classroom
+            </summary>
+            <param name="dto">The request</param>
+            <response code="200">The created classroom</response>
+            <response code="400">If some of the properties in the request are not valid</response>
+            <response code="404">If the classroom type was not found</response>
+            <returns>The created classroom</returns>
+        </member>
+        <member name="M:Schedule.Api.Controllers.ClassroomController.UpdateClassroom(System.Int64,Schedule.Domain.Dto.Classrooms.Requests.SaveClassroomRequestDto)">
+            <summary>
+            Updates a  classroom
+            </summary>
+            <param name="id">The classroom id</param>
+            <param name="dto">The request</param>
+            <response code="200">The updated classroom</response>
+            <response code="400">If some of the properties in the request are not valid</response>
+            <response code="404">If the classroom or the classroom type was not found</response>
+            <returns>The updated classroom</returns>
+        </member>
+        <member name="M:Schedule.Api.Controllers.ClassroomController.DeleteClassroom(System.Int64)">
+            <summary>
+            Deletes a classroom
+            </summary>
+            <param name="id">The classroom id</param>
+            <response code="200">The result of the operation</response>
+            <response code="404">If the classroom was not found</response>
+            <returns>The result of the operation</returns>
+        </member>
+        <member name="M:Schedule.Api.Controllers.ClassroomController.GetAllClassroomTypes(Schedule.Domain.Dto.Classrooms.Requests.GetAllClassroomTypesRequestDto)">
+            <summary>
+            Gets a paginated list of classroom types
+            </summary>
+            <param name="dto">The request filter</param>
+            <response code="200">A paginated list of classroom types</response>
+            <response code="400">If some of the properties in the request are not valid</response>
+            <returns>A paginated list of classroom types</returns>
+        </member>
+        <member name="M:Schedule.Api.Controllers.ClassroomController.CreateClassroomType(Schedule.Domain.Dto.Classrooms.Requests.SaveClassroomTypeRequestDto)">
+            <summary>
+            Creates a new classroom type
+            </summary>
+            <param name="dto">The request</param>
+            <response code="200">The created classroom type</response>
+            <response code="400">If some of the properties in the request are not valid or if the type already exists</response>
+            <returns>The created classroom</returns>
+        </member>
+        <member name="M:Schedule.Api.Controllers.ClassroomController.UpdateClassroomType(System.Int64,Schedule.Domain.Dto.Classrooms.Requests.SaveClassroomTypeRequestDto)">
+            <summary>
+            Updates a  classroom type
+            </summary>
+            <param name="id">The classroom type id</param>
+            <param name="dto">The request</param>
+            <response code="200">The updated classroom type</response>
+            <response code="400">If some of the properties in the request are not valid or if the type already exists</response>
+            <response code="404">If the classroom type was not found</response>
+            <returns>The updated classroom</returns>
+        </member>
+        <member name="M:Schedule.Api.Controllers.ClassroomController.DeleteClassroomType(System.Int64)">
+            <summary>
+            Deletes a classroom type
+            </summary>
+            <param name="id">The classroom type id</param>
+            <response code="200">The result of the operation</response>
+            <response code="404">If the classroom type was not found</response>
+            <returns>The result of the operation</returns>
+        </member>
+        <member name="M:Schedule.Api.Controllers.PeriodController.GetAllPeriods(Schedule.Domain.Dto.Periods.Requests.GetAllPeriodsRequestDto)">
+            <summary>
+            Gets a paginated list of periods
+            </summary>
+            <param name="dto">The request filter</param>
+            <response code="200">A paginated list of periods</response>
+            <response code="400">If some of the properties in the request are not valid</response>
+            <returns>A paginated list of periods</returns>
+        </member>
+        <member name="M:Schedule.Api.Controllers.PeriodController.CreatePeriod(Schedule.Domain.Dto.Periods.Requests.SavePeriodRequestDto)">
+            <summary>
+            Creates a new period
+            </summary>
+            <param name="dto">The request</param>
+            <response code="200">The created period</response>
+            <response code="400">If some of the properties in the request are not valid or if the period already exists</response>
+            <returns>The created period</returns>
+        </member>
+        <member name="M:Schedule.Api.Controllers.PeriodController.UpdatePeriod(System.Int64,Schedule.Domain.Dto.Periods.Requests.SavePeriodRequestDto)">
+            <summary>
+            Updates a new period
+            </summary>
+            <param name="id">The period id</param>
+            <param name="dto">The request</param>
+            <response code="200">The updated period</response>
+            <response code="400">If some of the properties in the request are not valid or if the new period  name already exists</response>
+            <response code="404">If the period does not exist</response>
+            <returns>The updated period</returns>
+        </member>
+        <member name="M:Schedule.Api.Controllers.PeriodController.DeletePeriod(System.Int64)">
+            <summary>
+            Deletes a period
+            </summary>
+            <param name="id">The period id</param>
+            <response code="200">The result of the operation</response>
+            <response code="404">If the period was not found</response>
+            <returns>The result of the operation</returns>
+        </member>
+        <member name="M:Schedule.Api.Controllers.SubjectController.GetAllSubjects(Schedule.Domain.Dto.Subjects.Requests.GetAllSubjectsRequestDto)">
+            <summary>
+            Gets a paginated list of subjects
+            </summary>
+            <param name="dto">The request filter</param>
+            <response code="200">A paginated list of subjects</response>
+            <response code="400">If some of the properties in the request are not valid</response>
+            <returns>A paginated list of subjects</returns>
+        </member>
+        <member name="M:Schedule.Api.Controllers.SubjectController.CreateSubject(Schedule.Domain.Dto.Subjects.Requests.SaveSubjectRequestDto)">
+            <summary>
+            Creates a new subject
+            </summary>
+            <param name="dto">The request</param>
+            <response code="200">The created subject</response>
+            <response code="400">If some of the properties in the request are not valid</response>
+            <response code="404">If the classroom, semester or classroom type does not exist</response>
+            <returns>The created subject</returns>
+        </member>
+        <member name="M:Schedule.Api.Controllers.SubjectController.UpdateSubject(System.Int64,Schedule.Domain.Dto.Subjects.Requests.SaveSubjectRequestDto)">
+            <summary>
+            Updated a subject
+            </summary>
+            <param name="id">The subject id</param>
+            <param name="dto">The request</param>
+            <response code="200">The updated subject</response>
+            <response code="400">If some of the properties in the request are not valid</response>
+            <response code="404">If the subject, classroom, semester or classroom type does not exist</response>
+            <returns>The updated subject</returns>
+        </member>
+        <member name="M:Schedule.Api.Controllers.SubjectController.DeleteSubject(System.Int64)">
+            <summary>
+            Deletes a subject
+            </summary>
+            <param name="id">The subject id</param>
+            <response code="200">The result of the operation</response>
+            <response code="404">If the subject was not found</response>
+            <returns>The result of the operation</returns>
+        </member>
+        <member name="M:Schedule.Api.Controllers.TeacherController.GetAllTeachers(Schedule.Domain.Dto.Teachers.Requests.GetAllTeachersRequestDto)">
+            <summary>
+            Gets a paginated list of teachers
+            </summary>
+            <param name="dto">The request filter</param>
+            <response code="200">A paginated list of teachers</response>
+            <response code="400">If some of the properties in the request are not valid</response>
+            <returns>A paginated list of teachers</returns>
+        </member>
+        <member name="M:Schedule.Api.Controllers.TeacherController.CreateTeacher(Schedule.Domain.Dto.Teachers.Requests.SaveTeacherRequestDto)">
+            <summary>
+            Creates a new teacher
+            </summary>
+            <param name="dto">The request</param>
+            <response code="200">The created teacher</response>
+            <response code="400">If some of the properties in the request are not valid or if the identifier number is being used</response>
+            <response code="404">If the priority does not exist</response>
+            <returns>The created teacher</returns>
+        </member>
+        <member name="M:Schedule.Api.Controllers.TeacherController.UpdateTeacher(System.Int64,Schedule.Domain.Dto.Teachers.Requests.SaveTeacherRequestDto)">
+            <summary>
+            Updates a teacher
+            </summary>
+            <param name="id">The teacher id</param>
+            <param name="dto">The request</param>
+            <response code="200">The updated teacher</response>
+            <response code="400">If some of the properties in the request are not valid or if the identifier number is being used</response>
+            <response code="404">If the priority does not exist</response>
+            <returns>The updated teacher</returns>
+        </member>
+        <member name="M:Schedule.Api.Controllers.TeacherController.DeleteTeacher(System.Int64)">
+            <summary>
+            Deletes a teacher
+            </summary>
+            <param name="id">The subject id</param>
+            <response code="200">The result of the operation</response>
+            <response code="404">If the teacher was not found</response>
+            <returns>The result of the operation</returns>
+        </member>
+        <member name="M:Schedule.Api.Controllers.TeacherController.GetAvailability(System.Int64)">
+            <summary>
+            Gets the availability for a particular teacher
+            </summary>
+            <param name="id">The teacher id</param>
+            <response code="200">The availability for a particular teacher</response>
+            <returns>The availability for a particular teacher</returns>
+        </member>
+        <member name="M:Schedule.Api.Controllers.TeacherController.SaveAvailability(System.Int64,Schedule.Domain.Dto.Teachers.Requests.SaveTeacherAvailabilityRequestDto)">
+            <summary>
+            Saves the provided availability to a particular teacher
+            </summary>
+            <param name="id">The teacher id</param>
+            <param name="dto">The request</param>
+            <response code="200">The saved availability</response>
+            <response code="400">If some of the properties in the request are not valid</response>
+            <response code="404">If the teacher or the period does not exist</response>
+            <returns>The saved availability</returns>
+        </member>
+        <member name="M:Schedule.Api.Controllers.TeacherController.GetAllPriorities(Schedule.Domain.Dto.Priorities.Requests.GetAllPrioritiesRequestDto)">
+            <summary>
+            Gets a paginated list of priority
+            </summary>
+            <param name="dto">The request filter</param>
+            <response code="200">A paginated list of priority</response>
+            <response code="400">If some of the properties in the request are not valid</response>
+            <returns>A paginated list of priority</returns>
+        </member>
+        <member name="M:Schedule.Api.Controllers.TeacherController.CreatePriority(Schedule.Domain.Dto.Priorities.Requests.SavePriorityRequestDto)">
+            <summary>
+            Creates a new priority
+            </summary>
+            <param name="dto">The request</param>
+            <response code="200">The created priority</response>
+            <response code="400">If some of the properties in the request are not valid or if priority name is being used</response>
+            <returns>The created priority</returns>
+        </member>
+        <member name="M:Schedule.Api.Controllers.TeacherController.UpdatePriority(System.Int64,Schedule.Domain.Dto.Priorities.Requests.SavePriorityRequestDto)">
+            <summary>
+            Updates a priority
+            </summary>
+            <param name="id">The priority id</param>
+            <param name="dto">The request</param>
+            <response code="200">The updated priority</response>
+            <response code="400">If some of the properties in the request are not valid or if priority name is being used</response>
+            <response code="404">If the priority does not exist</response>
+            <returns>The updated priority</returns>
+        </member>
+        <member name="M:Schedule.Api.Controllers.TeacherController.DeletePriority(System.Int64)">
+            <summary>
+            Deletes a priority
+            </summary>
+            <param name="id">The priority id</param>
+            <response code="200">The result of the operation</response>
+            <response code="404">If the priority was not found</response>
+            <returns>The result of the operation</returns>
+        </member>
+    </members>
+</doc>
