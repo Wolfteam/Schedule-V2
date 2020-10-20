@@ -2,11 +2,17 @@
 {
     public enum AppMessageType
     {
-        SchInvalidRequest = 100,
-        SchUnknownErrorOccurred = 101,
-        SchNotFound = 102,
-        IdsInvalidRequest = 2000,
-        IdsUnknownErrorOccurred = 2001,
-        IdsNotFound = 2002,
+        SchApiInvalidRequest = 100,
+        SchApiUnknownErrorOccurred = 101,
+        SchApiNotFound = 102,
+
+        IdsInvalidRequest = 1000,
+        IdsUnknownErrorOccurred = 1001,
+        IdsNotFound = 1002,
+
+        SchWebInvalidRequest = 2000,
+        SchWebUnknownErrorOccurred = 2001,
+        SchWebNotFound = 2002,
+        SchWebInvalidUsernameOrPassword = 2003
     }
 }

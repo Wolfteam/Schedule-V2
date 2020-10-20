@@ -3,6 +3,7 @@
     public enum ApplicationType
     {
         IdentityServer,
-        Schedule
+        ScheduleApi,
+        ScheduleWeb
     }
 }

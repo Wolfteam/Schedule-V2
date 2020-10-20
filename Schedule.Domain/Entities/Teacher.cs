@@ -21,7 +21,7 @@ namespace Schedule.Domain.Entities
             string firstName,
             string lastName,
             long priorityId,
-            long schoolId)
+            School school)
         {
             return new Teacher
             {
@@ -29,7 +29,7 @@ namespace Schedule.Domain.Entities
                 FirstName = firstName,
                 FirstLastName = lastName,
                 PriorityId = priorityId,
-                SchoolId = schoolId
+                School = school
             };
         }
     }

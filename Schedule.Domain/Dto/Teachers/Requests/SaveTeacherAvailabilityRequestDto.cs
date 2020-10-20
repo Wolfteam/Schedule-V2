@@ -5,7 +5,6 @@ namespace Schedule.Domain.Dto.Teachers.Requests
 {
     public class SaveTeacherAvailabilityRequestDto
     {
-        public long PeriodId { get; set; }
         public List<TeacherAvailabilityRequestDto> Availability { get; set; } = new List<TeacherAvailabilityRequestDto>();
     }
 

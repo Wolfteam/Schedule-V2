@@ -5,6 +5,7 @@
         public bool Succeed { get; set; }
         public string ErrorMessage { get; set; }
         public string ErrorMessageId { get; set; }
+        public int ErrorMessageCode { get; set; }
 
         public EmptyResponseDto()
         {

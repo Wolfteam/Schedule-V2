@@ -27,7 +27,7 @@ namespace Schedule.Domain.Entities
             long careerId,
             int totalHours,
             int hoursPerWeek,
-            long schoolId)
+            School school)
         {
             return new Subject
             {
@@ -38,7 +38,7 @@ namespace Schedule.Domain.Entities
                 CareerId = careerId,
                 TotalAcademicHours = totalHours,
                 AcademicHoursPerWeek = hoursPerWeek,
-                SchoolId = schoolId
+                School = school
             };
         }
     }
