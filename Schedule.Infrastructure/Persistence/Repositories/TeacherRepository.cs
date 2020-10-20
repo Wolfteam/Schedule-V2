@@ -33,5 +33,13 @@ namespace Schedule.Infrastructure.Persistence.Repositories
 
             return query.Paginate<Teacher, TMapTo>(request, response, _mapper.ConfigurationProvider).ToListAsync();
         }
+
+        public Task<int> GetHoursToComplete(long schoolId, long teacherId)
+        {
+            return Context.Teachers
+                .Where(t => t.Id == teacherId && t.SchoolId == schoolId)
+                .Select(t => t.Priority.HoursToComplete)
+                .FirstOrDefaultAsync();
+        }
     }
 }
