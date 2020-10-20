@@ -10,13 +10,13 @@ namespace Schedule.Shared.Exceptions
         private InvalidRequestException()
             : base()
         {
-            ErrorMessageId = AppMessageType.SchInvalidRequest;
+            ErrorMessageId = AppMessageType.SchApiInvalidRequest;
         }
 
         private InvalidRequestException(string message)
             : base(message)
         {
-            ErrorMessageId = AppMessageType.SchInvalidRequest;
+            ErrorMessageId = AppMessageType.SchApiInvalidRequest;
         }
 
         private InvalidRequestException(string message, Exception innerException)
@@ -24,7 +24,7 @@ namespace Schedule.Shared.Exceptions
         {
         }
 
-        public InvalidRequestException(string message, AppMessageType errorMessageId = AppMessageType.SchInvalidRequest)
+        public InvalidRequestException(string message, AppMessageType errorMessageId = AppMessageType.SchApiInvalidRequest)
             : base(message)
         {
             ErrorMessageId = errorMessageId;

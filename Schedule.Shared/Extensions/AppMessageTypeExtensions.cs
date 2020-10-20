@@ -10,9 +10,16 @@ namespace Schedule.Shared.Extensions
         {
             return msg switch
             {
-                var v when v == AppMessageType.SchInvalidRequest || v == AppMessageType.IdsInvalidRequest => "Invalid Request",
-                var v when v == AppMessageType.SchUnknownErrorOccurred || v == AppMessageType.IdsUnknownErrorOccurred => "Unknown error occurred",
-                var v when v == AppMessageType.SchNotFound || v == AppMessageType.IdsNotFound => "The resource you were looking for was not found",
+                AppMessageType.SchApiInvalidRequest => "Invalid Request to the schedule api",
+                AppMessageType.SchApiUnknownErrorOccurred => "Unknown error occurred in the schedule api",
+                AppMessageType.SchApiNotFound => "The resource you were looking for was not found in the schedule api",
+                AppMessageType.IdsInvalidRequest => "Invalid Request to the schedule's identity server",
+                AppMessageType.IdsUnknownErrorOccurred => "Unknown error occurred in the schedule's identity server",
+                AppMessageType.IdsNotFound => "The resource you were looking for was not found in the schedule's identity server",
+                AppMessageType.SchWebInvalidRequest => "Invalid Request to the schedule web api",
+                AppMessageType.SchWebUnknownErrorOccurred => "Unknown error occurred in the schedule web api",
+                AppMessageType.SchWebNotFound => "The resource you were looking for was not found in the schedule web api",
+                AppMessageType.SchWebInvalidUsernameOrPassword => "Invalid username or password",
                 _ => throw new ArgumentOutOfRangeException(nameof(msg), msg, null)
             };
         }

@@ -10,19 +10,19 @@ namespace Schedule.Shared.Exceptions
         private NotFoundException()
             : base()
         {
-            ErrorMessageId = AppMessageType.SchNotFound;
+            ErrorMessageId = AppMessageType.SchApiNotFound;
         }
 
         public NotFoundException(string message)
             : base(message)
         {
-            ErrorMessageId = AppMessageType.SchNotFound;
+            ErrorMessageId = AppMessageType.SchApiNotFound;
         }
 
         public NotFoundException(string message, Exception innerException)
             : base(message, innerException)
         {
-            ErrorMessageId = AppMessageType.SchNotFound;
+            ErrorMessageId = AppMessageType.SchApiNotFound;
         }
 
         public NotFoundException(string msg, AppMessageType errorMessageId)
