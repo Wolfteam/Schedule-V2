@@ -119,6 +119,13 @@
             <response code="404">If the period was not found</response>
             <returns>The result of the operation</returns>
         </member>
+        <member name="M:Schedule.Api.Controllers.PeriodController.GetCurrentPeriod">
+            <summary>
+            Gets the current active period
+            </summary>
+            <response code="200">The active period or null</response>
+            <returns>The active period or null</returns>
+        </member>
         <member name="M:Schedule.Api.Controllers.SubjectController.GetAllSubjects(Schedule.Domain.Dto.Subjects.Requests.GetAllSubjectsRequestDto)">
             <summary>
             Gets a paginated list of subjects
@@ -158,7 +165,7 @@
             <response code="404">If the subject was not found</response>
             <returns>The result of the operation</returns>
         </member>
-        <member name="M:Schedule.Api.Controllers.TeacherController.GetAllTeachers(Schedule.Domain.Dto.Teachers.Requests.GetAllTeachersRequestDto)">
+        <member name="M:Schedule.Api.Controllers.TeacherController.GetAllTeachers">
             <summary>
             Gets a paginated list of teachers
             </summary>
@@ -216,7 +223,7 @@
             <response code="404">If the teacher or the period does not exist</response>
             <returns>The saved availability</returns>
         </member>
-        <member name="M:Schedule.Api.Controllers.TeacherController.GetAllPriorities(Schedule.Domain.Dto.Priorities.Requests.GetAllPrioritiesRequestDto)">
+        <member name="M:Schedule.Api.Controllers.TeacherController.GetAllPriorities">
             <summary>
             Gets a paginated list of priority
             </summary>

@@ -15,6 +15,8 @@ using Schedule.Domain.Dto.Classrooms.Requests;
 using Schedule.Domain.Dto.Classrooms.Responses;
 using System.Net.Mime;
 using System.Threading.Tasks;
+using Schedule.Domain.Enums;
+using Schedule.Shared.Authorization;
 
 namespace Schedule.Api.Controllers
 {
@@ -34,6 +36,7 @@ namespace Schedule.Api.Controllers
         /// <response code="400">If some of the properties in the request are not valid</response>
         /// <returns>A paginated list of classrooms</returns>
         [HttpGet]
+        [ScheduleHasPermission(SchedulePermissionType.ReadClassroom)]
         [ProducesResponseType(typeof(PaginatedResponseDto<GetAllClassroomsResponseDto>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(EmptyResponseDto), StatusCodes.Status400BadRequest)]
         [Produces(MediaTypeNames.Application.Json)]
@@ -55,6 +58,7 @@ namespace Schedule.Api.Controllers
         /// <response code="404">If the classroom type was not found</response>
         /// <returns>The created classroom</returns>
         [HttpPost]
+        [ScheduleHasPermission(SchedulePermissionType.CreateClassroom)]
         [ProducesResponseType(typeof(ApiResponseDto<GetAllClassroomsResponseDto>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(EmptyResponseDto), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(EmptyResponseDto), StatusCodes.Status404NotFound)]
@@ -78,6 +82,7 @@ namespace Schedule.Api.Controllers
         /// <response code="404">If the classroom or the classroom type was not found</response>
         /// <returns>The updated classroom</returns>
         [HttpPut("{id}")]
+        [ScheduleHasPermission(SchedulePermissionType.UpdateClassroom)]
         [ProducesResponseType(typeof(ApiResponseDto<GetAllClassroomsResponseDto>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(EmptyResponseDto), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(EmptyResponseDto), StatusCodes.Status404NotFound)]
@@ -99,6 +104,7 @@ namespace Schedule.Api.Controllers
         /// <response code="404">If the classroom was not found</response>
         /// <returns>The result of the operation</returns>
         [HttpDelete("{id}")]
+        [ScheduleHasPermission(SchedulePermissionType.DeleteClassroom)]
         [ProducesResponseType(typeof(EmptyResponseDto), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(EmptyResponseDto), StatusCodes.Status404NotFound)]
         [Produces(MediaTypeNames.Application.Json)]
@@ -121,6 +127,7 @@ namespace Schedule.Api.Controllers
         /// <response code="400">If some of the properties in the request are not valid</response>
         /// <returns>A paginated list of classroom types</returns>
         [HttpGet("Types")]
+        [ScheduleHasPermission(SchedulePermissionType.ReadClassroom)]
         [ProducesResponseType(typeof(PaginatedResponseDto<GetAllClassroomTypesResponseDto>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(EmptyResponseDto), StatusCodes.Status400BadRequest)]
         [Produces(MediaTypeNames.Application.Json)]
@@ -141,6 +148,7 @@ namespace Schedule.Api.Controllers
         /// <response code="400">If some of the properties in the request are not valid or if the type already exists</response>
         /// <returns>The created classroom</returns>
         [HttpPost("Types")]
+        [ScheduleHasPermission(SchedulePermissionType.CreateClassroom)]
         [ProducesResponseType(typeof(ApiResponseDto<GetAllClassroomTypesResponseDto>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(EmptyResponseDto), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(EmptyResponseDto), StatusCodes.Status404NotFound)]
@@ -164,6 +172,7 @@ namespace Schedule.Api.Controllers
         /// <response code="404">If the classroom type was not found</response>
         /// <returns>The updated classroom</returns>
         [HttpPut("Types/{id}")]
+        [ScheduleHasPermission(SchedulePermissionType.UpdateClassroom)]
         [ProducesResponseType(typeof(ApiResponseDto<GetAllClassroomTypesResponseDto>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(EmptyResponseDto), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(EmptyResponseDto), StatusCodes.Status404NotFound)]
@@ -185,6 +194,7 @@ namespace Schedule.Api.Controllers
         /// <response code="404">If the classroom type was not found</response>
         /// <returns>The result of the operation</returns>
         [HttpDelete("Types/{id}")]
+        [ScheduleHasPermission(SchedulePermissionType.DeleteClassroom)]
         [ProducesResponseType(typeof(EmptyResponseDto), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(EmptyResponseDto), StatusCodes.Status404NotFound)]
         [Produces(MediaTypeNames.Application.Json)]

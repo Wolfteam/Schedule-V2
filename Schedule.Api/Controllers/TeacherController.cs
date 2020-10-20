@@ -41,15 +41,15 @@ namespace Schedule.Api.Controllers
         /// <returns>A paginated list of teachers</returns>
         [HttpGet]
         [ScheduleHasPermission(SchedulePermissionType.ReadTeacher)]
-        [ProducesResponseType(typeof(PaginatedResponseDto<GetAllTeacherResponseDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiListResponseDto<GetAllTeacherResponseDto>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(EmptyResponseDto), StatusCodes.Status400BadRequest)]
         [Produces(MediaTypeNames.Application.Json)]
-        public async Task<IActionResult> GetAllTeachers([FromQuery] GetAllTeachersRequestDto dto)
+        public async Task<IActionResult> GetAllTeachers()
         {
             Logger.LogInformation($"{nameof(GetAllTeachers)}: Getting teachers...");
-            var response = await Mediator.Send(new GetAllTeachersQuery(dto));
+            var response = await Mediator.Send(new GetAllTeachersQuery());
 
-            Logger.LogInformation($"{nameof(GetAllTeachers)}: Got {response.Records} / {response.TotalRecords} teachers");
+            Logger.LogInformation($"{nameof(GetAllTeachers)}: Got {response.Result.Count} teachers");
             return Ok(response);
         }
 
@@ -131,7 +131,7 @@ namespace Schedule.Api.Controllers
         /// <returns>The availability for a particular teacher</returns>
         [HttpGet("{id}/Availability")]
         [ScheduleHasPermission(SchedulePermissionType.ReadTeacher)]
-        [ProducesResponseType(typeof(ApiListResponseDto<TeacherAvailabilityResponseDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponseDto<TeacherAvailabilityDetailsResponseDto>), StatusCodes.Status200OK)]
         [Produces(MediaTypeNames.Application.Json)]
         public async Task<IActionResult> GetAvailability(long id)
         {
@@ -177,15 +177,15 @@ namespace Schedule.Api.Controllers
         /// <returns>A paginated list of priority</returns>
         [HttpGet("Priorities")]
         [ScheduleHasPermission(SchedulePermissionType.ReadTeacher)]
-        [ProducesResponseType(typeof(PaginatedResponseDto<GetAllPrioritiesResponseDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiListResponseDto<GetAllPrioritiesResponseDto>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(EmptyResponseDto), StatusCodes.Status400BadRequest)]
         [Produces(MediaTypeNames.Application.Json)]
-        public async Task<IActionResult> GetAllPriorities([FromQuery] GetAllPrioritiesRequestDto dto)
+        public async Task<IActionResult> GetAllPriorities()
         {
             Logger.LogInformation($"{nameof(GetAllPriorities)}: Getting all priorities...");
-            var response = await Mediator.Send(new GetAllPrioritiesQuery(dto));
+            var response = await Mediator.Send(new GetAllPrioritiesQuery());
 
-            Logger.LogInformation($"{nameof(GetAllPriorities)}: Got {response.Records} / {response.TotalRecords} teachers");
+            Logger.LogInformation($"{nameof(GetAllPriorities)}: Got {response.Result.Count} priorities");
             return Ok(response);
         }
 

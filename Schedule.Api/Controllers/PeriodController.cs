@@ -5,6 +5,7 @@ using Microsoft.Extensions.Logging;
 using Schedule.Application.Periods.Commands.Create;
 using Schedule.Application.Periods.Commands.Delete;
 using Schedule.Application.Periods.Commands.Update;
+using Schedule.Application.Periods.Queries.Current;
 using Schedule.Application.Periods.Queries.GetAll;
 using Schedule.Domain.Dto;
 using Schedule.Domain.Dto.Periods.Requests;
@@ -107,6 +108,24 @@ namespace Schedule.Api.Controllers
             var response = await Mediator.Send(new DeletePeriodCommand(id));
 
             Logger.LogInformation($"{nameof(UpdatePeriod)}: PeriodId = {id} was successfully deleted");
+            return Ok(response);
+        }
+
+        /// <summary>
+        /// Gets the current active period
+        /// </summary>
+        /// <response code="200">The active period or null</response>
+        /// <returns>The active period or null</returns>
+        [HttpGet("Current")]
+        [ScheduleHasPermission(SchedulePermissionType.ReadPeriod)]
+        [ProducesResponseType(typeof(ApiResponseDto<GetAllPeriodsResponseDto>), StatusCodes.Status200OK)]
+        [Produces(MediaTypeNames.Application.Json)]
+        public async Task<IActionResult> GetCurrentPeriod()
+        {
+            Logger.LogInformation($"{nameof(DeletePeriod)}: Getting current period...");
+            var response = await Mediator.Send(new GetCurrentPeriodQuery());
+
+            Logger.LogInformation($"{nameof(DeletePeriod)}: Got current period");
             return Ok(response);
         }
     }

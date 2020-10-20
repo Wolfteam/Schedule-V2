@@ -9,7 +9,7 @@ namespace Schedule.Api.Managers
 {
     public class AppUserManager : DefaultAppUserManager, IAppUserManager
     {
-        public override ApplicationType Application => ApplicationType.Schedule;
+        public override ApplicationType Application => ApplicationType.ScheduleApi;
         public long SchoolId { get; }
 
         public AppUserManager(IHttpContextAccessor context) : base(context)
