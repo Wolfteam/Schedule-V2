@@ -9,5 +9,7 @@ namespace Schedule.Application.Interfaces.Repositories
     {
         Task<List<TMapTo>> GetAll<TMapTo>(long schoolId, IPaginatedRequestDto request, IPaginatedResponseDto response)
             where TMapTo : class, new();
+
+        Task<int> GetHoursToComplete(long schoolId, long teacherId);
     }
 }

@@ -10,7 +10,7 @@ namespace Schedule.Application.Classrooms.Commands.CreateType
         {
             RuleFor(cmd => cmd.Dto.Name)
                 .NotEmpty()
-                .WithGlobalErrorCode(AppMessageType.SchInvalidRequest);
+                .WithGlobalErrorCode(AppMessageType.SchApiInvalidRequest);
         }
     }
 }

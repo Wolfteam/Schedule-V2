@@ -8,7 +8,7 @@ namespace Schedule.Application.Periods.Commands.Update
     {
         public UpdatePeriodCommandValidator()
         {
-            var error = AppMessageType.SchInvalidRequest;
+            var error = AppMessageType.SchApiInvalidRequest;
             RuleFor(cmd => cmd.Id)
                 .GreaterThan(0)
                 .WithGlobalErrorCode(error);

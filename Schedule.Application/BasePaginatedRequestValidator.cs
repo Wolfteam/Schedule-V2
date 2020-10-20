@@ -17,7 +17,7 @@ namespace Schedule.Application
 
         protected BasePaginatedRequestValidator(
             string searchTermRegex = @"[^\w\./ @+-]",
-            AppMessageType errorCode = AppMessageType.SchInvalidRequest)
+            AppMessageType errorCode = AppMessageType.SchApiInvalidRequest)
         {
             var eCode = errorCode.GetErrorCode();
             RuleFor(query => query.Dto.Page)

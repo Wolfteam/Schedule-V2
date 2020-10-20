@@ -10,11 +10,11 @@ namespace Schedule.Application.Classrooms.Commands.UpdateType
         {
             RuleFor(cmd => cmd.Id)
                 .GreaterThan(0)
-                .WithGlobalErrorCode(AppMessageType.SchInvalidRequest);
+                .WithGlobalErrorCode(AppMessageType.SchApiInvalidRequest);
 
             RuleFor(cmd => cmd.Dto.Name)
                 .NotEmpty()
-                .WithGlobalErrorCode(AppMessageType.SchInvalidRequest);
+                .WithGlobalErrorCode(AppMessageType.SchApiInvalidRequest);
         }
     }
 }

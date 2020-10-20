@@ -8,7 +8,7 @@ namespace Schedule.Application.Subjects.Commands.Create
     {
         public CreateSubjectCommandValidator()
         {
-            var error = AppMessageType.SchInvalidRequest;
+            var error = AppMessageType.SchApiInvalidRequest;
             RuleFor(cmd => cmd.Dto.Name)
                 .NotEmpty()
                 .MaximumLength(100)

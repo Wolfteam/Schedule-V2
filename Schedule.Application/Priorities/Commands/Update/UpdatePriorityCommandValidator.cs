@@ -8,7 +8,7 @@ namespace Schedule.Application.Priorities.Commands.Update
     {
         public UpdatePriorityCommandValidator()
         {
-            var error = AppMessageType.SchInvalidRequest;
+            var error = AppMessageType.SchApiInvalidRequest;
             RuleFor(dto => dto.Id)
                 .GreaterThan(0)
                 .WithGlobalErrorCode(error);

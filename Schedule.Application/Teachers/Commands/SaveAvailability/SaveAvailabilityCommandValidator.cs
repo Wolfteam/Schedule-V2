@@ -12,12 +12,8 @@ namespace Schedule.Application.Teachers.Commands.SaveAvailability
     {
         public SaveAvailabilityCommandValidator()
         {
-            var error = AppMessageType.SchInvalidRequest;
+            var error = AppMessageType.SchApiInvalidRequest;
             RuleFor(cmd => cmd.TeacherId)
-                .GreaterThan(0)
-                .WithGlobalErrorCode(error);
-
-            RuleFor(cmd => cmd.Dto.PeriodId)
                 .GreaterThan(0)
                 .WithGlobalErrorCode(error);
 
@@ -99,13 +95,15 @@ namespace Schedule.Application.Teachers.Commands.SaveAvailability
     {
         public AvailabilityValidator()
         {
-            var error = AppMessageType.SchInvalidRequest;
+            var error = AppMessageType.SchApiInvalidRequest;
             RuleFor(dto => dto.StartHour)
                 .IsInEnum()
+                .Must((dto, val) => (int)val < (int)dto.EndHour)
                 .WithGlobalErrorCode(error);
 
             RuleFor(dto => dto.EndHour)
                 .IsInEnum()
+                .Must((dto, val) => (int)val > (int)dto.StartHour)
                 .WithGlobalErrorCode(error);
 
             RuleFor(dto => dto.Day)

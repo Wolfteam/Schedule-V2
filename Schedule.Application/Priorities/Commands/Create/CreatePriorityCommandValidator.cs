@@ -8,7 +8,7 @@ namespace Schedule.Application.Priorities.Commands.Create
     {
         public CreatePriorityCommandValidator()
         {
-            var error = AppMessageType.SchInvalidRequest;
+            var error = AppMessageType.SchApiInvalidRequest;
             RuleFor(cmd => cmd.Dto.Name)
                 .NotEmpty()
                 .WithGlobalErrorCode(error);

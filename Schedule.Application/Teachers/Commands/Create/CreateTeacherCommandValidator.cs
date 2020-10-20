@@ -8,7 +8,7 @@ namespace Schedule.Application.Teachers.Commands.Create
     {
         public CreateTeacherCommandValidator()
         {
-            var error = AppMessageType.SchInvalidRequest;
+            var error = AppMessageType.SchApiInvalidRequest;
             RuleFor(cmd => cmd.Dto.IdentifierNumber)
                 .GreaterThan(0)
                 .WithGlobalErrorCode(error);

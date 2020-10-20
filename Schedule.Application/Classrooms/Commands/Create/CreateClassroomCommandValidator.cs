@@ -8,7 +8,7 @@ namespace Schedule.Application.Classrooms.Commands.Create
     {
         public CreateClassroomCommandValidator()
         {
-            var error = AppMessageType.SchInvalidRequest;
+            var error = AppMessageType.SchApiInvalidRequest;
             RuleFor(cmd => cmd.Dto.Name)
                 .NotEmpty()
                 .MaximumLength(100)

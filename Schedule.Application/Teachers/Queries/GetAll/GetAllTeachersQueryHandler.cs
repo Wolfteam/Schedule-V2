@@ -1,27 +1,34 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using AutoMapper;
+using Microsoft.Extensions.Logging;
 using Schedule.Application.Interfaces.Managers;
 using Schedule.Application.Interfaces.Services;
 using Schedule.Domain.Dto;
 using Schedule.Domain.Dto.Teachers.Responses;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace Schedule.Application.Teachers.Queries.GetAll
 {
-    public class GetAllTeachersQueryHandler : BasePaginatedRequestHandler<GetAllTeachersQuery, GetAllTeacherResponseDto>
+    public class GetAllTeachersQueryHandler : BaseApiListRequestHandler<GetAllTeachersQuery, GetAllTeacherResponseDto>
     {
+        private readonly IMapper _mapper;
         public GetAllTeachersQueryHandler(
             ILogger<GetAllTeachersQueryHandler> logger,
             IAppDataService appDataService,
-            IAppUserManager appUserManager)
+            IAppUserManager appUserManager,
+            IMapper mapper)
             : base(logger, appDataService, appUserManager)
         {
+            _mapper = mapper;
         }
 
-        public override async Task<PaginatedResponseDto<GetAllTeacherResponseDto>> Handle(GetAllTeachersQuery request, CancellationToken cancellationToken)
+        public override async Task<ApiListResponseDto<GetAllTeacherResponseDto>> Handle(GetAllTeachersQuery request, CancellationToken cancellationToken)
         {
-            var response = new PaginatedResponseDto<GetAllTeacherResponseDto>();
-            response.Result = await AppDataService.Teachers.GetAll<GetAllTeacherResponseDto>(AppUserManager.SchoolId, request.Dto, response);
+            var response = new ApiListResponseDto<GetAllTeacherResponseDto>();
+            var teachers = await AppDataService.Teachers.GetAllAsync(t => t.SchoolId == AppUserManager.SchoolId);
+            response.Result = _mapper.Map<List<GetAllTeacherResponseDto>>(teachers.OrderBy(t => t.FirstName));
             response.Succeed = true;
             return response;
         }

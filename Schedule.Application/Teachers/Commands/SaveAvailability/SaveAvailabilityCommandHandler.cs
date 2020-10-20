@@ -35,10 +35,10 @@ namespace Schedule.Application.Teachers.Commands.SaveAvailability
                 throw new NotFoundException(msg);
             }
 
-            bool periodExists = await AppDataService.Periods.ExistsAsync(p => p.Id == request.Dto.PeriodId && p.SchoolId == AppUserManager.SchoolId);
-            if (!periodExists)
+            var period = await AppDataService.Periods.FirstOrDefaultAsync(p => p.IsActive && p.SchoolId == AppUserManager.SchoolId);
+            if (period == null)
             {
-                var msg = $"PeriodId = {request.Dto.PeriodId} does not exist";
+                var msg = $"No active period was found";
                 Logger.LogWarning($"{nameof(Handle)}: {msg}");
                 throw new NotFoundException(msg);
             }
@@ -46,7 +46,7 @@ namespace Schedule.Application.Teachers.Commands.SaveAvailability
             var currentAvailabilities = await AppDataService.TeacherAvailabilities.GetAllAsync(t =>
                 t.TeacherId == request.TeacherId &&
                 t.Teacher.SchoolId == AppUserManager.SchoolId &&
-                t.PeriodId == request.Dto.PeriodId);
+                t.PeriodId == period.Id);
 
             AppDataService.TeacherAvailabilities.RemoveRange(currentAvailabilities);
 
@@ -54,7 +54,7 @@ namespace Schedule.Application.Teachers.Commands.SaveAvailability
             foreach (var item in newAvailabilities)
             {
                 item.TeacherId = request.TeacherId;
-                item.PeriodId = request.Dto.PeriodId;
+                item.PeriodId = period.Id;
             }
 
             AppDataService.TeacherAvailabilities.AddRange(newAvailabilities);

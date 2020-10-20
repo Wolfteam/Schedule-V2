@@ -2,7 +2,7 @@
 
 namespace Schedule.Application.Teachers.Queries.GetAvailability
 {
-    public class GetTeacherAvailabilityQuery : BaseApiListRequest<TeacherAvailabilityResponseDto>
+    public class GetTeacherAvailabilityQuery : BaseApiRequest<TeacherAvailabilityDetailsResponseDto>
     {
         public long TeacherId { get; }
 
