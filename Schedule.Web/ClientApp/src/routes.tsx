@@ -39,15 +39,12 @@ export const usersPath = '/users';
 export const AppRoutes: React.FC = () => {
     const [authContext] = useContext(AuthContext);
 
+    console.log("Rendering admin routes", authContext && authContext.isAuthenticated);
     const routes = authContext && authContext.isAuthenticated
         ? <AdminAppRoutes />
         : <UnauthenticatedAppRoutes />;
-    return (
-        <Switch>
-            {routes}
-            <Route path="*" component={NotFound} />
-        </Switch>
-    );
+
+    return routes;
 };
 
 const UnauthenticatedAppRoutes: React.FC = () => {
@@ -55,13 +52,14 @@ const UnauthenticatedAppRoutes: React.FC = () => {
     const route = match?.isExact
         ? <Route exact path={LoginPath} component={Login} />
         : <Redirect to={LoginPath} />
-    return <React.Fragment>
+    return <Switch>
         {route}
-    </React.Fragment>;
+        <Route path="*" component={NotFound} />
+    </Switch>;
 };
 
 const AdminAppRoutes: React.FC = () => {
-    return <Fragment>
+    return <Switch>
         <Route exact path={ChangePasswordPath} component={ChangePassword} />
         <Route exact path={availabilityPath} component={Availability} />
         <Route exact path={careersPeriodPath} component={CareersPeriod} />
@@ -76,13 +74,15 @@ const AdminAppRoutes: React.FC = () => {
         <Route exact path={teachersPath} component={Teachers} />
         <Route exact path={usersPath} component={Users} />
         <Route exact path={HomePath} component={Home} />
-    </Fragment>;
+        <Route path="*" component={NotFound} />
+    </Switch>;
 };
 
 const UserAppRoutes: React.FC = () => {
-    return <Fragment>
+    return <Switch>
         <Route exact path={ChangePasswordPath} component={ChangePassword} />
         <Route exact path={availabilityPath} component={Availability} />
         <Route exact path={HomePath} component={Home} />
-    </Fragment>;
+        <Route path="*" component={NotFound} />
+    </Switch>;
 };
