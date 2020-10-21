@@ -3,6 +3,15 @@ import ReactDOM from 'react-dom';
 import App from './pages/app';
 import './index.css';
 import * as serviceWorker from './serviceWorker';
+import axios from 'axios'
+import qs from 'qs';
+
+axios.defaults.baseURL = process.env.REACT_APP_BASE_API_URL;
+axios.defaults.paramsSerializer = (params) => {
+  return qs.stringify(params, { arrayFormat: 'repeat' });
+};
+
+console.log(`Using url = ${axios.defaults.baseURL} as the base api url`);
 
 ReactDOM.render(
   <React.StrictMode>

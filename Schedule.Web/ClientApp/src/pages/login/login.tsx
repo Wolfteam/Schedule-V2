@@ -24,15 +24,17 @@ import validator from 'validator';
 import { AuthContext } from '../../contexts/auth-context';
 import { TranslationContext } from '../../contexts/translations-context';
 import * as routes from '../../routes';
-import translations from '../../services/translations';
+import translations, { getErrorCodeTranslation } from '../../services/translations';
+import { login } from '../../services/account.service'
+import { useSnackbar } from 'notistack';
 
 interface State {
-    email: string;
+    username: string;
     password: string;
     rememberMe: boolean;
     showPassword: boolean,
-    isEmailDirty: boolean,
-    isEmailValid: boolean,
+    isUsernameDirty: boolean,
+    isUsernameValid: boolean,
     isPasswordDirty: boolean,
     isPasswordValid: boolean,
     isBusy: boolean,
@@ -67,13 +69,13 @@ function Login() {
     const [authContext, setAuthContext] = useContext(AuthContext);
 
     const [formState, setFormState] = useState<State>({
-        email: '',
+        username: '',
         password: '',
         rememberMe: false,
         showPassword: false,
-        isEmailDirty: false,
+        isUsernameDirty: false,
         isPasswordDirty: false,
-        isEmailValid: false,
+        isUsernameValid: false,
         isPasswordValid: false,
         isBusy: false,
         isAuthenticated: false,
@@ -81,12 +83,14 @@ function Login() {
 
     const history = useHistory();
 
+    const { enqueueSnackbar } = useSnackbar();
+
     const handleChange = (prop: keyof State) => (event: React.ChangeEvent<HTMLInputElement>) => {
         const newState = { ...formState, [prop]: event.target.value };
         switch (prop) {
-            case 'email':
-                newState.isEmailValid = validator.isEmail(newState.email);
-                newState.isEmailDirty = true;
+            case 'username':
+                newState.isUsernameValid = validator.isLength(newState.username, { min: 4 });
+                newState.isUsernameDirty = true;
                 break;
             case 'password':
                 newState.isPasswordValid = validator.isLength(newState.password, { max: 10, min: 6 });
@@ -109,7 +113,7 @@ function Login() {
         });
     };
 
-    const handleLogin = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    const handleLogin = async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
         e.preventDefault();
         console.log(formState);
         setFormState({
@@ -117,25 +121,29 @@ function Login() {
             isBusy: true,
         });
 
-        setTimeout(() => {
-            // setFormState({
-            //     ...formState,
-            //     isBusy: false,
-            //     isAuthenticated: true
-            // });
-            if (setAuthContext) {
-                setAuthContext({
-                    email: formState.email,
-                    isAuthenticated: true
-                });
-                history.replace(routes.HomePath);
-            }
-        }, 2000);
+        const response = await login(formState.username, formState.password, formState.rememberMe);
+        if (!response.succeed) {
+            console.log(response);
+            enqueueSnackbar(getErrorCodeTranslation(response.errorMessageId), {
+                variant: 'error',
+                autoHideDuration: 3000,
+            });
+            setFormState({ ...formState, isBusy: false });
+            return;
+        }
+
+        if (setAuthContext) {
+            setAuthContext({
+                username: formState.username,
+                isAuthenticated: true
+            });
+            history.replace(routes.HomePath);
+        }
     };
 
-    const showEmailError = !formState.isEmailValid && formState.isEmailDirty;
+    const showEmailError = !formState.isUsernameValid && formState.isUsernameDirty;
     const showPasswordError = !formState.isPasswordValid && formState.isPasswordDirty;
-    const enableSubmitButton = formState.isEmailValid && formState.isPasswordValid && !formState.isBusy;
+    const enableSubmitButton = formState.isUsernameValid && formState.isPasswordValid && !formState.isBusy;
     // if (formState.isAuthenticated) {
 
     //     return <Redirect to={HomePath} />;
@@ -160,7 +168,7 @@ function Login() {
         label={translations.username}
         name="username"
         error={showEmailError}
-        helperText={showEmailError ? translations.invalidEmail : ''}
+        helperText={showEmailError ? translations.invalidUsername : ''}
         InputProps={{
             endAdornment: (
                 <InputAdornment position="start">
@@ -168,8 +176,8 @@ function Login() {
                 </InputAdornment>
             ),
         }}
-        value={formState.email}
-        onChange={handleChange('email')}
+        value={formState.username}
+        onChange={handleChange('username')}
         autoFocus />;
 
     const passwordInput = <TextField

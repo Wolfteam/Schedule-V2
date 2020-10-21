@@ -1,34 +1,25 @@
-import React, { Fragment, Suspense } from 'react';
-import { CircularProgress, Container, Grid } from '@material-ui/core';
+import React, { Fragment } from 'react';
 import { BrowserRouter } from 'react-router-dom';
 import { SnackbarProvider } from 'notistack';
 
-import Footer from '../components/footer/footer';
 import Header from '../components/header/header';
+import AutoLogin from '../components/auto-login/auto-login';
+import Footer from '../components/footer/footer';
 import { AuthContextProvider } from '../contexts/auth-context';
 import { TranslationContextProvider } from '../contexts/translations-context';
-import { AppRoutes } from '../routes';
+
 
 function App() {
-  const loading = <Container>
-    <Grid container justify="center" alignItems="center" direction="column" style={{ minHeight: '60vh' }}>
-      <Grid item xs={12}>
-        <CircularProgress />
-      </Grid>
-    </Grid>
-  </Container>;
-
   return <Fragment>
     <AuthContextProvider>
-      <SnackbarProvider>
+      <SnackbarProvider autoHideDuration={3000} anchorOrigin={{
+        vertical: 'bottom',
+        horizontal: 'right',
+      }}>
         <TranslationContextProvider>
           <BrowserRouter>
             <Header />
-            <Suspense fallback={loading}>
-              <div style={{ marginTop: '20px', marginBottom: '120px' }}>
-                <AppRoutes />
-              </div>
-            </Suspense>
+            <AutoLogin />
             <Footer />
           </BrowserRouter>
         </TranslationContextProvider>
