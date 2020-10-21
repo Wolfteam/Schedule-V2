@@ -6,10 +6,18 @@ export type { IPaginatedRequestDto } from './paginated-request.model';
 export type { IPaginatedResponseDto } from './paginated-response.model';
 
 export type {
-    ITeacherAvailabilityDetailsResponseDto,
+    ITeacherAvailabilityDetailResponseDto,
     ITeacherAvailabilityResponseDto,
-} from './responses/teacher-availability.model';
+} from './responses/teacher/teacher-availability.model';
 
-export type { ITeacherResponseDto } from './responses/teacher.model';
+export type { IGetAllTeacherResponseDto } from './responses/teacher/get-all-teacher.model';
 
 export type { ISubjectResponseDto } from './responses/subjects.model';
+
+export type { ILoginRequestDto } from './requests/account/login-request.model';
+
+export type { IGetAllPeriodsResponseDto } from './responses/period/get-all-periods.model';
+
+export type { ICurrentLoggedUserResponseDto } from './responses/account/current-logged-user.model';
+
+export type { ISaveTeacherAvailabilityRequestDto, ITeacherAvailabilityRequestDto } from './requests/teacher/save-teacher-availability.model';

@@ -1,15 +1,17 @@
-import * as enums from '../../enums';
+import { Day } from '../../../enums';
 
 export interface ITeacherAvailabilityResponseDto {
     id: number;
-    day: enums.Day;
-    startHourId: number;
-    endHourId: number;
+    day: Day;
+    startHour: number;
+    endHour: number;
     periodId: number;
+    teacherId: number;
 }
 
 
-export interface ITeacherAvailabilityDetailsResponseDto {
+export interface ITeacherAvailabilityDetailResponseDto {
+    teacherId: number;
     availability: ITeacherAvailabilityResponseDto[];
     hoursToComplete: number;
     asignedHours: number;
