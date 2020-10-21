@@ -9,7 +9,7 @@ interface ITranslations {
     rememberMe: string;
     signIn: string;
     forgotPassword: string;
-    invalidEmail: string;
+    invalidUsername: string;
     invalidPassword: string;
     passwordDoesntMatch: string;
     saveChanges: string;
@@ -44,6 +44,26 @@ interface ITranslations {
     saturday: string;
     sunday: string;
     lunchHour: string;
+    unknownError: string;
+    availabilityWasSaved: string;
+    availabilitiesAreNotValid: string;
+
+    errorCodes: IAppMessageTranslations;
+}
+
+interface IAppMessageTranslations {
+    SCH_100: string;
+    SCH_101: string;
+    SCH_102: string;
+
+    IDS_1000: string;
+    IDS_1001: string;
+    IDS_1002: string;
+
+    SCH_2000: string;
+    SCH_2001: string;
+    SCH_2002: string;
+    SCH_2003: string;
 }
 
 interface IStrings extends LocalizedStringsMethods, ITranslations {
@@ -58,7 +78,7 @@ const enTrans: ITranslations = {
     rememberMe: "Remember me",
     signIn: "Sign In",
     forgotPassword: "Forgot Password",
-    invalidEmail: "Invalid email",
+    invalidUsername: "Invalid username",
     invalidPassword: "Invalid password",
     passwordDoesntMatch: "Password does not match",
     saveChanges: "Save changes",
@@ -93,6 +113,23 @@ const enTrans: ITranslations = {
     saturday: 'Saturday',
     sunday: 'Sunday',
     lunchHour: 'Lunch hour',
+    unknownError: 'Unknown error',
+    availabilityWasSaved: 'Availability was successfully saved',
+    availabilitiesAreNotValid: 'One or more availabilities are not valid, please verify',
+    errorCodes: {
+        SCH_100: 'Invalid api request',
+        SCH_101: 'Unknown error occurred in api',
+        SCH_102: 'Resource was not found in api',
+
+        IDS_1000: 'Invalid request sent to identity server',
+        IDS_1001: 'Unknown error occurred in the identity server',
+        IDS_1002: 'Resource was not found in the identity server',
+
+        SCH_2000: 'Invalid request',
+        SCH_2001: 'Unknown error',
+        SCH_2002: 'Resource was not found',
+        SCH_2003: 'Invalid username or password',
+    }
 };
 
 const esTrans: ITranslations = {
@@ -104,7 +141,7 @@ const esTrans: ITranslations = {
     rememberMe: "Recuerdame",
     signIn: "Ingresar",
     forgotPassword: "Olvidé mi Contraseña",
-    invalidEmail: "El email no es válido",
+    invalidUsername: "El nombre de usuario no es válido",
     invalidPassword: "La contraseña no es válida",
     passwordDoesntMatch: "La contraseña no coincide",
     saveChanges: "Guardar cambios",
@@ -139,11 +176,38 @@ const esTrans: ITranslations = {
     saturday: 'Sábado',
     sunday: 'Domingo',
     lunchHour: 'Hora de almuerzo',
+    unknownError: 'Unknown error',
+    availabilityWasSaved: 'La disponibilidad fue guardada exitosamente',
+    availabilitiesAreNotValid: 'Una o mas disponibilidades no son válidas por favor verifique',
+    errorCodes: {
+        SCH_100: 'La solicitud hecha a la api no es válida',
+        SCH_101: 'Un error desconocido ocurrió en la api',
+        SCH_102: 'El recurso no fue encontrado en la api',
+
+        IDS_1000: 'La solicitud hecha al servidor de identidad no es válida',
+        IDS_1001: 'Un error desconocido ocurrió en el servidor de identidad',
+        IDS_1002: 'El recurso no fue encontrado en el servidor de identidad',
+
+        SCH_2000: 'La solicitud no es válida',
+        SCH_2001: 'Error desconocido',
+        SCH_2002: 'El recurso no fue encontrado',
+        SCH_2003: 'Invalid username or password',
+    }
 };
 
 const translations: IStrings = new LocalizedStrings({
     en: enTrans,
     es: esTrans
 });
+
+export const getErrorCodeTranslation = (errorMsgId: string): string => {
+    if (errorMsgId in translations.errorCodes) {
+        const val = translations.errorCodes[errorMsgId as keyof IAppMessageTranslations];
+        return val;
+    }
+    console.warn(`Key = ${errorMsgId} is not being handled`);
+    return translations.unknownError;
+};
+
 
 export default translations;
