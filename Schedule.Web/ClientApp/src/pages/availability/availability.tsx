@@ -1,116 +1,58 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
     Container,
     CssBaseline,
-    Grid
+    Grid,
+    LinearProgress
 } from '@material-ui/core';
-import translations from '../../services/translations';
-import PageTitle from '../../components/page-title/page-title';
+import { useSnackbar } from 'notistack';
 
+import translations, { getErrorCodeTranslation } from '../../services/translations';
+import PageTitle from '../../components/page-title/page-title';
 import * as responses from '../../models';
-import * as enums from '../../enums';
 import AvailabilityTable from '../../components/availability/availability-table';
 import AvailabilityTeachersCard from '../../components/availability/availability-teachers-card';
-import {  getLaboralDays } from '../../utils/academic-hours';
+import { getLaboralDays } from '../../utils/academic-hours';
+import { getAllTeachers, getTeacherAvailability, saveTeacherAvailability } from '../../services/teacher.service';
 
-//TODO: IN THE BACKEND, VALIDATE THAT THE LUNCH HOUR IS NOT SET IN AN AVAILABILITY
-const availabilities: responses.ITeacherAvailabilityDetailsResponseDto[] = [
-    {
-        asignedHours: 5,
-        hoursToComplete: 8,
-        availability: [
-            {
-                id: 0,
-                day: enums.Day.monday,
-                startHourId: 10,
-                endHourId: 12,
-                periodId: 2
-            },
-            {
-                id: 1,
-                day: enums.Day.friday,
-                startHourId: 1,
-                endHourId: 5,
-                periodId: 2
-            },
-        ]
-    },
-    {
-        asignedHours: 7,
-        hoursToComplete: 10,
-        availability: [
-            {
-                id: 2,
-                day: enums.Day.saturday,
-                startHourId: 1,
-                endHourId: 4,
-                periodId: 2
-            },
-            {
-                id: 3,
-                day: enums.Day.wednesday,
-                startHourId: 2,
-                endHourId: 6,
-                periodId: 2
-            },
-        ]
-    },
-    {
-        asignedHours: 0,
-        hoursToComplete: 12,
-        availability: [
-            {
-                id: 4,
-                day: enums.Day.tuesday,
-                startHourId: 1,
-                endHourId: 6,
-                periodId: 2
-            },
-            {
-                id: 5,
-                day: enums.Day.tuesday,
-                startHourId: 8,
-                endHourId: 13,
-                periodId: 2
-            },
-        ]
-    }
-];
-
-const teachers: responses.ITeacherResponseDto[] = [
-    {
-        name: 'Efrain',
-        lastName: 'Bastidas'
-    },
-    {
-        name: 'Maria',
-        lastName: 'Berrios'
-    },
-    {
-        name: 'Luz',
-        lastName: 'Marina'
-    }
-];
 
 interface State {
-    selectedTeacher?: responses.ITeacherResponseDto;
+    isLoadingTeachers: boolean,
+    isLoadingAvailability: boolean,
+    teachers: responses.IGetAllTeacherResponseDto[],
+    selectedTeacher?: responses.IGetAllTeacherResponseDto;
     hoursToComplete: number,
     remainingHours: number,
-    availability: responses.ITeacherAvailabilityResponseDto[],
+    availability: responses.ITeacherAvailabilityRequestDto[],
 }
 
-function Availability() {
-    const [state, setState] = useState<State>({
-        hoursToComplete: 0,
-        remainingHours: 0,
-        availability: []
-    });
+const initialState: State = {
+    isLoadingTeachers: false,
+    isLoadingAvailability: false,
+    teachers: [],
+    hoursToComplete: 0,
+    remainingHours: 0,
+    availability: []
+};
 
-    const calculateRemainingHours = (hoursToComplete: number, availability: responses.ITeacherAvailabilityResponseDto[]): number => {
+//TODO: BETTER HANDLING OF ERRORS
+function Availability() {
+    const [state, setState] = useState<State>(initialState);
+
+    const { enqueueSnackbar } = useSnackbar();
+
+    useEffect(() => {
+        getAllTeachers().then(resp => {
+            console.log(resp);
+            setState({ ...state, teachers: resp.result });
+        });
+    }, []);
+
+    const calculateRemainingHours = (hoursToComplete: number, availability: responses.ITeacherAvailabilityRequestDto[]): number => {
         const asignedHours = availability.map(a => {
-            const hours = a.endHourId - a.startHourId;
+            const hours = a.endHour - a.startHour;
             return hours + 1;
-        }).reduce((a, b) => a + b);
+        }).reduce((a, b) => a + b, 0);
 
         const remainingHours = availability.length === 0
             ? hoursToComplete
@@ -119,23 +61,31 @@ function Availability() {
         return remainingHours;
     };
 
-    const handleTeacherChange = (newValue: responses.ITeacherResponseDto) => {
-        const something = newValue.name === 'Efrain'
-            ? availabilities[0]
-            : newValue.name === "Maria"
-                ? availabilities[1]
-                : availabilities[2];
-        const remainingHours = calculateRemainingHours(something.hoursToComplete, something.availability);
+    const handleTeacherChange = async (newValue: responses.IGetAllTeacherResponseDto | null) => {
+        if (!newValue) {
+            setState({ ...initialState, teachers: state.teachers });
+            return;
+        }
+        setState({ ...state, isLoadingAvailability: true });
+        const response = await getTeacherAvailability(newValue.id);
+        if (!response.succeed) {
+            enqueueSnackbar(getErrorCodeTranslation(response.errorMessageId), { variant: 'error' });
+            setState({ ...state, isLoadingAvailability: false });
+            return;
+        }
+        const remainingHours = calculateRemainingHours(response.result.hoursToComplete, response.result.availability);
+
         setState({
             ...state,
             selectedTeacher: newValue,
-            hoursToComplete: something.hoursToComplete,
+            hoursToComplete: response.result.hoursToComplete,
             remainingHours: remainingHours,
-            availability: something.availability,
+            availability: response.result.availability,
+            isLoadingAvailability: false
         });
     };
 
-    const handleAvailabilityChange = (newValue: responses.ITeacherAvailabilityResponseDto[]) => {
+    const handleAvailabilityChange = (newValue: responses.ITeacherAvailabilityRequestDto[]) => {
         const remainingHours = calculateRemainingHours(state.hoursToComplete, newValue);
         if (remainingHours < 0) {
             return
@@ -147,7 +97,7 @@ function Availability() {
         });
     };
 
-    const isAvailabilityValid = () : boolean => {
+    const isAvailabilityValid = (): boolean => {
         if (state.availability.length === 0)
             return false;
 
@@ -158,10 +108,10 @@ function Availability() {
             let ocurrences = 0;
             if (availabilityForToday.length === 0)
                 continue;
-            
+
             for (let j = 0; j < availabilityForToday.length; j++) {
                 const availability = availabilityForToday[j];
-                const diff = availability.endHourId - availability.startHourId + 1;
+                const diff = availability.endHour - availability.startHour + 1;
                 //TODO: MOVE THIS TO A SETTING
                 if (diff >= 2)
                     ocurrences++;
@@ -173,23 +123,44 @@ function Availability() {
         return true;
     }
 
-    const handleSaveChanges = () => {
+    const handleSaveChanges = async () => {
         const isValid = isAvailabilityValid();
-        console.log("IsValid", isValid);
+        if (!isValid) {
+            enqueueSnackbar(translations.availabilitiesAreNotValid, { variant: 'warning' });
+            return;
+        }
+        setState({ ...state, isLoadingAvailability: true });
+
+        const request: responses.ISaveTeacherAvailabilityRequestDto = {
+            availability: state.availability
+        };
+        const response = await saveTeacherAvailability(state.selectedTeacher!.id, request);
+        if (response.succeed) {
+            enqueueSnackbar(translations.availabilityWasSaved, { variant: 'success' });
+        } else {
+            enqueueSnackbar(getErrorCodeTranslation(response.errorMessageId), { variant: 'error' });
+        }
+
+        setState({ ...state, isLoadingAvailability: false });
     };
 
-    const isSaveBtnEnabled = state.selectedTeacher !== undefined && state.remainingHours === 0;
+    const isSaveBtnEnabled = state.selectedTeacher !== undefined &&
+        state.remainingHours === 0 &&
+        !state.isLoadingTeachers &&
+        !state.isLoadingAvailability;
+
+    const loading = state.isLoadingAvailability ? <LinearProgress /> : null;
 
     return <Container>
         <CssBaseline />
         <PageTitle title={translations.loadAvailability} />
-
+        {loading}
         <Grid container justify="center">
             <Grid item xs={12} md={4}>
                 <AvailabilityTeachersCard
                     hoursToComplete={state.hoursToComplete}
                     remainingHours={state.remainingHours}
-                    teachers={teachers}
+                    teachers={state.teachers}
                     onTeacherChange={handleTeacherChange}
                     onSaveChanges={handleSaveChanges}
                     isSaveButtonEnabled={isSaveBtnEnabled} />

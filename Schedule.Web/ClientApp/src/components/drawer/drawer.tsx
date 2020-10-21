@@ -39,6 +39,7 @@ import { IconProp } from '@fortawesome/fontawesome-svg-core';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
 import * as routes from '../../routes';
 import { AuthContext } from '../../contexts/auth-context';
+import { logout } from '../../services/account.service'
 
 const styles = (theme: Theme) => createStyles({
     fullName: {
@@ -184,6 +185,13 @@ class Drawer extends PureComponent<Props, State> {
         </React.Fragment>;
     }
 
+    signOut = async () => {
+        await logout();
+        const [authContext, setAuthContext] = this.context;
+        this.props.onDrawerStateChanged(false);
+        setAuthContext({ isAuthenticated: false, username: '' });
+    }
+
     componentDidMount() {
         document.addEventListener('keydown', this.handleKeyPress(true));
         document.addEventListener('keyup', this.handleKeyPress(false));
@@ -324,7 +332,7 @@ class Drawer extends PureComponent<Props, State> {
                     {listItems}
                 </List>
                 <Divider />
-                <ListItem button>
+                <ListItem button onClick={this.signOut}>
                     <ListItemIcon><FontAwesomeIcon size="2x" icon={faSignOutAlt} /></ListItemIcon>
                     <ListItemText primary={translations.logout} />
                 </ListItem>

@@ -30,21 +30,18 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 interface Props {
-    teachers: responses.ITeacherResponseDto[];
+    teachers: responses.IGetAllTeacherResponseDto[];
     hoursToComplete: number;
     remainingHours: number;
     isSaveButtonEnabled: boolean;
-    onTeacherChange(newValue: responses.ITeacherResponseDto): void;
+    onTeacherChange(newValue: responses.IGetAllTeacherResponseDto | null): void;
     onSaveChanges(): void;
 }
 
 function AvailabilityTeachersCard(props: Props) {
     const classes = useStyles();
 
-    const handleTeacherChange = (event: React.ChangeEvent<{}>, newValue: responses.ITeacherResponseDto | null) => {
-        if (!newValue)
-            return;
-
+    const handleTeacherChange = (event: React.ChangeEvent<{}>, newValue: responses.IGetAllTeacherResponseDto | null) => {
         props.onTeacherChange(newValue);
     };
 
@@ -57,7 +54,7 @@ function AvailabilityTeachersCard(props: Props) {
                         size="small"
                         onChange={handleTeacherChange}
                         options={props.teachers}
-                        getOptionLabel={(teacher: responses.ITeacherResponseDto) => `${teacher.name} ${teacher.lastName}`}
+                        getOptionLabel={(teacher: responses.IGetAllTeacherResponseDto) => `${teacher.firstName} ${teacher.firstLastName}`}
                         style={{ marginTop: '7px' }}
                         renderInput={(params: any) => <TextField {...params} label={translations.teachers} variant="outlined" />} />
                 </Grid>

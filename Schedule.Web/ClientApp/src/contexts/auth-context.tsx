@@ -1,12 +1,12 @@
 import React, { Dispatch, SetStateAction, useState } from 'react'
 
 export interface State {
-    email: string,
+    username: string,
     isAuthenticated: boolean
 }
 
 const defaultValue: State = {
-    email: '',
+    username: '',
     isAuthenticated: false
 };
 

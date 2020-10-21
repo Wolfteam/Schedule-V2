@@ -22,7 +22,7 @@ const useStyles = makeStyles((theme: Theme) =>
 interface Props {
     hour: number;
     day: enums.Day;
-    availability: responses.ITeacherAvailabilityResponseDto[];
+    availability: responses.ITeacherAvailabilityRequestDto[];
     onCellClick(hour: number, day: enums.Day): void;
 }
 
@@ -46,7 +46,7 @@ function AvailabilityCell(props: Props) {
         if (!match)
             return state.isCellHovered ? `${defaultClass} ${classes.selectedCell}` : defaultClass;
 
-        const found = props.availability.some(a => a.day === day && hour >= a.startHourId && hour <= a.endHourId);
+        const found = props.availability.some(a => a.day === day && hour >= a.startHour && hour <= a.endHour);
         return found || state.isCellHovered ? `${classes.selectedCell} ${defaultClass}` : defaultClass;
     };
 

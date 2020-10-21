@@ -2,6 +2,7 @@ import {
     Card,
     CardActions,
     CardContent,
+    CircularProgress,
     createStyles,
     Grid,
     makeStyles,
@@ -9,8 +10,9 @@ import {
     Typography
 } from '@material-ui/core';
 import { grey } from '@material-ui/core/colors';
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import translations from '../../services/translations';
+import { getCurrentPeriod } from '../../services/period.service';
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -27,8 +29,30 @@ const useStyles = makeStyles((theme: Theme) =>
     }),
 );
 
+interface State {
+    period: string;
+    isBusy: boolean;
+}
+
 function CurrentAcademicPeriod() {
     const classes = useStyles();
+    const [state, setState] = useState<State>({
+        period: '',
+        isBusy: true
+    });
+
+    useEffect(() => {
+        getCurrentPeriod().then(r => {
+            const period = r.result?.name ?? "N/A";
+            setState({ ...state, period: period, isBusy: false });
+        });
+    }, []);
+
+    console.log("rendering academic period");
+
+    const periodElement = state.isBusy
+        ? <CircularProgress />
+        : <h2 className={classes.period}>{state.period}</h2>;
 
     return <Card className={classes.root}>
         <CardContent>
@@ -41,7 +65,7 @@ function CurrentAcademicPeriod() {
         </CardContent>
         <CardActions>
             <Grid container justify="center" alignItems="center">
-                <h2 className={classes.period}>2017-II</h2>
+                {periodElement}
             </Grid>
         </CardActions>
     </Card>;

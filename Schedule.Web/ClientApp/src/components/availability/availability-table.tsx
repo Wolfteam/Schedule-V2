@@ -31,88 +31,81 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 interface Props {
-    availability: responses.ITeacherAvailabilityResponseDto[];
-    onAvailabilityChange(newValue: responses.ITeacherAvailabilityResponseDto[]): void;
+    availability: responses.ITeacherAvailabilityRequestDto[];
+    onAvailabilityChange(newValue: responses.ITeacherAvailabilityRequestDto[]): void;
 }
 
 function AvailabilityTable(props: Props) {
     const classes = useStyles();
 
     const handleCellClick = (hour: number, day: enums.Day) => {
-        const newId = Math.max.apply(Math, props.availability.map(a => a.id)) + 1;
-        const match: responses.ITeacherAvailabilityResponseDto | undefined = props.availability
-            .find(a => a.day === day && isAcademicHourBetweenRange(a.startHourId, a.endHourId, hour));
+        const match: responses.ITeacherAvailabilityRequestDto | undefined = props.availability
+            .find(a => a.day === day && isAcademicHourBetweenRange(a.startHour, a.endHour, hour));
         //If match, that means that the user clicked a selected cell
         //otherwise the cell was not selected, and we clicked in an unselected cell
         if (!match) {
             // const endHour = isLastAcademicHour(hour) ? hour : hour + 1;
-            const closestTop = props.availability.find(a => a.day === day && a.endHourId === hour - 1);
-            const closestBottom = props.availability.find(a => a.day === day && a.startHourId === hour + 1);
+            const closestTop = props.availability.find(a => a.day === day && a.endHour === hour - 1);
+            const closestBottom = props.availability.find(a => a.day === day && a.startHour === hour + 1);
 
-            let newAvailability: responses.ITeacherAvailabilityResponseDto[] = [];
+            let newAvailability: responses.ITeacherAvailabilityRequestDto[] = [];
             if (!closestTop && !closestBottom) {
-                const newValue: responses.ITeacherAvailabilityResponseDto = {
+                const newValue: responses.ITeacherAvailabilityRequestDto = {
                     day: day,
-                    startHourId: hour,
-                    endHourId: hour,
-                    id: newId,
-                    periodId: 2
+                    startHour: hour,
+                    endHour: hour,
                 }
                 newAvailability = props.availability.concat(newValue);
             }
             else if (closestTop && closestBottom) {
-                const newValue: responses.ITeacherAvailabilityResponseDto = {
+                const newValue: responses.ITeacherAvailabilityRequestDto = {
                     day: day,
-                    startHourId: closestTop.startHourId,
-                    endHourId: closestBottom.endHourId,
-                    id: newId,
-                    periodId: 2
+                    startHour: closestTop.startHour,
+                    endHour: closestBottom.endHour,
                 };
-                newAvailability = props.availability.filter(a => a.id !== closestTop.id && a.id !== closestBottom.id).concat(newValue);
+                newAvailability = props.availability.filter(a => a !== closestTop && a !== closestBottom).concat(newValue);
             } else {
                 if (closestTop) {
-                    const newValue: responses.ITeacherAvailabilityResponseDto = {
+                    const newValue: responses.ITeacherAvailabilityRequestDto = {
                         ...closestTop,
-                        endHourId: hour
+                        endHour: hour
                     };
-                    newAvailability = props.availability.filter(a => a.id !== closestTop.id).concat(newValue);
+                    newAvailability = props.availability.filter(a => a !== closestTop).concat(newValue);
                 } else {
-                    const newValue: responses.ITeacherAvailabilityResponseDto = {
+                    const newValue: responses.ITeacherAvailabilityRequestDto = {
                         ...closestBottom!,
-                        startHourId: hour
+                        startHour: hour
                     };
-                    newAvailability = props.availability.filter(a => a.id !== closestBottom!.id).concat(newValue);
+                    newAvailability = props.availability.filter(a => a !== closestBottom).concat(newValue);
                 }
             }
             props.onAvailabilityChange(newAvailability);
             return;
         }
 
-        let newAvailability: responses.ITeacherAvailabilityResponseDto[] = [];
-        const availabilityWithoutMatch = props.availability.filter(a => a.id !== match.id);
-        const sequenceExist = match.endHourId - match.startHourId > 0;
-        const clickHappenedInThePoles = hour === match.startHourId || hour === match.endHourId;
+        let newAvailability: responses.ITeacherAvailabilityRequestDto[] = [];
+        const availabilityWithoutMatch = props.availability.filter(a => a !== match);
+        const sequenceExist = match.endHour - match.startHour > 0;
+        const clickHappenedInThePoles = hour === match.startHour || hour === match.endHour;
 
         if (!clickHappenedInThePoles && sequenceExist) {
-            const top: responses.ITeacherAvailabilityResponseDto = {
+            const top: responses.ITeacherAvailabilityRequestDto = {
                 ...match,
-                id: newId,
-                endHourId: hour - 1
+                endHour: hour - 1
             };
-            const bottom: responses.ITeacherAvailabilityResponseDto = {
+            const bottom: responses.ITeacherAvailabilityRequestDto = {
                 ...match,
-                id: newId + 1,
-                startHourId: hour + 1
+                startHour: hour + 1
             };
             newAvailability = availabilityWithoutMatch.concat(top, bottom);
         } else if (clickHappenedInThePoles && sequenceExist) {
-            const newValue: responses.ITeacherAvailabilityResponseDto = {
+            const newValue: responses.ITeacherAvailabilityRequestDto = {
                 ...match
             };
-            if (hour === match.startHourId)
-                newValue.startHourId++;
+            if (hour === match.startHour)
+                newValue.startHour++;
             else
-                newValue.endHourId--;
+                newValue.endHour--;
 
             newAvailability = availabilityWithoutMatch.concat(newValue);
         } else {
