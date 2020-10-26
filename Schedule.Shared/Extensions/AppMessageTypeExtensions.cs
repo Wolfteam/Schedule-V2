@@ -20,6 +20,7 @@ namespace Schedule.Shared.Extensions
                 AppMessageType.SchWebUnknownErrorOccurred => "Unknown error occurred in the schedule web api",
                 AppMessageType.SchWebNotFound => "The resource you were looking for was not found in the schedule web api",
                 AppMessageType.SchWebInvalidUsernameOrPassword => "Invalid username or password",
+                AppMessageType.SchApiResourceAlreadyExists => "Resource already exists",
                 _ => throw new ArgumentOutOfRangeException(nameof(msg), msg, null)
             };
         }

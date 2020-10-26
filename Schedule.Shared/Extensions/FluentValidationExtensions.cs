@@ -41,6 +41,12 @@ namespace Schedule.Shared.Extensions
             return rule.WithGlobalErrorCode(error.GetErrorCode());
         }
 
+        public static IRuleBuilderOptions<T, TProperty> WithGlobalInvalidRequestErrorCode<T, TProperty>(
+            this IRuleBuilderOptions<T, TProperty> rule)
+        {
+            return rule.WithGlobalErrorCode(AppMessageType.SchApiInvalidRequest.GetErrorCode());
+        }
+
         public static IRuleBuilderOptions<T, TProperty> WithGlobalErrorMsgAndCode<T, TProperty>(
             this IRuleBuilderOptions<T, TProperty> rule,
             string errorMessage,

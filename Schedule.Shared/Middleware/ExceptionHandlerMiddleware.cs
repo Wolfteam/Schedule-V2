@@ -96,6 +96,10 @@ namespace Schedule.Shared.Middleware
                     logger.LogError(exception, $"{nameof(HandleExceptionAsync)}: Unknown exception was captured");
                     break;
             }
+#if DEBUG
+            response.ErrorMessage += $". Ex: {exception}";
+#endif
+
             context.Response.StatusCode = (int)code;
 
             logger.LogInformation(
