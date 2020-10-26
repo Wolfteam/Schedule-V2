@@ -22,7 +22,7 @@ namespace Schedule.Application.Common
             CreateMap<Career, GetAllCareersResponseDto>();
 
             CreateMap<Classroom, GetAllClassroomsResponseDto>()
-                .ForMember(d => d.ClassroomType, s => s.MapFrom(x => x.ClassroomSubject.Name));
+                .ForMember(d => d.ClassroomSubject, s => s.MapFrom(x => x.ClassroomSubject.Name));
             CreateMap<SaveClassroomRequestDto, Classroom>();
             CreateMap<SaveClassroomTypeRequestDto, ClassroomSubject>();
             CreateMap<ClassroomSubject, GetAllClassroomTypesResponseDto>();

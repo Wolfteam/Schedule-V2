@@ -18,7 +18,7 @@ namespace Schedule.Application.Classrooms.Commands.Update
                 .MaximumLength(100)
                 .WithGlobalErrorCode(error);
 
-            RuleFor(cmd => cmd.Dto.ClassroomTypePerSubjectId)
+            RuleFor(cmd => cmd.Dto.ClassroomSubjectId)
                 .NotEmpty()
                 .WithGlobalErrorCode(error);
 

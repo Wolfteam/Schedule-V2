@@ -34,10 +34,10 @@ namespace Schedule.Application.Classrooms.Commands.Create
                 throw new InvalidRequestException(msg);
             }
 
-            bool typeExists = await AppDataService.ClassroomSubject.ExistsAsync(c => c.Id == request.Dto.ClassroomTypePerSubjectId && c.SchoolId == AppUserManager.SchoolId);
+            bool typeExists = await AppDataService.ClassroomSubject.ExistsAsync(c => c.Id == request.Dto.ClassroomSubjectId && c.SchoolId == AppUserManager.SchoolId);
             if (!typeExists)
             {
-                var msg = $"No type was found for class room type id = {request.Dto.ClassroomTypePerSubjectId}";
+                var msg = $"No type was found for class room type id = {request.Dto.ClassroomSubjectId}";
                 Logger.LogWarning($"{nameof(Handle)}: {msg}");
                 throw new InvalidRequestException(msg);
             }

@@ -9,7 +9,7 @@ namespace Schedule.Application.Classrooms.Queries.GetAll
         public override IReadOnlyList<string> OrderByOnLy => new List<string>
         {
             nameof(GetAllClassroomsResponseDto.Name),
-            nameof(GetAllClassroomsResponseDto.ClassroomType),
+            nameof(GetAllClassroomsResponseDto.ClassroomSubject),
             nameof(GetAllClassroomsResponseDto.Capacity)
         };
     }

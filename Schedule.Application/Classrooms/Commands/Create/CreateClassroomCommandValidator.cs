@@ -18,7 +18,7 @@ namespace Schedule.Application.Classrooms.Commands.Create
                 .GreaterThan(0)
                 .WithGlobalErrorCode(error);
 
-            RuleFor(cmd => cmd.Dto.ClassroomTypePerSubjectId)
+            RuleFor(cmd => cmd.Dto.ClassroomSubjectId)
                 .GreaterThan(0)
                 .WithGlobalErrorCode(error);
         }
