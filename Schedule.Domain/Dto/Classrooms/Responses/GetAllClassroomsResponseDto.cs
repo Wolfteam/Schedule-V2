@@ -6,7 +6,7 @@
         public string Name { get; set; }
         public int Capacity { get; set; }
 
-        public long ClassroomTypePerSubjectId { get; set; }
-        public string ClassroomType { get; set; }
+        public long ClassroomSubjectId { get; set; }
+        public string ClassroomSubject { get; set; }
     }
 }
