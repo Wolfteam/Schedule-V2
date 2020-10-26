@@ -1,16 +1,19 @@
 ﻿using Schedule.Api.IntegrationTests.Builders;
 using Schedule.Domain.Dto;
+using Schedule.Domain.Dto.Careers.Requests;
+using Schedule.Domain.Dto.Careers.Responses;
 using Schedule.Domain.Dto.Classrooms.Requests;
 using Schedule.Domain.Dto.Classrooms.Responses;
 using Schedule.Domain.Dto.Periods.Requests;
 using Schedule.Domain.Dto.Periods.Responses;
 using Schedule.Domain.Dto.Priorities.Requests;
 using Schedule.Domain.Dto.Priorities.Responses;
+using Schedule.Domain.Dto.Semesters.Requests;
+using Schedule.Domain.Dto.Semesters.Responses;
 using Schedule.Domain.Dto.Subjects.Responses;
 using Schedule.Domain.Dto.Teachers.Responses;
 using Shouldly;
 using System;
-using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 
@@ -36,10 +39,7 @@ namespace Schedule.Api.IntegrationTests.Controllers
             var apiResponse = await response.Content.ReadAsAsync<ApiResponseDto<GetAllPrioritiesResponseDto>>();
 
             //Assert
-            response.StatusCode.ShouldBe(HttpStatusCode.OK);
-            apiResponse.ShouldNotBeNull();
-            apiResponse.Result.ShouldNotBeNull();
-            apiResponse.Succeed.ShouldBeTrue();
+            AssertApiResponse(response, apiResponse);
             apiResponse.Result.Id.ShouldBeGreaterThan(0);
             apiResponse.Result.Name.ShouldBe(dto.Name);
             apiResponse.Result.HoursToComplete.ShouldBe(dto.HoursToComplete);
@@ -60,10 +60,7 @@ namespace Schedule.Api.IntegrationTests.Controllers
             var apiResponse = await response.Content.ReadAsAsync<ApiResponseDto<GetAllTeacherResponseDto>>();
 
             //Assert
-            response.StatusCode.ShouldBe(HttpStatusCode.OK);
-            apiResponse.ShouldNotBeNull();
-            apiResponse.Result.ShouldNotBeNull();
-            apiResponse.Succeed.ShouldBeTrue();
+            AssertApiResponse(response, apiResponse);
             apiResponse.Result.Id.ShouldBeGreaterThan(0);
             apiResponse.Result.PriorityId.ShouldBe(priority.Id);
             apiResponse.Result.FirstName.ShouldBe(dto.FirstName);
@@ -76,10 +73,13 @@ namespace Schedule.Api.IntegrationTests.Controllers
         protected async Task<GetAllSubjectsResponseDto> CreateSubject()
         {
             //Arrange
+            var classroomType = await CreateClassroomType();
+            var career = await CreateCareer();
+            var semester = await CreateSemester();
             var dto = new SaveSubjectRequestDtoBuilder()
-                .WithDefaults(1, "")
+                .WithDefaults((int)DateTimeOffset.UtcNow.Ticks, $"Subject - {DateTimeOffset.UtcNow.Ticks}")
                 .WithHours(5, 60)
-                .WithRelations(1, 2, 3)
+                .WithRelations(semester.Id, career.Id, classroomType.Id)
                 .Build();
 
             //Act
@@ -87,10 +87,7 @@ namespace Schedule.Api.IntegrationTests.Controllers
             var apiResponse = await response.Content.ReadAsAsync<ApiResponseDto<GetAllSubjectsResponseDto>>();
 
             //Assert
-            response.StatusCode.ShouldBe(HttpStatusCode.OK);
-            apiResponse.ShouldNotBeNull();
-            apiResponse.Result.ShouldNotBeNull();
-            apiResponse.Succeed.ShouldBeTrue();
+            AssertApiResponse(response, apiResponse);
             apiResponse.Result.Id.ShouldBeGreaterThan(0);
             apiResponse.Result.Name.ShouldBe(dto.Name);
             apiResponse.Result.AcademicHoursPerWeek.ShouldBe(dto.AcademicHoursPerWeek);
@@ -115,10 +112,7 @@ namespace Schedule.Api.IntegrationTests.Controllers
             var apiResponse = await response.Content.ReadAsAsync<ApiResponseDto<GetAllClassroomTypesResponseDto>>();
 
             //Assert
-            response.StatusCode.ShouldBe(HttpStatusCode.OK);
-            apiResponse.ShouldNotBeNull();
-            apiResponse.Result.ShouldNotBeNull();
-            apiResponse.Succeed.ShouldBeTrue();
+            AssertApiResponse(response, apiResponse);
             apiResponse.Result.Id.ShouldBeGreaterThan(0);
             apiResponse.Result.Name.ShouldBe(dto.Name);
             return apiResponse.Result;
@@ -138,13 +132,70 @@ namespace Schedule.Api.IntegrationTests.Controllers
             var apiResponse = await response.Content.ReadAsAsync<ApiResponseDto<GetAllPeriodsResponseDto>>();
 
             //Assert
-            response.StatusCode.ShouldBe(HttpStatusCode.OK);
-            apiResponse.ShouldNotBeNull();
-            apiResponse.Result.ShouldNotBeNull();
-            apiResponse.Succeed.ShouldBeTrue();
+            AssertApiResponse(response, apiResponse);
             apiResponse.Result.Id.ShouldBeGreaterThan(0);
             apiResponse.Result.Name.ShouldBe(dto.Name);
             apiResponse.Result.IsActive.ShouldBe(dto.IsActive);
+            return apiResponse.Result;
+        }
+
+        public async Task<GetAllSemestersResponseDto> CreateSemester()
+        {
+            var dto = new SaveSemesterRequestDto
+            {
+                Name = $"Semester-X{DateTimeOffset.UtcNow.Ticks}"
+            };
+
+            //Act
+            var response = await HttpClient.PostAsJsonAsync("api/Semester", dto);
+            var apiResponse = await response.Content.ReadAsAsync<ApiResponseDto<GetAllSemestersResponseDto>>();
+
+            //Assert
+            AssertApiResponse(response, apiResponse);
+            apiResponse.Result.Id.ShouldBeGreaterThan(0);
+            apiResponse.Result.Name.ShouldBe(dto.Name);
+            return apiResponse.Result;
+        }
+
+        public async Task<GetAllCareersResponseDto> CreateCareer()
+        {
+            //Arrange
+            var dto = new SaveCareerRequestDto
+            {
+                Name = $"Ingenieria Mecatronica-{DateTimeOffset.UtcNow.Ticks}"
+            };
+
+            //Act
+            var response = await HttpClient.PostAsJsonAsync("api/Career", dto);
+            var apiResponse = await response.Content.ReadAsAsync<ApiResponseDto<GetAllCareersResponseDto>>();
+
+            //Assert
+            AssertApiResponse(response, apiResponse);
+            apiResponse.Result.Id.ShouldBeGreaterThan(0);
+            apiResponse.Result.Name.ShouldBe(dto.Name);
+            return apiResponse.Result;
+        }
+
+        public async Task<GetAllClassroomsResponseDto> CreateClassroom()
+        {
+            //Arrange
+            var type = await CreateClassroomType();
+            var dto = new SaveClassroomRequestDto
+            {
+                Name = $"Lab of Chemistry_{DateTimeOffset.UtcNow.Ticks}",
+                ClassroomSubjectId = type.Id,
+                Capacity = 40
+            };
+
+            //Act
+            var response = await HttpClient.PostAsJsonAsync("api/Classroom", dto);
+            var apiResponse = await response.Content.ReadAsAsync<ApiResponseDto<GetAllClassroomsResponseDto>>();
+
+            //Assert
+            AssertApiResponse(response, apiResponse);
+            apiResponse.Result.Id.ShouldBeGreaterThan(0);
+            apiResponse.Result.Name.ShouldBe(dto.Name);
+            apiResponse.Result.ClassroomSubjectId.ShouldBe(dto.ClassroomSubjectId);
             return apiResponse.Result;
         }
     }

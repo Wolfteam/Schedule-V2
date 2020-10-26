@@ -7,7 +7,7 @@ using Schedule.Domain.Enums;
 using Shouldly;
 using System;
 using System.Collections.Generic;
-using System.Net;
+using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Xunit;
@@ -33,14 +33,10 @@ namespace Schedule.Api.IntegrationTests.Controllers
 
             //Act
             var response = await HttpClient.GetAsync(url);
-            var apiResponse = await response.Content.ReadAsAsync<PaginatedResponseDto<GetAllTeacherResponseDto>>();
+            var apiResponse = await response.Content.ReadAsAsync<ApiListResponseDto<GetAllTeacherResponseDto>>();
 
             //Assert
-            response.StatusCode.ShouldBe(HttpStatusCode.OK);
-            apiResponse.ShouldNotBeNull();
-            apiResponse.Result.ShouldNotBeNull();
-            apiResponse.Succeed.ShouldBeTrue();
-            apiResponse.Result.ShouldNotBeEmpty();
+            AssertApiListResponse(response, apiResponse);
         }
 
         [Fact]
@@ -63,10 +59,7 @@ namespace Schedule.Api.IntegrationTests.Controllers
             var apiResponse = await response.Content.ReadAsAsync<ApiResponseDto<GetAllTeacherResponseDto>>();
 
             //Assert
-            response.StatusCode.ShouldBe(HttpStatusCode.OK);
-            apiResponse.ShouldNotBeNull();
-            apiResponse.Result.ShouldNotBeNull();
-            apiResponse.Succeed.ShouldBeTrue();
+            AssertApiResponse(response, apiResponse);
             apiResponse.Result.Id.ShouldBeGreaterThan(0);
             apiResponse.Result.PriorityId.ShouldBe(teacher.PriorityId);
             apiResponse.Result.FirstName.ShouldBe(dto.FirstName);
@@ -85,9 +78,7 @@ namespace Schedule.Api.IntegrationTests.Controllers
             var apiResponse = await response.Content.ReadAsAsync<EmptyResponseDto>();
 
             //Assert
-            response.StatusCode.ShouldBe(HttpStatusCode.OK);
-            apiResponse.ShouldNotBeNull();
-            apiResponse.Succeed.ShouldBeTrue();
+            AssertEmptyResponse(response, apiResponse);
         }
         #endregion
 
@@ -98,19 +89,19 @@ namespace Schedule.Api.IntegrationTests.Controllers
             //Arrange
             var teacher = await CreateTeacher();
             var period = await CreatePeriod();
-            await SaveAvailability(teacher.Id, period.Id);
+            var availabilities = await SaveAvailability(teacher.Id, period.Id);
+            var hoursToComplete = availabilities.Sum(a => (int)a.EndHour - (int)a.StartHour + 1);
 
             //Act
             var response = await HttpClient.GetAsync($"api/Teacher/{teacher.Id}/Availability");
-            var apiResponse = await response.Content.ReadAsAsync<ApiListResponseDto<TeacherAvailabilityResponseDto>>();
+            var apiResponse = await response.Content.ReadAsAsync<ApiResponseDto<TeacherAvailabilityDetailsResponseDto>>();
 
             //Assert
-            response.StatusCode.ShouldBe(HttpStatusCode.OK);
-            apiResponse.ShouldNotBeNull();
-            apiResponse.Result.ShouldNotBeNull();
-            apiResponse.Succeed.ShouldBeTrue();
-            apiResponse.Result.ShouldNotBeEmpty();
-            apiResponse.Result.ShouldAllBe(a => a.Id > 0 && a.PeriodId == period.Id && a.TeacherId == teacher.Id);
+            AssertApiResponse(response, apiResponse);
+            apiResponse.Result.AssignedHours.ShouldBe(hoursToComplete);
+            apiResponse.Result.HoursToComplete.ShouldBeGreaterThan(0);
+            apiResponse.Result.Availability.ShouldNotBeEmpty();
+            apiResponse.Result.Availability.ShouldAllBe(a => a.Id > 0 && a.PeriodId == period.Id && a.TeacherId == teacher.Id);
         }
 
         [Fact]
@@ -135,14 +126,10 @@ namespace Schedule.Api.IntegrationTests.Controllers
 
             //Act
             var response = await HttpClient.GetAsync(url);
-            var apiResponse = await response.Content.ReadAsAsync<PaginatedResponseDto<GetAllPrioritiesResponseDto>>();
+            var apiResponse = await response.Content.ReadAsAsync<ApiListResponseDto<GetAllPrioritiesResponseDto>>();
 
             //Assert
-            response.StatusCode.ShouldBe(HttpStatusCode.OK);
-            apiResponse.ShouldNotBeNull();
-            apiResponse.Result.ShouldNotBeNull();
-            apiResponse.Succeed.ShouldBeTrue();
-            apiResponse.Result.ShouldNotBeEmpty();
+            AssertApiListResponse(response, apiResponse);
         }
 
         [Fact]
@@ -167,10 +154,7 @@ namespace Schedule.Api.IntegrationTests.Controllers
             var apiResponse = await response.Content.ReadAsAsync<ApiResponseDto<GetAllPrioritiesResponseDto>>();
 
             //Assert
-            response.StatusCode.ShouldBe(HttpStatusCode.OK);
-            apiResponse.ShouldNotBeNull();
-            apiResponse.Result.ShouldNotBeNull();
-            apiResponse.Succeed.ShouldBeTrue();
+            AssertApiResponse(response, apiResponse);
             apiResponse.Result.Id.ShouldBe(priority.Id);
             apiResponse.Result.Name.ShouldBe(dto.Name);
             apiResponse.Result.HoursToComplete.ShouldBe(dto.HoursToComplete);
@@ -187,9 +171,7 @@ namespace Schedule.Api.IntegrationTests.Controllers
             var apiResponse = await response.Content.ReadAsAsync<EmptyResponseDto>();
 
             //Assert
-            response.StatusCode.ShouldBe(HttpStatusCode.OK);
-            apiResponse.ShouldNotBeNull();
-            apiResponse.Succeed.ShouldBeTrue();
+            AssertEmptyResponse(response, apiResponse);
         }
         #endregion
 
@@ -198,7 +180,6 @@ namespace Schedule.Api.IntegrationTests.Controllers
         {
             //Arrange
             var dto = new SaveTeacherAvailabilityRequestDtoBuilder()
-                .ForPeriod(periodId)
                 .WithAvailability(LaboralDaysType.Monday, LaboralHoursType.EightAmFortyToNineThirtyAm, LaboralHoursType.ElevenTenAmToTwelvePm)
                 .WithAvailability(LaboralDaysType.Friday, LaboralHoursType.ThreeThirtyPmToFourTwentyPm, LaboralHoursType.FiveTenPmToSixPm)
                 .Build();
@@ -208,11 +189,7 @@ namespace Schedule.Api.IntegrationTests.Controllers
             var apiResponse = await response.Content.ReadAsAsync<ApiListResponseDto<TeacherAvailabilityResponseDto>>();
 
             //Assert
-            response.StatusCode.ShouldBe(HttpStatusCode.OK);
-            apiResponse.ShouldNotBeNull();
-            apiResponse.Result.ShouldNotBeNull();
-            apiResponse.Succeed.ShouldBeTrue();
-            apiResponse.Result.ShouldNotBeEmpty();
+            AssertApiListResponse(response, apiResponse);
             apiResponse.Result.Count.ShouldBe(dto.Availability.Count);
             apiResponse.Result.ShouldAllBe(a => a.Id > 0 && a.PeriodId == periodId && a.TeacherId == teacherId);
             foreach (var item in dto.Availability)

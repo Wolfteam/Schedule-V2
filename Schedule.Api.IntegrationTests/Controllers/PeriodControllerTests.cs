@@ -3,7 +3,6 @@ using Schedule.Domain.Dto;
 using Schedule.Domain.Dto.Periods.Requests;
 using Schedule.Domain.Dto.Periods.Responses;
 using Shouldly;
-using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Xunit;
@@ -31,11 +30,7 @@ namespace Schedule.Api.IntegrationTests.Controllers
             var apiResponse = await response.Content.ReadAsAsync<PaginatedResponseDto<GetAllPeriodsResponseDto>>();
 
             //Assert
-            response.StatusCode.ShouldBe(HttpStatusCode.OK);
-            apiResponse.ShouldNotBeNull();
-            apiResponse.Result.ShouldNotBeNull();
-            apiResponse.Succeed.ShouldBeTrue();
-            apiResponse.Result.ShouldNotBeEmpty();
+            AssertPaginatedResponse(response, apiResponse);
         }
 
         [Fact]
@@ -60,10 +55,7 @@ namespace Schedule.Api.IntegrationTests.Controllers
             var apiResponse = await response.Content.ReadAsAsync<ApiResponseDto<GetAllPeriodsResponseDto>>();
 
             //Assert
-            response.StatusCode.ShouldBe(HttpStatusCode.OK);
-            apiResponse.ShouldNotBeNull();
-            apiResponse.Result.ShouldNotBeNull();
-            apiResponse.Succeed.ShouldBeTrue();
+            AssertApiResponse(response, apiResponse);
             apiResponse.Result.Id.ShouldBe(period.Id);
             apiResponse.Result.Name.ShouldBe(dto.Name);
             apiResponse.Result.IsActive.ShouldBe(dto.IsActive);
@@ -80,9 +72,7 @@ namespace Schedule.Api.IntegrationTests.Controllers
             var apiResponse = await response.Content.ReadAsAsync<EmptyResponseDto>();
 
             //Assert
-            response.StatusCode.ShouldBe(HttpStatusCode.OK);
-            apiResponse.ShouldNotBeNull();
-            apiResponse.Succeed.ShouldBeTrue();
+            AssertEmptyResponse(response, apiResponse);
         }
     }
 }

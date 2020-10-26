@@ -2,7 +2,6 @@
 using Schedule.Domain.Dto;
 using Schedule.Domain.Dto.Subjects.Responses;
 using Shouldly;
-using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Xunit;
@@ -15,7 +14,7 @@ namespace Schedule.Api.IntegrationTests.Controllers
         {
         }
 
-        [Fact(Skip = "Missing semester,etc")]
+        [Fact]
         public async Task GetAllSubjects_AtLeastOneSubjectExists_ReturnsValidResponseDto()
         {
             //Arrange
@@ -30,28 +29,24 @@ namespace Schedule.Api.IntegrationTests.Controllers
             var apiResponse = await response.Content.ReadAsAsync<PaginatedResponseDto<GetAllSubjectsResponseDto>>();
 
             //Assert
-            response.StatusCode.ShouldBe(HttpStatusCode.OK);
-            apiResponse.ShouldNotBeNull();
-            apiResponse.Result.ShouldNotBeNull();
-            apiResponse.Succeed.ShouldBeTrue();
-            apiResponse.Result.ShouldNotBeEmpty();
+            AssertPaginatedResponse(response, apiResponse);
         }
 
-        [Fact(Skip = "Missing semester,etc")]
+        [Fact]
         public Task CreateSubject_ValidRequestDto_ReturnsValidResponseDto()
         {
             return CreateSubject();
         }
 
-        [Fact(Skip = "Missing semester,etc")]
+        [Fact]
         public async Task UpdateSubject_ValidRequestDto_ReturnsValidResponseDto()
         {
             //Arrange
             var subject = await CreateSubject();
             var dto = new SaveSubjectRequestDtoBuilder()
-                .WithDefaults(1, "")
-                .WithHours(5, 60)
-                .WithRelations(1, 2, 3)
+                .WithDefaults(689874, "Updated subject")
+                .WithHours(7, 100)
+                .WithRelations(subject.SemesterId, subject.CareerId, subject.ClassroomTypePerSubjectId)
                 .Build();
 
             //Act
@@ -59,20 +54,20 @@ namespace Schedule.Api.IntegrationTests.Controllers
             var apiResponse = await response.Content.ReadAsAsync<ApiResponseDto<GetAllSubjectsResponseDto>>();
 
             //Assert
-            response.StatusCode.ShouldBe(HttpStatusCode.OK);
-            apiResponse.ShouldNotBeNull();
-            apiResponse.Result.ShouldNotBeNull();
-            apiResponse.Succeed.ShouldBeTrue();
-            apiResponse.Result.Id.ShouldBeGreaterThan(subject.Id);
+            AssertApiResponse(response, apiResponse);
+            apiResponse.Result.Id.ShouldBe(subject.Id);
             apiResponse.Result.Name.ShouldBe(dto.Name);
             apiResponse.Result.AcademicHoursPerWeek.ShouldBe(dto.AcademicHoursPerWeek);
             apiResponse.Result.TotalAcademicHours.ShouldBe(dto.TotalAcademicHours);
+            //apiResponse.Result.Career.ShouldNotBeEmpty();
             apiResponse.Result.CareerId.ShouldBe(dto.CareerId);
+            //apiResponse.Result.Semester.ShouldNotBeEmpty();
             apiResponse.Result.SemesterId.ShouldBe(dto.SemesterId);
             apiResponse.Result.ClassroomTypePerSubjectId.ShouldBe(dto.ClassroomTypePerSubjectId);
+            //apiResponse.Result.ClassroomType.ShouldNotBeEmpty();
         }
 
-        [Fact(Skip = "Missing semester,etc")]
+        [Fact]
         public async Task DeleteSubject_ValidRequestDto_ReturnsValidResponseDto()
         {
             //Arrange
@@ -80,13 +75,10 @@ namespace Schedule.Api.IntegrationTests.Controllers
 
             //Act
             var response = await HttpClient.DeleteAsync($"api/Subject/{subject.Id}");
-            var apiResponse = await response.Content.ReadAsAsync<ApiResponseDto<GetAllSubjectsResponseDto>>();
+            var apiResponse = await response.Content.ReadAsAsync<EmptyResponseDto>();
 
             //Assert
-            response.StatusCode.ShouldBe(HttpStatusCode.OK);
-            apiResponse.ShouldNotBeNull();
-            apiResponse.Result.ShouldNotBeNull();
-            apiResponse.Succeed.ShouldBeTrue();
+            AssertEmptyResponse(response, apiResponse);
         }
     }
 }

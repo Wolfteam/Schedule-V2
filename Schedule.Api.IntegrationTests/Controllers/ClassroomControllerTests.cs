@@ -4,7 +4,6 @@ using Schedule.Domain.Dto.Classrooms.Requests;
 using Schedule.Domain.Dto.Classrooms.Responses;
 using Shouldly;
 using System;
-using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Xunit;
@@ -16,6 +15,54 @@ namespace Schedule.Api.IntegrationTests.Controllers
         public ClassroomControllerTests(AppFactory<Startup> factory) : base(factory)
         {
         }
+
+        #region Classroom
+        [Fact]
+        public async Task GetAllClassrooms_AtLeastOneClassroomExists_ReturnsValidResponseDto()
+        {
+            //Arrange
+            var classroom = await CreateClassroom();
+            var dto = new GetAllClassroomsRequestDtoBuilder()
+                .WithDefaults()
+                .Build();
+            var url = SetUrlParameters("api/Classroom", dto);
+
+            //Act
+            var response = await HttpClient.GetAsync(url);
+            var apiResponse = await response.Content.ReadAsAsync<PaginatedResponseDto<GetAllClassroomsResponseDto>>();
+
+            //Assert
+            AssertPaginatedResponse(response, apiResponse);
+        }
+
+        [Fact]
+        public Task CreateClassroom_ValidRequestDto_ReturnsValidResponseDto()
+        {
+            return CreateClassroom();
+        }
+
+        [Fact]
+        public async Task UpdateClassroom_ValidRequestDto_ReturnsValidResponseDto()
+        {
+            //Arrange
+            var classroom = await CreateClassroom();
+            var dto = new SaveClassroomRequestDto
+            {
+                Name = "Lab de computacion",
+                ClassroomSubjectId = classroom.ClassroomSubjectId,
+                Capacity = 60
+            };
+
+            //Act
+            var response = await HttpClient.PutAsJsonAsync($"api/Classroom/{classroom.Id}", dto);
+            var apiResponse = await response.Content.ReadAsAsync<ApiResponseDto<GetAllClassroomsResponseDto>>();
+
+            //Assert
+            AssertApiResponse(response, apiResponse);
+            apiResponse.Result.Id.ShouldBe(classroom.Id);
+            apiResponse.Result.Name.ShouldBe(dto.Name);
+        }
+        #endregion
 
         #region Classroom Types
         [Fact]
@@ -33,11 +80,7 @@ namespace Schedule.Api.IntegrationTests.Controllers
             var apiResponse = await response.Content.ReadAsAsync<PaginatedResponseDto<GetAllClassroomTypesResponseDto>>();
 
             //Assert
-            response.StatusCode.ShouldBe(HttpStatusCode.OK);
-            apiResponse.ShouldNotBeNull();
-            apiResponse.Result.ShouldNotBeNull();
-            apiResponse.Succeed.ShouldBeTrue();
-            apiResponse.Result.ShouldNotBeEmpty();
+            AssertPaginatedResponse(response, apiResponse);
         }
 
         [Fact]
@@ -61,10 +104,7 @@ namespace Schedule.Api.IntegrationTests.Controllers
             var apiResponse = await response.Content.ReadAsAsync<ApiResponseDto<GetAllClassroomTypesResponseDto>>();
 
             //Assert
-            response.StatusCode.ShouldBe(HttpStatusCode.OK);
-            apiResponse.ShouldNotBeNull();
-            apiResponse.Result.ShouldNotBeNull();
-            apiResponse.Succeed.ShouldBeTrue();
+            AssertApiResponse(response, apiResponse);
             apiResponse.Result.Id.ShouldBe(type.Id);
             apiResponse.Result.Name.ShouldBe(dto.Name);
         }
@@ -80,9 +120,7 @@ namespace Schedule.Api.IntegrationTests.Controllers
             var apiResponse = await response.Content.ReadAsAsync<EmptyResponseDto>();
 
             //Assert
-            response.StatusCode.ShouldBe(HttpStatusCode.OK);
-            apiResponse.ShouldNotBeNull();
-            apiResponse.Succeed.ShouldBeTrue();
+            AssertEmptyResponse(response, apiResponse);
         }
         #endregion
     }
