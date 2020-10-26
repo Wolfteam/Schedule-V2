@@ -4,6 +4,43 @@
         <name>Schedule.Api</name>
     </assembly>
     <members>
+        <member name="M:Schedule.Api.Controllers.CareerController.GetAllCareers">
+            <summary>
+            Gets a list of careers
+            </summary>
+            <response code="200">A list of careers</response>
+            <response code="400">If some of the properties in the request are not valid</response>
+            <returns>A list of careers</returns>
+        </member>
+        <member name="M:Schedule.Api.Controllers.CareerController.CreateCareer(Schedule.Domain.Dto.Careers.Requests.SaveCareerRequestDto)">
+            <summary>
+            Creates a new career
+            </summary>
+            <param name="dto">The request</param>
+            <response code="200">The created career</response>
+            <response code="400">If some of the properties in the request are not valid or if the career already exists</response>
+            <returns>The created career</returns>
+        </member>
+        <member name="M:Schedule.Api.Controllers.CareerController.UpdateCareer(System.Int64,Schedule.Domain.Dto.Careers.Requests.SaveCareerRequestDto)">
+            <summary>
+            Updates a  career
+            </summary>
+            <param name="id">The career id</param>
+            <param name="dto">The request</param>
+            <response code="200">The updated career</response>
+            <response code="400">If some of the properties in the request are not valid or if the career already exists</response>
+            <response code="404">If the career was not found</response>
+            <returns>The updated career</returns>
+        </member>
+        <member name="M:Schedule.Api.Controllers.CareerController.DeleteCareer(System.Int64)">
+            <summary>
+            Deletes a career
+            </summary>
+            <param name="id">The career id</param>
+            <response code="200">The result of the operation</response>
+            <response code="404">If the career was not found</response>
+            <returns>The result of the operation</returns>
+        </member>
         <member name="M:Schedule.Api.Controllers.ClassroomController.GetAllClassrooms(Schedule.Domain.Dto.Classrooms.Requests.GetAllClassroomsRequestDto)">
             <summary>
             Gets a paginated list of classrooms
@@ -126,6 +163,43 @@
             <response code="200">The active period or null</response>
             <returns>The active period or null</returns>
         </member>
+        <member name="M:Schedule.Api.Controllers.SemesterController.GetAllSemesters">
+            <summary>
+            Gets a list of semesters
+            </summary>
+            <response code="200">A list of semesters</response>
+            <returns>A list of semesters</returns>
+        </member>
+        <member name="M:Schedule.Api.Controllers.SemesterController.CreateSemester(Schedule.Domain.Dto.Semesters.Requests.SaveSemesterRequestDto)">
+            <summary>
+            Creates a new semester
+            </summary>
+            <param name="dto">The request</param>
+            <response code="200">The created semester</response>
+            <response code="400">If some of the properties in the request are not valid</response>
+            <response code="404">If the school does not exists</response>
+            <returns>The created semester</returns>
+        </member>
+        <member name="M:Schedule.Api.Controllers.SemesterController.UpdateSemester(System.Int64,Schedule.Domain.Dto.Semesters.Requests.SaveSemesterRequestDto)">
+            <summary>
+            Updates a  semester
+            </summary>
+            <param name="id">The semester id</param>
+            <param name="dto">The request</param>
+            <response code="200">The updated semester</response>
+            <response code="400">If some of the properties in the request are not valid</response>
+            <response code="404">If the semester was not found</response>
+            <returns>The updated semester</returns>
+        </member>
+        <member name="M:Schedule.Api.Controllers.SemesterController.DeleteSemester(System.Int64)">
+            <summary>
+            Deletes a semester
+            </summary>
+            <param name="id">The semester id</param>
+            <response code="200">The result of the operation</response>
+            <response code="404">If the semester was not found</response>
+            <returns>The result of the operation</returns>
+        </member>
         <member name="M:Schedule.Api.Controllers.SubjectController.GetAllSubjects(Schedule.Domain.Dto.Subjects.Requests.GetAllSubjectsRequestDto)">
             <summary>
             Gets a paginated list of subjects
@@ -169,7 +243,6 @@
             <summary>
             Gets a paginated list of teachers
             </summary>
-            <param name="dto">The request filter</param>
             <response code="200">A paginated list of teachers</response>
             <response code="400">If some of the properties in the request are not valid</response>
             <returns>A paginated list of teachers</returns>
@@ -227,7 +300,6 @@
             <summary>
             Gets a paginated list of priority
             </summary>
-            <param name="dto">The request filter</param>
             <response code="200">A paginated list of priority</response>
             <response code="400">If some of the properties in the request are not valid</response>
             <returns>A paginated list of priority</returns>

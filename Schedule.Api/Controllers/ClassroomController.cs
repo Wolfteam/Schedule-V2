@@ -13,10 +13,10 @@ using Schedule.Application.Classrooms.Queries.GetAllTypes;
 using Schedule.Domain.Dto;
 using Schedule.Domain.Dto.Classrooms.Requests;
 using Schedule.Domain.Dto.Classrooms.Responses;
-using System.Net.Mime;
-using System.Threading.Tasks;
 using Schedule.Domain.Enums;
 using Schedule.Shared.Authorization;
+using System.Net.Mime;
+using System.Threading.Tasks;
 
 namespace Schedule.Api.Controllers
 {

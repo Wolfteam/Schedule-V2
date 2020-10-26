@@ -35,7 +35,6 @@ namespace Schedule.Api.Controllers
         /// <summary>
         /// Gets a paginated list of teachers
         /// </summary>
-        /// <param name="dto">The request filter</param>
         /// <response code="200">A paginated list of teachers</response>
         /// <response code="400">If some of the properties in the request are not valid</response>
         /// <returns>A paginated list of teachers</returns>
@@ -171,7 +170,6 @@ namespace Schedule.Api.Controllers
         /// <summary>
         /// Gets a paginated list of priority
         /// </summary>
-        /// <param name="dto">The request filter</param>
         /// <response code="200">A paginated list of priority</response>
         /// <response code="400">If some of the properties in the request are not valid</response>
         /// <returns>A paginated list of priority</returns>

@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Schedule.Application.Subjects.Commands.Create;
 using Schedule.Application.Subjects.Commands.Delete;
+using Schedule.Application.Subjects.Commands.Update;
 using Schedule.Application.Subjects.Queries.GetAll;
 using Schedule.Domain.Dto;
 using Schedule.Domain.Dto.Subjects.Requests;
@@ -78,7 +79,7 @@ namespace Schedule.Api.Controllers
         public async Task<IActionResult> UpdateSubject(long id, SaveSubjectRequestDto dto)
         {
             Logger.LogInformation($"{nameof(UpdateSubject)}: Updating subjectId = {id}...");
-            var response = await Mediator.Send(new CreateSubjectCommand(dto));
+            var response = await Mediator.Send(new UpdateSubjectCommand(id, dto));
 
             Logger.LogInformation($"{nameof(UpdateSubject)}: SubjectId = {id} was successfully updated");
             return Ok(response);
