@@ -18,6 +18,8 @@ namespace Schedule.IdentityServer
         //Add-Migration InitConfigDb -Context ConfigurationDbContext -OutputDir Migrations/IdentityServer/ConfigurationDb
         //Add-Migration InitPersistedDb -Context PersistedGrantDbContext -OutputDir Migrations/IdentityServer/PersistedDb
         //Add-Migration InitAspIdentity -Context AspIdentityDbContext -OutputDir Migrations/AspIdentity
+        //TODO: GOOGLE AUTH
+        //TODO: REACT VIEW
 
         public Startup(IConfiguration configuration, IWebHostEnvironment environment)
         {

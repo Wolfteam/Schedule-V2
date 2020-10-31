@@ -34,6 +34,21 @@ namespace Schedule.Api.IntegrationTests.Controllers
         }
 
         [Fact]
+        public async Task GetPeriod_PeriodExists_ReturnsValidResponseDto()
+        {
+            //Arrange
+            var period = await CreatePeriod();
+
+            //Act
+            var response = await HttpClient.GetAsync($"api/Period/{period.Id}");
+            var apiResponse = await response.Content.ReadAsAsync<ApiResponseDto<GetAllPeriodsResponseDto>>();
+
+            //Assert
+            AssertApiResponse(response, apiResponse);
+            apiResponse.Result.Id.ShouldBe(period.Id);
+        }
+
+        [Fact]
         public Task CreatePeriod_ValidRequestDto_ReturnsValidResponseDto()
         {
             return CreatePeriod();

@@ -33,6 +33,21 @@ namespace Schedule.Api.IntegrationTests.Controllers
         }
 
         [Fact]
+        public async Task GetSubject_SubjectExists_ReturnsValidResponseDto()
+        {
+            //Arrange
+            var subject = await CreateSubject();
+
+            //Act
+            var response = await HttpClient.GetAsync($"api/Subject/{subject.Id}");
+            var apiResponse = await response.Content.ReadAsAsync<ApiResponseDto<GetAllSubjectsResponseDto>>();
+
+            //Assert
+            AssertApiResponse(response, apiResponse);
+            apiResponse.Result.Id.ShouldBe(subject.Id);
+        }
+
+        [Fact]
         public Task CreateSubject_ValidRequestDto_ReturnsValidResponseDto()
         {
             return CreateSubject();

@@ -6,6 +6,7 @@ using Schedule.Application.Periods.Commands.Create;
 using Schedule.Application.Periods.Commands.Delete;
 using Schedule.Application.Periods.Commands.Update;
 using Schedule.Application.Periods.Queries.Current;
+using Schedule.Application.Periods.Queries.Get;
 using Schedule.Application.Periods.Queries.GetAll;
 using Schedule.Domain.Dto;
 using Schedule.Domain.Dto.Periods.Requests;
@@ -14,7 +15,6 @@ using Schedule.Domain.Enums;
 using Schedule.Shared.Authorization;
 using System.Net.Mime;
 using System.Threading.Tasks;
-using Schedule.Application.Periods.Queries.Get;
 
 namespace Schedule.Api.Controllers
 {

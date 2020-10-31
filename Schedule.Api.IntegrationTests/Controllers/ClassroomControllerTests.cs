@@ -36,6 +36,21 @@ namespace Schedule.Api.IntegrationTests.Controllers
         }
 
         [Fact]
+        public async Task GetClassroom_ClassroomExists_ReturnsValidResponseDto()
+        {
+            //Arrange
+            var classroom = await CreateClassroom();
+
+            //Act
+            var response = await HttpClient.GetAsync($"api/Classroom/{classroom.Id}");
+            var apiResponse = await response.Content.ReadAsAsync<ApiResponseDto<GetAllClassroomsResponseDto>>();
+
+            //Assert
+            AssertApiResponse(response, apiResponse);
+            apiResponse.Result.Id.ShouldBe(classroom.Id);
+        }
+
+        [Fact]
         public Task CreateClassroom_ValidRequestDto_ReturnsValidResponseDto()
         {
             return CreateClassroom();
@@ -81,6 +96,21 @@ namespace Schedule.Api.IntegrationTests.Controllers
 
             //Assert
             AssertPaginatedResponse(response, apiResponse);
+        }
+
+        [Fact]
+        public async Task GetClassroomType_ClassroomTypeExists_ReturnsValidResponseDto()
+        {
+            //Arrange
+            var classroomType = await CreateClassroomType();
+
+            //Act
+            var response = await HttpClient.GetAsync($"api/Classroom/Types/{classroomType.Id}");
+            var apiResponse = await response.Content.ReadAsAsync<ApiResponseDto<GetAllClassroomTypesResponseDto>>();
+
+            //Assert
+            AssertApiResponse(response, apiResponse);
+            apiResponse.Result.Id.ShouldBe(classroomType.Id);
         }
 
         [Fact]

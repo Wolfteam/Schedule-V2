@@ -30,6 +30,21 @@ namespace Schedule.Api.IntegrationTests.Controllers
         }
 
         [Fact]
+        public async Task GetCareer_CareerExists_ReturnsValidResponseDto()
+        {
+            //Arrange
+            var career = await CreateCareer();
+
+            //Act
+            var response = await HttpClient.GetAsync($"api/Career/{career.Id}");
+            var apiResponse = await response.Content.ReadAsAsync<ApiResponseDto<GetAllCareersResponseDto>>();
+
+            //Assert
+            AssertApiResponse(response, apiResponse);
+            apiResponse.Result.Id.ShouldBe(career.Id);
+        }
+
+        [Fact]
         public async Task CreateCareer_ValidRequestDto_ReturnsValidResponseDto()
         {
             //Arrange

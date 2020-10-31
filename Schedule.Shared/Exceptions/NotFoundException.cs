@@ -31,7 +31,7 @@ namespace Schedule.Shared.Exceptions
             ErrorMessageId = errorMessageId;
         }
 
-        public NotFoundException(string name, long id, AppMessageType errorMessageId)
+        public NotFoundException(string name, long id, AppMessageType errorMessageId = AppMessageType.SchApiNotFound)
             : base($"Entity = {name} associated to id = {id} was not found.")
         {
             ErrorMessageId = errorMessageId;

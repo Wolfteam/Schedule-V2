@@ -30,6 +30,21 @@ namespace Schedule.Api.IntegrationTests.Controllers
         }
 
         [Fact]
+        public async Task GetSemester_SemesterExists_ReturnsValidResponseDto()
+        {
+            //Arrange
+            var semester = await CreateSemester();
+
+            //Act
+            var response = await HttpClient.GetAsync($"api/Semester/{semester.Id}");
+            var apiResponse = await response.Content.ReadAsAsync<ApiResponseDto<GetAllSemestersResponseDto>>();
+
+            //Assert
+            AssertApiResponse(response, apiResponse);
+            apiResponse.Result.Id.ShouldBe(semester.Id);
+        }
+
+        [Fact]
         public Task CreateSemester_ValidRequestDto_ReturnsValidResponseDto()
         {
             return CreateSemester();

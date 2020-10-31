@@ -40,6 +40,21 @@ namespace Schedule.Api.IntegrationTests.Controllers
         }
 
         [Fact]
+        public async Task GetTeacher_TeacherExists_ReturnsValidResponseDto()
+        {
+            //Arrange
+            var teacher = await CreateTeacher();
+
+            //Act
+            var response = await HttpClient.GetAsync($"api/Teacher/{teacher.Id}");
+            var apiResponse = await response.Content.ReadAsAsync<ApiResponseDto<GetAllTeacherResponseDto>>();
+
+            //Assert
+            AssertApiResponse(response, apiResponse);
+            apiResponse.Result.Id.ShouldBe(teacher.Id);
+        }
+
+        [Fact]
         public Task CreateTeacher_ValidRequestDto_ReturnsValidResponseDto()
         {
             return CreateTeacher();
