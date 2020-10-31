@@ -59,7 +59,7 @@ namespace Schedule.Api.Controllers
         /// <response code="404">If no  classroom was found</response>
         /// <returns>The classroom</returns>
         [HttpGet("{id}")]
-        [ScheduleHasPermission(SchedulePermissionType.ReadCareer)]
+        [ScheduleHasPermission(SchedulePermissionType.ReadClassroom)]
         [ProducesResponseType(typeof(ApiResponseDto<GetAllClassroomsResponseDto>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(EmptyResponseDto), StatusCodes.Status404NotFound)]
         [Produces(MediaTypeNames.Application.Json)]
@@ -171,7 +171,7 @@ namespace Schedule.Api.Controllers
         /// <response code="404">If no  classroom type was found</response>
         /// <returns>The classroom type</returns>
         [HttpGet("Types/{id}")]
-        [ScheduleHasPermission(SchedulePermissionType.ReadCareer)]
+        [ScheduleHasPermission(SchedulePermissionType.ReadClassroom)]
         [ProducesResponseType(typeof(ApiResponseDto<GetAllClassroomTypesResponseDto>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(EmptyResponseDto), StatusCodes.Status404NotFound)]
         [Produces(MediaTypeNames.Application.Json)]

@@ -52,7 +52,7 @@ namespace Schedule.Api.Controllers
         /// <response code="404">If no  semester was found</response>
         /// <returns>The semester</returns>
         [HttpGet("{id}")]
-        [ScheduleHasPermission(SchedulePermissionType.ReadCareer)]
+        [ScheduleHasPermission(SchedulePermissionType.ReadSemester)]
         [ProducesResponseType(typeof(ApiResponseDto<GetAllSemestersResponseDto>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(EmptyResponseDto), StatusCodes.Status404NotFound)]
         [Produces(MediaTypeNames.Application.Json)]

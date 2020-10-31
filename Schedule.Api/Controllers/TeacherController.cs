@@ -62,7 +62,7 @@ namespace Schedule.Api.Controllers
         /// <response code="404">If no  teacher was found</response>
         /// <returns>The teacher</returns>
         [HttpGet("{id}")]
-        [ScheduleHasPermission(SchedulePermissionType.ReadSubject)]
+        [ScheduleHasPermission(SchedulePermissionType.ReadTeacher)]
         [ProducesResponseType(typeof(ApiResponseDto<GetAllTeacherResponseDto>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(EmptyResponseDto), StatusCodes.Status404NotFound)]
         [Produces(MediaTypeNames.Application.Json)]
@@ -218,7 +218,7 @@ namespace Schedule.Api.Controllers
         /// <response code="404">If no  priority was found</response>
         /// <returns>The priority</returns>
         [HttpGet("Priorities/{id}")]
-        [ScheduleHasPermission(SchedulePermissionType.ReadSubject)]
+        [ScheduleHasPermission(SchedulePermissionType.ReadTeacher)]
         [ProducesResponseType(typeof(ApiResponseDto<GetAllPrioritiesResponseDto>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(EmptyResponseDto), StatusCodes.Status404NotFound)]
         [Produces(MediaTypeNames.Application.Json)]

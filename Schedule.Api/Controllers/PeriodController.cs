@@ -53,7 +53,7 @@ namespace Schedule.Api.Controllers
         /// <response code="404">If no  period was found</response>
         /// <returns>The period</returns>
         [HttpGet("{id}")]
-        [ScheduleHasPermission(SchedulePermissionType.ReadCareer)]
+        [ScheduleHasPermission(SchedulePermissionType.ReadPeriod)]
         [ProducesResponseType(typeof(ApiResponseDto<GetAllPeriodsResponseDto>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(EmptyResponseDto), StatusCodes.Status404NotFound)]
         [Produces(MediaTypeNames.Application.Json)]
