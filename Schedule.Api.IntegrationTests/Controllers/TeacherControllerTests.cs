@@ -148,6 +148,21 @@ namespace Schedule.Api.IntegrationTests.Controllers
         }
 
         [Fact]
+        public async Task GetPriority_PriorityExists_ReturnsValidResponseDto()
+        {
+            //Arrange
+            var priority = await CreatePriority();
+
+            //Act
+            var response = await HttpClient.GetAsync($"api/Teacher/Priorities/{priority.Id}");
+            var apiResponse = await response.Content.ReadAsAsync<ApiResponseDto<GetAllPrioritiesResponseDto>>();
+
+            //Assert
+            AssertApiResponse(response, apiResponse);
+            apiResponse.Result.Id.ShouldBe(priority.Id);
+        }
+
+        [Fact]
         public Task CreatePriority_ValidRequestDto_ReturnsValidResponseDto()
         {
             return CreatePriority();
