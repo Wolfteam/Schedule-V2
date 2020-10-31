@@ -47,7 +47,34 @@ interface ITranslations {
     unknownError: string;
     availabilityWasSaved: string;
     availabilitiesAreNotValid: string;
-
+    identifierNumber: string;
+    name: string;
+    priority: string;
+    code: string;
+    totalAcademicHours: string;
+    academicHoursPerWeeek: string;
+    subjectType: string;
+    semester: string;
+    career: string;
+    pageXofX: string;
+    totalResults: string;
+    xItemsSelected: string;
+    xItemsWereDeleted: string;
+    notAllSelectedItemsWereDeleted: string;
+    cancel: string;
+    yes: string;
+    ok: string;
+    deleteSubjects: string;
+    deleteItemsConfirm: string;
+    search: string;
+    itemsPerPage: string;
+    invalidName: string;
+    invalidCode: string;
+    invalidHours: string;
+    addSubject: string;
+    editSubject: string;
+    subjectWasSaved: string;
+    classroomType: string;
     errorCodes: IAppMessageTranslations;
 }
 
@@ -116,6 +143,34 @@ const enTrans: ITranslations = {
     unknownError: 'Unknown error',
     availabilityWasSaved: 'Availability was successfully saved',
     availabilitiesAreNotValid: 'One or more availabilities are not valid, please verify',
+    identifierNumber: 'Identification number',
+    name: 'Name',
+    priority: 'Priority',
+    code: 'Code',
+    totalAcademicHours: 'Total academic hours',
+    academicHoursPerWeeek: 'Academic hours per week',
+    subjectType: 'Subject type',
+    semester: 'Semester',
+    career: 'Career',
+    pageXofX: 'Page {0} of {1}',
+    totalResults: 'Total results',
+    xItemsSelected: '{0} item(s) selected',
+    xItemsWereDeleted: '{0} {1} were successfully deleted',
+    notAllSelectedItemsWereDeleted: 'Not all selected items were deleted',
+    cancel: 'Cancel',
+    yes: 'Yes',
+    ok: 'Ok',
+    deleteSubjects: 'Delete subjects',
+    deleteItemsConfirm: 'Are you sure you wanna delete the {0} selected item(s) ?',
+    search: 'Search',
+    itemsPerPage: 'Items per page',
+    invalidName: 'Invalid name',
+    invalidCode: 'Invalid code',
+    invalidHours: 'Invalid hours',
+    addSubject: 'Add subject',
+    editSubject: 'Edit subject',
+    subjectWasSaved: 'Subject was successfully saved',
+    classroomType: 'Classrooom type',
     errorCodes: {
         SCH_100: 'Invalid api request',
         SCH_101: 'Unknown error occurred in api',
@@ -179,6 +234,34 @@ const esTrans: ITranslations = {
     unknownError: 'Unknown error',
     availabilityWasSaved: 'La disponibilidad fue guardada exitosamente',
     availabilitiesAreNotValid: 'Una o mas disponibilidades no son válidas por favor verifique',
+    identifierNumber: 'Número de identificación',
+    name: 'Nombre',
+    priority: 'Prioridad',
+    code: 'Código',
+    totalAcademicHours: 'Total horas académicas',
+    academicHoursPerWeeek: 'Horas académicas semanales',
+    subjectType: 'Tipo materia',
+    semester: 'Semestre',
+    career: 'Carrera',
+    pageXofX: 'Página {0} de {1}',
+    totalResults: 'Total de resultados',
+    xItemsSelected: '{0} fila(s) seleccionadas',
+    xItemsWereDeleted: '{0} {1} fueron borrados exitosamente',
+    notAllSelectedItemsWereDeleted: 'No todos los items seleccionados fueron borrados',
+    cancel: 'Cancelar',
+    yes: 'Si',
+    ok: 'Ok',
+    deleteSubjects: 'Borrar materias',
+    deleteItemsConfirm: '¿ Estás seguro que deseas borrar los {0} item(s) seleccionados ?',
+    search: 'Buscar',
+    itemsPerPage: 'Items por página',
+    invalidName: 'El nombre no es válido',
+    invalidCode: 'El código no es válido',
+    invalidHours: 'Las horas no son válidas',
+    addSubject: 'Agregar materia',
+    editSubject: 'Editar materia',
+    subjectWasSaved: 'La materia fue creada exitosamente',
+    classroomType: 'Tipos de aula',
     errorCodes: {
         SCH_100: 'La solicitud hecha a la api no es válida',
         SCH_101: 'Un error desconocido ocurrió en la api',
