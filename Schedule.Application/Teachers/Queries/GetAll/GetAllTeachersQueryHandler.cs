@@ -4,6 +4,7 @@ using Schedule.Application.Interfaces.Managers;
 using Schedule.Application.Interfaces.Services;
 using Schedule.Domain.Dto;
 using Schedule.Domain.Dto.Teachers.Responses;
+using Schedule.Domain.Entities;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -27,7 +28,7 @@ namespace Schedule.Application.Teachers.Queries.GetAll
         public override async Task<ApiListResponseDto<GetAllTeacherResponseDto>> Handle(GetAllTeachersQuery request, CancellationToken cancellationToken)
         {
             var response = new ApiListResponseDto<GetAllTeacherResponseDto>();
-            var teachers = await AppDataService.Teachers.GetAllAsync(t => t.SchoolId == AppUserManager.SchoolId);
+            var teachers = await AppDataService.Teachers.GetAllAsync(t => t.SchoolId == AppUserManager.SchoolId, includeProperties: nameof(Teacher.Priority));
             response.Result = _mapper.Map<List<GetAllTeacherResponseDto>>(teachers.OrderBy(t => t.FirstName));
             response.Succeed = true;
             return response;

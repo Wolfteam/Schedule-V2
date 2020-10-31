@@ -48,6 +48,6 @@ namespace Schedule.Application
         }
 
         public virtual bool ValidateOrderByProperties(string prop)
-            => OrderByOnLy.Contains(prop, StringComparer.OrdinalIgnoreCase);
+            => OrderByOnLy.Any(orderBy => orderBy.Equals(prop, StringComparison.OrdinalIgnoreCase));
     }
 }
