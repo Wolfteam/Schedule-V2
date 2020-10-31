@@ -123,11 +123,7 @@ function Login() {
 
         const response = await login(formState.username, formState.password, formState.rememberMe);
         if (!response.succeed) {
-            console.log(response);
-            enqueueSnackbar(getErrorCodeTranslation(response.errorMessageId), {
-                variant: 'error',
-                autoHideDuration: 3000,
-            });
+            enqueueSnackbar(getErrorCodeTranslation(response.errorMessageId), { variant: 'error', });
             setFormState({ ...formState, isBusy: false });
             return;
         }
@@ -137,7 +133,7 @@ function Login() {
                 username: formState.username,
                 isAuthenticated: true
             });
-            history.replace(routes.HomePath);
+            history.replace(routes.homePath);
         }
     };
 

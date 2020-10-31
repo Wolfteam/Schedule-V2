@@ -48,8 +48,6 @@ function CurrentAcademicPeriod() {
         });
     }, []);
 
-    console.log("rendering academic period");
-
     const periodElement = state.isBusy
         ? <CircularProgress />
         : <h2 className={classes.period}>{state.period}</h2>;
@@ -71,4 +69,4 @@ function CurrentAcademicPeriod() {
     </Card>;
 }
 
-export default CurrentAcademicPeriod
+export default React.memo(CurrentAcademicPeriod);

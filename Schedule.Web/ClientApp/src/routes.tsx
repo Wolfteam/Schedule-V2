@@ -1,4 +1,4 @@
-import React, { Fragment, useContext } from "react";
+import React, { useContext } from "react";
 import { Switch, Route, useRouteMatch, Redirect } from "react-router-dom";
 
 import { AuthContext } from "./contexts/auth-context";
@@ -12,17 +12,18 @@ const Priorities = React.lazy(() => import("./pages/others/priorities"));
 const Sections = React.lazy(() => import("./pages/others/sections"));
 const Semesters = React.lazy(() => import("./pages/others/semesters"));
 const SubjectClassroomTypes = React.lazy(() => import("./pages/others/subject-classroom-types"));
-const Subjects = React.lazy(() => import("./pages/others/subjects"));
+const Subjects = React.lazy(() => import("./pages/others/subjects/subjects"));
 const Teachers = React.lazy(() => import("./pages/others/teachers"));
 const TeacherSubject = React.lazy(() => import("./pages/others/teachers-subjects"));
 const Users = React.lazy(() => import("./pages/others/users"));
 const Home = React.lazy(() => import("./pages/home/home"));
 const Login = React.lazy(() => import("./pages/login/login"));
 const NotFound = React.lazy(() => import("./pages/not-found/not-found"));
+const Subject = React.lazy(() => import("./pages/others/subjects/subject"));
 
-export const LoginPath = '/login';
-export const HomePath = "/";
-export const ChangePasswordPath = "/change-password";
+export const loginPath = '/login';
+export const homePath = "/";
+export const changePasswordPath = "/change-password";
 export const availabilityPath = '/availability';
 export const careersPeriodPath = '/careers-period';
 export const careersPath = '/careers';
@@ -35,6 +36,7 @@ export const subjectsPath = '/subjects';
 export const teachersPerSubjectsPath = '/teachers-subjects';
 export const teachersPath = '/teachers';
 export const usersPath = '/users';
+export const subjectPath = `${subjectsPath}/:id`;
 
 export const AppRoutes: React.FC = () => {
     const [authContext] = useContext(AuthContext);
@@ -48,10 +50,10 @@ export const AppRoutes: React.FC = () => {
 };
 
 const UnauthenticatedAppRoutes: React.FC = () => {
-    const match = useRouteMatch(LoginPath);
+    const match = useRouteMatch(loginPath);
     const route = match?.isExact
-        ? <Route exact path={LoginPath} component={Login} />
-        : <Redirect to={LoginPath} />
+        ? <Route exact path={loginPath} component={Login} />
+        : <Redirect to={loginPath} />
     return <Switch>
         {route}
         <Route path="*" component={NotFound} />
@@ -60,7 +62,7 @@ const UnauthenticatedAppRoutes: React.FC = () => {
 
 const AdminAppRoutes: React.FC = () => {
     return <Switch>
-        <Route exact path={ChangePasswordPath} component={ChangePassword} />
+        <Route exact path={changePasswordPath} component={ChangePassword} />
         <Route exact path={availabilityPath} component={Availability} />
         <Route exact path={careersPeriodPath} component={CareersPeriod} />
         <Route exact path={careersPath} component={Careers} />
@@ -69,20 +71,21 @@ const AdminAppRoutes: React.FC = () => {
         <Route exact path={sectionsPath} component={Sections} />
         <Route exact path={semestersPath} component={Semesters} />
         <Route exact path={sbujectClassroomTypePath} component={SubjectClassroomTypes} />
+        <Route exact path={subjectPath} component={Subject} />
         <Route exact path={subjectsPath} component={Subjects} />
         <Route exact path={teachersPerSubjectsPath} component={TeacherSubject} />
         <Route exact path={teachersPath} component={Teachers} />
         <Route exact path={usersPath} component={Users} />
-        <Route exact path={HomePath} component={Home} />
+        <Route exact path={homePath} component={Home} />
         <Route path="*" component={NotFound} />
     </Switch>;
 };
 
 const UserAppRoutes: React.FC = () => {
     return <Switch>
-        <Route exact path={ChangePasswordPath} component={ChangePassword} />
+        <Route exact path={changePasswordPath} component={ChangePassword} />
         <Route exact path={availabilityPath} component={Availability} />
-        <Route exact path={HomePath} component={Home} />
+        <Route exact path={homePath} component={Home} />
         <Route path="*" component={NotFound} />
     </Switch>;
 };

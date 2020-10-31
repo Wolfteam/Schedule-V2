@@ -3,7 +3,7 @@ import { CircularProgress, Container, Grid } from '@material-ui/core';
 
 import { AuthContext } from '../../contexts/auth-context';
 import { isUserLogged } from '../../services/account.service';
-import { AppRoutes, HomePath, LoginPath } from '../../routes';
+import { AppRoutes, homePath, loginPath } from '../../routes';
 import { useHistory } from 'react-router-dom';
 
 interface State {
@@ -17,23 +17,48 @@ function AutoLogin() {
     });
     const history = useHistory();
 
-    useEffect(() => {
-        isUserLogged().then(response => {
-            if (!response.result) {
-                setState({ isCheckingAuth: false });
-                return;
-            }
-            const user = response.result;
-            const pathToUse = history.location.pathname !== LoginPath ? history.location.pathname : HomePath;
+    const checkCurrentUser = async () => {
+        const isInLoginPath = history.location.pathname !== loginPath;
+        const pathToUse = isInLoginPath ? history.location.pathname : homePath;
+        const response = await isUserLogged();
+        const user = response.result;
 
-            console.log("Auto login result", user);
-            if (setAuthContext) {
-                setAuthContext({ username: user.username, isAuthenticated: true });
+        if (!user) {
+            console.log("There is no user, session might have expired...");
+            if (!isInLoginPath) {
+                history.replace(loginPath);
+                setAuthContext({
+                    isAuthenticated: false,
+                    username: ''
+                });
             }
             setState({ isCheckingAuth: false });
-            history.replace(pathToUse);
-        });
+            return;
+        }
+
+        console.log("User is logged in", user);
+        if (setAuthContext) {
+            setAuthContext({ username: user.username, isAuthenticated: true });
+        }
+        setState({ isCheckingAuth: false });
+        history.replace(pathToUse);
+    };
+
+    useEffect(() => {
+        checkCurrentUser();
     }, []);
+
+    useEffect(() => {
+        if (!authContext.isAuthenticated)
+            return;
+
+        const timeout = setInterval(async () => {
+            console.log("Checking if im logged");
+            await checkCurrentUser();
+        }, 1000 * 30);
+
+        return () => clearInterval(timeout);
+    }, [authContext.isAuthenticated]);
 
     const loading = <Container>
         <Grid container justify="center" alignItems="center" direction="column" style={{ minHeight: '60vh' }}>
@@ -54,4 +79,4 @@ function AutoLogin() {
     return body;
 }
 
-export default AutoLogin
+export default React.memo(AutoLogin);

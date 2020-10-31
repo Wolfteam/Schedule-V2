@@ -209,7 +209,7 @@ class Drawer extends PureComponent<Props, State> {
                 text: translations.home,
                 icon: faHome,
                 subItems: [],
-                route: routes.HomePath
+                route: routes.homePath
             },
             {
                 id: 2,
@@ -308,7 +308,7 @@ class Drawer extends PureComponent<Props, State> {
                 text: translations.changePassword,
                 icon: faLock,
                 subItems: [],
-                route: routes.ChangePasswordPath
+                route: routes.changePasswordPath
             }
         ];
 

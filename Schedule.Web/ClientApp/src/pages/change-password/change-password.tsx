@@ -113,7 +113,7 @@ function ChangePassword() {
 
     return <Container >
         <CssBaseline />
-        <PageTitle title="Cambio de contraseña" />
+        <PageTitle title="Cambio de contraseña" showLoading={false} />
         <Grid container justify="center" alignItems="center">
             <Grid item sm={6}>
                 <Card className={classes.card}>

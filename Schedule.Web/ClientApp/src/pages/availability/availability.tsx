@@ -149,12 +149,9 @@ function Availability() {
         !state.isLoadingTeachers &&
         !state.isLoadingAvailability;
 
-    const loading = state.isLoadingAvailability ? <LinearProgress /> : null;
-
     return <Container>
         <CssBaseline />
-        <PageTitle title={translations.loadAvailability} />
-        {loading}
+        <PageTitle title={translations.loadAvailability} showLoading={state.isLoadingAvailability} />
         <Grid container justify="center">
             <Grid item xs={12} md={4}>
                 <AvailabilityTeachersCard

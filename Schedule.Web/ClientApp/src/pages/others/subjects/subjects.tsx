@@ -1,0 +1,251 @@
+import React, { useCallback, useEffect, useState } from 'react';
+import {
+  Checkbox,
+  Container,
+  Grid,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableRow
+} from '@material-ui/core';
+import { String } from 'typescript-string-operations';
+import PageTitle from '../../../components/page-title/page-title';
+import CustomFab from '../../../components/others/custom-fab';
+import CustomTableSearch from '../../../components/custom-table/custom-table-search';
+import CustomTableHeader, { Header } from '../../../components/custom-table/custom-table-header';
+import CustomTablePagination from '../../../components/custom-table/custom-table-pagination';
+import CustomTableToolbar from '../../../components/custom-table/custom-table-toolbar';
+import { IGetAllSubjectResponseDto, IPaginatedRequestDto, buildPaginatedRequest } from '../../../models';
+import translations, { getErrorCodeTranslation } from '../../../services/translations';
+import { useSnackbar } from 'notistack';
+import { getAllSubjects, deleteSubject } from '../../../services/subject.service';
+import { useHistory } from 'react-router-dom';
+import { subjectsPath } from '../../../routes';
+
+interface State {
+  isBusy: boolean;
+  currentPage: number;
+  totalPages: number;
+  itemsPerPage: number;
+  totalRecords: number;
+  orderBy: string;
+  orderByAsc: boolean;
+  searchTerm: string;
+  subjects: IGetAllSubjectResponseDto[];
+  searchTimeout: number;
+}
+
+function Subjects() {
+  const [state, setState] = useState<State>({
+    isBusy: true,
+    currentPage: 1,
+    totalPages: 0,
+    itemsPerPage: 5,
+    totalRecords: 0,
+    orderBy: 'Code',
+    orderByAsc: true,
+    searchTerm: '',
+    subjects: [],
+    searchTimeout: 0
+  });
+
+  const [selectedSubjects, setSelectedSubjects] = useState<number[]>([]);
+
+  const { enqueueSnackbar } = useSnackbar();
+
+  const history = useHistory();
+
+  const refreshSubjects = async (request: IPaginatedRequestDto) => {
+    const response = await getAllSubjects(request);
+    if (!response.succeed) {
+      enqueueSnackbar(getErrorCodeTranslation(response.errorMessageId), { variant: 'error' });
+      setState({ ...state, isBusy: false });
+      return;
+    }
+    setState({
+      ...state,
+      isBusy: false,
+      currentPage: response.currentPage,
+      itemsPerPage: response.take,
+      subjects: response.result,
+      totalPages: response.totalPages,
+      totalRecords: response.totalRecords
+    });
+  };
+
+  useEffect(() => {
+    const request = buildPaginatedRequest(state.currentPage, state.itemsPerPage, state.searchTerm, state.orderBy, state.orderByAsc);
+    refreshSubjects(request);
+  }, [state.currentPage, state.itemsPerPage, state.searchTerm, state.orderBy, state.orderByAsc]);
+
+  const sortDirectionChanged = (orderBy: string, orderByAsc: boolean) => {
+    setState({ ...state, isBusy: true, orderBy: orderBy, orderByAsc: orderByAsc });
+  };
+
+  const itemsPerPageChanged = (newVal: number) => {
+    setState({ ...state, isBusy: true, itemsPerPage: newVal });
+  };
+
+  //TODO: HANDLE THE REST OF THE SEARCH COLUMNS WITH A VIEW
+  const searchTermChanged = (newVal: string) => {
+    setState({ ...state, isBusy: true, searchTerm: newVal });
+  };
+
+  const pageChanged = (newVal: number) => {
+    setState({ ...state, isBusy: true, currentPage: newVal });
+  };
+
+  const subjectSelectionChanged = (id: number, isSelected: boolean) => {
+    let newValues: number[] = [];
+    if (!isSelected) {
+      newValues = selectedSubjects.filter(el => el !== id);
+    } else {
+      newValues = selectedSubjects.concat(id);
+    }
+    setSelectedSubjects(newValues);
+  };
+
+  const onEditClick = () => {
+    if (selectedSubjects.length === 0)
+      return;
+
+    const id = selectedSubjects[0];
+    const path = `${subjectsPath}/${id}`;
+    history.push(path);
+  };
+
+  const onDeleteClick = async () => {
+    if (selectedSubjects.length === 0)
+      return;
+
+    setState({ ...state, isBusy: true });
+
+    let subjectsNotDeleted = 0;
+    for (let index = 0; index < selectedSubjects.length; index++) {
+      const id = selectedSubjects[index];
+      const response = await deleteSubject(id);
+      if (!response.succeed) {
+        console.log(response);
+        subjectsNotDeleted++;
+      }
+    }
+
+    if (subjectsNotDeleted === 0) {
+      const msg = String.Format(translations.xItemsWereDeleted, selectedSubjects.length, translations.subjects);
+      enqueueSnackbar(msg, { variant: 'success' });
+    } else if (subjectsNotDeleted !== selectedSubjects.length) {
+      enqueueSnackbar(translations.notAllSelectedItemsWereDeleted, { variant: 'warning' });
+    } else {
+      enqueueSnackbar(translations.unknownError, { variant: 'error' });
+    }
+
+    setSelectedSubjects([]);
+    const request = buildPaginatedRequest(state.currentPage, state.itemsPerPage, state.searchTerm, state.orderBy, state.orderByAsc);
+    await refreshSubjects(request);
+  };
+
+  const onFabClick = () => {
+    const path = `${subjectsPath}/0`;
+    history.push(path);
+  };
+
+  const headerCells: Header[] = [
+    {
+      text: '',
+      isOrderable: false
+    },
+    {
+      orderByKey: 'Code',
+      text: translations.code,
+      isOrderable: true
+    },
+    {
+      orderByKey: 'Name',
+      text: translations.name,
+      isOrderable: true
+    },
+    {
+      orderByKey: 'Semester',
+      text: translations.semester,
+      isOrderable: true
+    },
+    {
+      orderByKey: 'Career',
+      text: translations.career,
+      isOrderable: true
+    },
+    {
+      orderByKey: 'SubjectType',
+      text: translations.subjectType,
+      isOrderable: true
+    },
+    {
+      orderByKey: 'AcademicHoursPerWeek',
+      text: translations.academicHoursPerWeeek,
+      isOrderable: true
+    },
+    {
+      orderByKey: 'TotalAcademicHours',
+      text: translations.totalAcademicHours,
+      isOrderable: true
+    },
+  ];
+
+  const rows = state.subjects.map(s => {
+    const isSelected = selectedSubjects.includes(s.id);
+    return <TableRow key={s.id}
+      onClick={() => subjectSelectionChanged(s.id, !isSelected)}
+      style={{ cursor: 'pointer' }}>
+      <TableCell padding="checkbox">
+        <Checkbox checked={isSelected} onChange={(e, isChecked) => subjectSelectionChanged(s.id, isChecked)} />
+      </TableCell>
+      <TableCell align="center">{s.code}</TableCell>
+      <TableCell align="center">{s.name}</TableCell>
+      <TableCell align="center">{s.semester}</TableCell>
+      <TableCell align="center">{s.career}</TableCell>
+      <TableCell align="center">{s.classroomType}</TableCell>
+      <TableCell align="center">{s.academicHoursPerWeek}</TableCell>
+      <TableCell align="center">{s.totalAcademicHours}</TableCell>
+    </TableRow>;
+  });
+
+  return <Container>
+    <PageTitle title={translations.subjects} showLoading={state.isBusy} />
+    <CustomTableToolbar
+      deleteDialogTitle={translations.deleteSubjects}
+      selectedNumberOfItems={selectedSubjects.length}
+      onDeleteClick={onDeleteClick}
+      onEditClick={onEditClick} />
+    <CustomTableSearch
+      searchText={state.searchTerm}
+      isBusy={state.isBusy}
+      onItemsPerPageChanged={itemsPerPageChanged}
+      onSearchTermChanged={searchTermChanged} />
+    <Grid container justify="center" direction="column">
+      <Grid item xs>
+        <TableContainer>
+          <Table size="small">
+            <CustomTableHeader
+              cells={headerCells}
+              orderBy={state.orderBy}
+              orderByAsc={state.orderByAsc}
+              onOrderByChanged={sortDirectionChanged} />
+            <TableBody>
+              {rows}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      </Grid>
+    </Grid>
+    <CustomTablePagination
+      isBusy={state.isBusy}
+      currentPage={state.currentPage}
+      totalPages={state.totalPages}
+      totalRecords={state.totalRecords}
+      onPageChanged={pageChanged} />
+    <CustomFab onClick={onFabClick} />
+  </Container>;
+}
+
+export default Subjects
