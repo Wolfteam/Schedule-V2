@@ -40,6 +40,28 @@ namespace Schedule.Web.Services.Api
             return response;
         }
 
+        public async Task<ApiResponseDto<GetAllSubjectsResponseDto>> GetSubject(long id)
+        {
+            var response = new ApiResponseDto<GetAllSubjectsResponseDto>();
+            try
+            {
+                response = await _subjectApi.GetSubject(id);
+            }
+            catch (ApiException apiEx)
+            {
+                Logger.LogError(apiEx, $"{nameof(GetSubject)}: Api exception occurred");
+                await HandleApiException(apiEx, response);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex, $"{nameof(GetSubject)}: Unknown error occurred");
+                HandleUnknownException(response);
+            }
+
+            Logger.LogInformation($"{nameof(GetSubject)}: Completed.");
+            return response;
+        }
+
         public async Task<ApiResponseDto<GetAllSubjectsResponseDto>> CreateSubject(SaveSubjectRequestDto dto)
         {
             var response = new ApiResponseDto<GetAllSubjectsResponseDto>();

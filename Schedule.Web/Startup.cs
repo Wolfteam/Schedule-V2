@@ -109,6 +109,10 @@ namespace Schedule.Web
         private void RegisterApis(IServiceCollection services)
         {
             var baseAddress = new Uri(Configuration["BaseBackendUrl"]);
+            services.AddRefitClient<ICareerApi>()
+                .ConfigureHttpClient(c => c.BaseAddress = baseAddress)
+                .AddHttpMessageHandler(ResolveApiHandler);
+
             services.AddRefitClient<IClassroomApi>()
                 .ConfigureHttpClient(c => c.BaseAddress = baseAddress)
                 .AddHttpMessageHandler(ResolveApiHandler);
@@ -124,6 +128,10 @@ namespace Schedule.Web
             services.AddRefitClient<ITeacherApi>()
                 .ConfigureHttpClient(c => c.BaseAddress = baseAddress)
                 .AddHttpMessageHandler(ResolveApiHandler);
+
+            services.AddRefitClient<ISemesterApi>()
+                .ConfigureHttpClient(c => c.BaseAddress = baseAddress)
+                .AddHttpMessageHandler(ResolveApiHandler);
         }
 
         private static AuthenticatedHttpClientHandler ResolveApiHandler(IServiceProvider provider)
@@ -135,8 +143,10 @@ namespace Schedule.Web
 
         private void RegisterAppServices(IServiceCollection services)
         {
+            services.AddSingleton<ICareerApiService, CareerApiService>();
             services.AddSingleton<IClassroomApiService, ClassroomApiService>();
             services.AddSingleton<IPeriodApiService, PeriodApiService>();
+            services.AddSingleton<ISemesterApiService, SemesterApiService>();
             services.AddSingleton<ISubjectApiService, SubjectApiService>();
             services.AddSingleton<ITeacherApiService, TeacherApiService>();
         }

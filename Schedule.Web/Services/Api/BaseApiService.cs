@@ -1,6 +1,8 @@
 ﻿using Microsoft.Extensions.Logging;
 using Refit;
 using Schedule.Domain.Dto;
+using Schedule.Domain.Enums;
+using Schedule.Shared.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,7 +22,7 @@ namespace Schedule.Web.Services.Api
         protected async Task<List<T>> HandleApiException<T>(
             ApiException ex,
             List<T> responses,
-            string defaultError = "Unknown error occurred")
+            AppMessageType defaultError = AppMessageType.SchWebUnknownErrorOccurred)
             where T : EmptyResponseDto, new()
         {
             if (responses is null || responses.Count == 0)
@@ -39,7 +41,7 @@ namespace Schedule.Web.Services.Api
 
         protected List<T> HandleUnknownException<T>(
             List<T> responses,
-            string defaultError = "Unknown error occurred")
+            AppMessageType defaultError = AppMessageType.SchWebUnknownErrorOccurred)
             where T : EmptyResponseDto, new()
         {
             if (responses is null || responses.Count == 0)
@@ -59,7 +61,7 @@ namespace Schedule.Web.Services.Api
         protected async Task HandleApiException<T>(
             ApiException ex,
             T response,
-            string defaultError = "Unknown error occurred")
+            AppMessageType defaultError = AppMessageType.SchWebUnknownErrorOccurred)
             where T : EmptyResponseDto
         {
             try
@@ -95,10 +97,11 @@ namespace Schedule.Web.Services.Api
 
         protected void HandleUnknownException<T>(
             T response,
-            string defaultError = "Unknown error occurred")
+            AppMessageType defaultError = AppMessageType.SchWebUnknownErrorOccurred)
             where T : EmptyResponseDto
         {
-            response.ErrorMessage = defaultError;
+            response.ErrorMessage = defaultError.GetErrorMsg();
+            response.ErrorMessageId = defaultError.GetErrorCode();
         }
 
         private async Task<EmptyResponseDto> TryGetApiResponse(ApiException ex)

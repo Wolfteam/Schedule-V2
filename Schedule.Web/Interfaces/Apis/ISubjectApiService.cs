@@ -9,6 +9,8 @@ namespace Schedule.Web.Interfaces.Apis
     {
         Task<PaginatedResponseDto<GetAllSubjectsResponseDto>> GetAllSubjects(GetAllSubjectsRequestDto dto);
 
+        Task<ApiResponseDto<GetAllSubjectsResponseDto>> GetSubject(long id);
+
         Task<ApiResponseDto<GetAllSubjectsResponseDto>> CreateSubject(SaveSubjectRequestDto dto);
 
         Task<ApiResponseDto<GetAllSubjectsResponseDto>> UpdateSubject(long id, SaveSubjectRequestDto dto);

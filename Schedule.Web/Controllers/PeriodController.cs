@@ -24,6 +24,13 @@ namespace Schedule.Web.Controllers
             return Ok(response);
         }
 
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetPeriod(long id)
+        {
+            var response = await _periodApiService.GetPeriod(id);
+            return Ok(response);
+        }
+
         [HttpPost]
         public async Task<IActionResult> CreatePeriod(SavePeriodRequestDto dto)
         {

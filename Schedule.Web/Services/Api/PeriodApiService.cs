@@ -40,6 +40,28 @@ namespace Schedule.Web.Services.Api
             return response;
         }
 
+        public async Task<ApiResponseDto<GetAllPeriodsResponseDto>> GetPeriod(long id)
+        {
+            var response = new ApiResponseDto<GetAllPeriodsResponseDto>();
+            try
+            {
+                response = await _periodApi.GetPeriod(id);
+            }
+            catch (ApiException apiEx)
+            {
+                Logger.LogError(apiEx, $"{nameof(GetPeriod)}: Api exception occurred");
+                await HandleApiException(apiEx, response);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex, $"{nameof(GetPeriod)}: Unknown error occurred");
+                HandleUnknownException(response);
+            }
+
+            Logger.LogInformation($"{nameof(GetPeriod)}: Completed.");
+            return response;
+        }
+
         public async Task<ApiResponseDto<GetAllPeriodsResponseDto>> CreatePeriod(SavePeriodRequestDto dto)
         {
             var response = new ApiResponseDto<GetAllPeriodsResponseDto>();

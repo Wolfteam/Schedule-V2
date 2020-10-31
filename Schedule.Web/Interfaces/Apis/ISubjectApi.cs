@@ -12,6 +12,9 @@ namespace Schedule.Web.Interfaces.Apis
         [Get("/api/Subject")]
         Task<PaginatedResponseDto<GetAllSubjectsResponseDto>> GetAllSubjects([Query] GetAllSubjectsRequestDto dto);
 
+        [Get("/api/Subject/{id}")]
+        Task<ApiResponseDto<GetAllSubjectsResponseDto>> GetSubject(long id);
+
         [Post("/api/Subject")]
         Task<ApiResponseDto<GetAllSubjectsResponseDto>> CreateSubject(SaveSubjectRequestDto dto);
 

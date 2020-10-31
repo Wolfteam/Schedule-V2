@@ -12,6 +12,9 @@ namespace Schedule.Web.Interfaces.Apis
         [Get("/api/Period")]
         Task<PaginatedResponseDto<GetAllPeriodsResponseDto>> GetAllPeriods([Query] GetAllPeriodsRequestDto dto);
 
+        [Get("/api/Period/{id}")]
+        Task<ApiResponseDto<GetAllPeriodsResponseDto>> GetPeriod(long id);
+
         [Post("/api/Period")]
         Task<ApiResponseDto<GetAllPeriodsResponseDto>> CreatePeriod(SavePeriodRequestDto dto);
 

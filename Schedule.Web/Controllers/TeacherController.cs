@@ -25,6 +25,13 @@ namespace Schedule.Web.Controllers
             return Ok(response);
         }
 
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetTeacher(long id)
+        {
+            var response = await _teacherApiService.GetTeacher(id);
+            return Ok(response);
+        }
+
         [HttpPost]
         public async Task<IActionResult> CreateTeacher(SaveTeacherRequestDto dto)
         {
@@ -64,6 +71,13 @@ namespace Schedule.Web.Controllers
         public async Task<IActionResult> GetAllPriorities()
         {
             var response = await _teacherApiService.GetAllPriorities();
+            return Ok(response);
+        }
+
+        [HttpGet("Priorities/{id}")]
+        public async Task<IActionResult> GetPriority(long id)
+        {
+            var response = await _teacherApiService.GetPriority(id);
             return Ok(response);
         }
 

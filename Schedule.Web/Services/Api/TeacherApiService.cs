@@ -42,6 +42,28 @@ namespace Schedule.Web.Services.Api
             return response;
         }
 
+        public async Task<ApiResponseDto<GetAllTeacherResponseDto>> GetTeacher(long id)
+        {
+            var response = new ApiResponseDto<GetAllTeacherResponseDto>();
+            try
+            {
+                response = await _teacherApi.GetTeacher(id);
+            }
+            catch (ApiException apiEx)
+            {
+                Logger.LogError(apiEx, $"{nameof(GetTeacher)}: Api exception occurred");
+                await HandleApiException(apiEx, response);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex, $"{nameof(GetTeacher)}: Unknown error occurred");
+                HandleUnknownException(response);
+            }
+
+            Logger.LogInformation($"{nameof(GetTeacher)}: Completed.");
+            return response;
+        }
+
         public async Task<ApiResponseDto<GetAllTeacherResponseDto>> CreateTeacher(SaveTeacherRequestDto dto)
         {
             var response = new ApiResponseDto<GetAllTeacherResponseDto>();
@@ -171,6 +193,28 @@ namespace Schedule.Web.Services.Api
             }
 
             Logger.LogInformation($"{nameof(GetAllPriorities)}: Completed.");
+            return response;
+        }
+
+        public async Task<ApiResponseDto<GetAllPrioritiesResponseDto>> GetPriority(long id)
+        {
+            var response = new ApiResponseDto<GetAllPrioritiesResponseDto>();
+            try
+            {
+                response = await _teacherApi.GetPriority(id);
+            }
+            catch (ApiException apiEx)
+            {
+                Logger.LogError(apiEx, $"{nameof(GetPriority)}: Api exception occurred");
+                await HandleApiException(apiEx, response);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex, $"{nameof(GetPriority)}: Unknown error occurred");
+                HandleUnknownException(response);
+            }
+
+            Logger.LogInformation($"{nameof(GetPriority)}: Completed.");
             return response;
         }
 

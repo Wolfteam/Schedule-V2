@@ -14,6 +14,9 @@ namespace Schedule.Web.Interfaces.Apis
         [Get("/api/Teacher")]
         Task<ApiListResponseDto<GetAllTeacherResponseDto>> GetAllTeachers();
 
+        [Get("/api/Teacher/{id}")]
+        Task<ApiResponseDto<GetAllTeacherResponseDto>> GetTeacher(long id);
+
         [Post("/api/Teacher")]
         Task<ApiResponseDto<GetAllTeacherResponseDto>> CreateTeacher(SaveTeacherRequestDto dto);
 
@@ -31,6 +34,9 @@ namespace Schedule.Web.Interfaces.Apis
 
         [Get("/api/Teacher/Priorities")]
         Task<ApiListResponseDto<GetAllPrioritiesResponseDto>> GetAllPriorities();
+
+        [Get("/api/Teacher/Priorities/{id}")]
+        Task<ApiResponseDto<GetAllPrioritiesResponseDto>> GetPriority(long id);
 
         [Post("/api/Teacher/Priorities")]
         Task<ApiResponseDto<GetAllPrioritiesResponseDto>> CreatePriority(SavePriorityRequestDto dto);

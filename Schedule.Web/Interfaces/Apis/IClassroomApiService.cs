@@ -9,6 +9,8 @@ namespace Schedule.Web.Interfaces.Apis
     {
         Task<PaginatedResponseDto<GetAllClassroomsResponseDto>> GetAllClassrooms(GetAllClassroomsRequestDto dto);
 
+        Task<ApiResponseDto<GetAllClassroomsResponseDto>> GetClassroom(long id);
+
         Task<ApiResponseDto<GetAllClassroomsResponseDto>> CreateClassroom(SaveClassroomRequestDto dto);
 
         Task<ApiResponseDto<GetAllClassroomsResponseDto>> UpdateClassroom(long id, SaveClassroomRequestDto dto);
@@ -16,5 +18,13 @@ namespace Schedule.Web.Interfaces.Apis
         Task<EmptyResponseDto> DeleteClassroom(long id);
 
         Task<PaginatedResponseDto<GetAllClassroomTypesResponseDto>> GetAllClassroomTypes(GetAllClassroomTypesRequestDto dto);
+
+        Task<ApiResponseDto<GetAllClassroomTypesResponseDto>> GetClassroomType(long id);
+
+        Task<ApiResponseDto<GetAllClassroomTypesResponseDto>> CreateClassroomType(SaveClassroomTypeRequestDto dto);
+
+        Task<ApiResponseDto<GetAllClassroomTypesResponseDto>> UpdateClassroomType(long id, SaveClassroomTypeRequestDto dto);
+
+        Task<EmptyResponseDto> DeleteClassroomType(long id);
     }
 }
