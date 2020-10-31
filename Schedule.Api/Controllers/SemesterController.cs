@@ -5,6 +5,7 @@ using Microsoft.Extensions.Logging;
 using Schedule.Application.Semesters.Commands.Create;
 using Schedule.Application.Semesters.Commands.Delete;
 using Schedule.Application.Semesters.Commands.Update;
+using Schedule.Application.Semesters.Queries.Get;
 using Schedule.Application.Semesters.Queries.GetAll;
 using Schedule.Domain.Dto;
 using Schedule.Domain.Dto.Semesters.Requests;
@@ -40,6 +41,27 @@ namespace Schedule.Api.Controllers
             var response = await Mediator.Send(new GetAllSemestersQuery());
 
             Logger.LogInformation($"{nameof(GetAllSemesters)}: Got = {response.Result.Count} semesters");
+            return Ok(response);
+        }
+
+        /// <summary>
+        /// Gets a particular semester
+        /// </summary>
+        /// <param name="id">The semester id</param>
+        /// <response code="200">The semester</response>
+        /// <response code="404">If no  semester was found</response>
+        /// <returns>The semester</returns>
+        [HttpGet("{id}")]
+        [ScheduleHasPermission(SchedulePermissionType.ReadCareer)]
+        [ProducesResponseType(typeof(ApiResponseDto<GetAllSemestersResponseDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(EmptyResponseDto), StatusCodes.Status404NotFound)]
+        [Produces(MediaTypeNames.Application.Json)]
+        public async Task<IActionResult> GetSemester(long id)
+        {
+            Logger.LogInformation($"{nameof(GetSemester)}: Getting semesterId = {id}...");
+            var response = await Mediator.Send(new GetSemesterQuery(id));
+
+            Logger.LogInformation($"{nameof(GetSemester)}: Got semesterId = {id}");
             return Ok(response);
         }
 

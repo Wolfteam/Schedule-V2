@@ -12,6 +12,15 @@
             <response code="400">If some of the properties in the request are not valid</response>
             <returns>A list of careers</returns>
         </member>
+        <member name="M:Schedule.Api.Controllers.CareerController.GetCareer(System.Int64)">
+            <summary>
+            Gets a particular career
+            </summary>
+            <param name="id">The career id</param>
+            <response code="200">The career</response>
+            <response code="404">If no  career was found</response>
+            <returns>The career</returns>
+        </member>
         <member name="M:Schedule.Api.Controllers.CareerController.CreateCareer(Schedule.Domain.Dto.Careers.Requests.SaveCareerRequestDto)">
             <summary>
             Creates a new career
@@ -49,6 +58,15 @@
             <response code="200">A paginated list of classrooms</response>
             <response code="400">If some of the properties in the request are not valid</response>
             <returns>A paginated list of classrooms</returns>
+        </member>
+        <member name="M:Schedule.Api.Controllers.ClassroomController.GetClassroom(System.Int64)">
+            <summary>
+            Gets a particular classroom
+            </summary>
+            <param name="id">The classroom id</param>
+            <response code="200">The classroom</response>
+            <response code="404">If no  classroom was found</response>
+            <returns>The classroom</returns>
         </member>
         <member name="M:Schedule.Api.Controllers.ClassroomController.CreateClassroom(Schedule.Domain.Dto.Classrooms.Requests.SaveClassroomRequestDto)">
             <summary>
@@ -89,6 +107,15 @@
             <response code="400">If some of the properties in the request are not valid</response>
             <returns>A paginated list of classroom types</returns>
         </member>
+        <member name="M:Schedule.Api.Controllers.ClassroomController.GetClassroomType(System.Int64)">
+            <summary>
+            Gets a particular classroom type
+            </summary>
+            <param name="id">The classroom type id</param>
+            <response code="200">The classroom type</response>
+            <response code="404">If no  classroom type was found</response>
+            <returns>The classroom type</returns>
+        </member>
         <member name="M:Schedule.Api.Controllers.ClassroomController.CreateClassroomType(Schedule.Domain.Dto.Classrooms.Requests.SaveClassroomTypeRequestDto)">
             <summary>
             Creates a new classroom type
@@ -126,6 +153,15 @@
             <response code="200">A paginated list of periods</response>
             <response code="400">If some of the properties in the request are not valid</response>
             <returns>A paginated list of periods</returns>
+        </member>
+        <member name="M:Schedule.Api.Controllers.PeriodController.GetPeriod(System.Int64)">
+            <summary>
+            Gets a particular period
+            </summary>
+            <param name="id">The period id</param>
+            <response code="200">The period</response>
+            <response code="404">If no  period was found</response>
+            <returns>The period</returns>
         </member>
         <member name="M:Schedule.Api.Controllers.PeriodController.CreatePeriod(Schedule.Domain.Dto.Periods.Requests.SavePeriodRequestDto)">
             <summary>
@@ -170,6 +206,15 @@
             <response code="200">A list of semesters</response>
             <returns>A list of semesters</returns>
         </member>
+        <member name="M:Schedule.Api.Controllers.SemesterController.GetSemester(System.Int64)">
+            <summary>
+            Gets a particular semester
+            </summary>
+            <param name="id">The semester id</param>
+            <response code="200">The semester</response>
+            <response code="404">If no  semester was found</response>
+            <returns>The semester</returns>
+        </member>
         <member name="M:Schedule.Api.Controllers.SemesterController.CreateSemester(Schedule.Domain.Dto.Semesters.Requests.SaveSemesterRequestDto)">
             <summary>
             Creates a new semester
@@ -209,6 +254,15 @@
             <response code="400">If some of the properties in the request are not valid</response>
             <returns>A paginated list of subjects</returns>
         </member>
+        <member name="M:Schedule.Api.Controllers.SubjectController.GetSubject(System.Int64)">
+            <summary>
+            Gets a particular subject
+            </summary>
+            <param name="id">The subject id</param>
+            <response code="200">The subject</response>
+            <response code="404">If no  subject was found</response>
+            <returns>The subject</returns>
+        </member>
         <member name="M:Schedule.Api.Controllers.SubjectController.CreateSubject(Schedule.Domain.Dto.Subjects.Requests.SaveSubjectRequestDto)">
             <summary>
             Creates a new subject
@@ -246,6 +300,15 @@
             <response code="200">A paginated list of teachers</response>
             <response code="400">If some of the properties in the request are not valid</response>
             <returns>A paginated list of teachers</returns>
+        </member>
+        <member name="M:Schedule.Api.Controllers.TeacherController.GetTeacher(System.Int64)">
+            <summary>
+            Gets a particular teacher
+            </summary>
+            <param name="id">The teacher id</param>
+            <response code="200">The teacher</response>
+            <response code="404">If no  teacher was found</response>
+            <returns>The teacher</returns>
         </member>
         <member name="M:Schedule.Api.Controllers.TeacherController.CreateTeacher(Schedule.Domain.Dto.Teachers.Requests.SaveTeacherRequestDto)">
             <summary>

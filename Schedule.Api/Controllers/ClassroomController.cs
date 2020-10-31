@@ -8,8 +8,10 @@ using Schedule.Application.Classrooms.Commands.Delete;
 using Schedule.Application.Classrooms.Commands.DeleteType;
 using Schedule.Application.Classrooms.Commands.Update;
 using Schedule.Application.Classrooms.Commands.UpdateType;
+using Schedule.Application.Classrooms.Queries.Get;
 using Schedule.Application.Classrooms.Queries.GetAll;
 using Schedule.Application.Classrooms.Queries.GetAllTypes;
+using Schedule.Application.Classrooms.Queries.GetType;
 using Schedule.Domain.Dto;
 using Schedule.Domain.Dto.Classrooms.Requests;
 using Schedule.Domain.Dto.Classrooms.Responses;
@@ -46,6 +48,27 @@ namespace Schedule.Api.Controllers
             var response = await Mediator.Send(new GetAllClassroomsQuery(dto));
 
             Logger.LogInformation($"{nameof(GetAllClassrooms)}: Got = {response.Records} / {response.TotalRecords}");
+            return Ok(response);
+        }
+
+        /// <summary>
+        /// Gets a particular classroom
+        /// </summary>
+        /// <param name="id">The classroom id</param>
+        /// <response code="200">The classroom</response>
+        /// <response code="404">If no  classroom was found</response>
+        /// <returns>The classroom</returns>
+        [HttpGet("{id}")]
+        [ScheduleHasPermission(SchedulePermissionType.ReadCareer)]
+        [ProducesResponseType(typeof(ApiResponseDto<GetAllClassroomsResponseDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(EmptyResponseDto), StatusCodes.Status404NotFound)]
+        [Produces(MediaTypeNames.Application.Json)]
+        public async Task<IActionResult> GetClassroom(long id)
+        {
+            Logger.LogInformation($"{nameof(GetClassroom)}: Getting classroomId = {id}...");
+            var response = await Mediator.Send(new GetClassroomQuery(id));
+
+            Logger.LogInformation($"{nameof(GetClassroom)}: Got classroomId = {id}");
             return Ok(response);
         }
 
@@ -137,6 +160,27 @@ namespace Schedule.Api.Controllers
             var response = await Mediator.Send(new GetAllClassroomTypesQuery(dto));
 
             Logger.LogInformation($"{nameof(GetAllClassroomTypes)}: Got = {response.Records} / {response.TotalRecords}");
+            return Ok(response);
+        }
+
+        /// <summary>
+        /// Gets a particular classroom type
+        /// </summary>
+        /// <param name="id">The classroom type id</param>
+        /// <response code="200">The classroom type</response>
+        /// <response code="404">If no  classroom type was found</response>
+        /// <returns>The classroom type</returns>
+        [HttpGet("Types/{id}")]
+        [ScheduleHasPermission(SchedulePermissionType.ReadCareer)]
+        [ProducesResponseType(typeof(ApiResponseDto<GetAllClassroomTypesResponseDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(EmptyResponseDto), StatusCodes.Status404NotFound)]
+        [Produces(MediaTypeNames.Application.Json)]
+        public async Task<IActionResult> GetClassroomType(long id)
+        {
+            Logger.LogInformation($"{nameof(GetClassroomType)}: Getting classroomId = {id}...");
+            var response = await Mediator.Send(new GetClassroomTypeQuery(id));
+
+            Logger.LogInformation($"{nameof(GetClassroomType)}: Got classroomId = {id}");
             return Ok(response);
         }
 

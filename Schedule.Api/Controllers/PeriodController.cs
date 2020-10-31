@@ -14,6 +14,7 @@ using Schedule.Domain.Enums;
 using Schedule.Shared.Authorization;
 using System.Net.Mime;
 using System.Threading.Tasks;
+using Schedule.Application.Periods.Queries.Get;
 
 namespace Schedule.Api.Controllers
 {
@@ -41,6 +42,27 @@ namespace Schedule.Api.Controllers
             var response = await Mediator.Send(new GetAllPeriodsQuery(dto));
 
             Logger.LogInformation($"{nameof(GetAllPeriods)}: Got = {response.Records} / {response.TotalRecords}");
+            return Ok(response);
+        }
+
+        /// <summary>
+        /// Gets a particular period
+        /// </summary>
+        /// <param name="id">The period id</param>
+        /// <response code="200">The period</response>
+        /// <response code="404">If no  period was found</response>
+        /// <returns>The period</returns>
+        [HttpGet("{id}")]
+        [ScheduleHasPermission(SchedulePermissionType.ReadCareer)]
+        [ProducesResponseType(typeof(ApiResponseDto<GetAllPeriodsResponseDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(EmptyResponseDto), StatusCodes.Status404NotFound)]
+        [Produces(MediaTypeNames.Application.Json)]
+        public async Task<IActionResult> GetPeriod(long id)
+        {
+            Logger.LogInformation($"{nameof(GetPeriod)}: Getting periodId = {id}...");
+            var response = await Mediator.Send(new GetPeriodQuery(id));
+
+            Logger.LogInformation($"{nameof(GetPeriod)}: Got periodId = {id}");
             return Ok(response);
         }
 

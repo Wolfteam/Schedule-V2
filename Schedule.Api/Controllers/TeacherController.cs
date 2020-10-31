@@ -10,6 +10,7 @@ using Schedule.Application.Teachers.Commands.Create;
 using Schedule.Application.Teachers.Commands.Delete;
 using Schedule.Application.Teachers.Commands.SaveAvailability;
 using Schedule.Application.Teachers.Commands.Update;
+using Schedule.Application.Teachers.Queries.Get;
 using Schedule.Application.Teachers.Queries.GetAll;
 using Schedule.Application.Teachers.Queries.GetAvailability;
 using Schedule.Domain.Dto;
@@ -49,6 +50,27 @@ namespace Schedule.Api.Controllers
             var response = await Mediator.Send(new GetAllTeachersQuery());
 
             Logger.LogInformation($"{nameof(GetAllTeachers)}: Got {response.Result.Count} teachers");
+            return Ok(response);
+        }
+
+        /// <summary>
+        /// Gets a particular teacher
+        /// </summary>
+        /// <param name="id">The teacher id</param>
+        /// <response code="200">The teacher</response>
+        /// <response code="404">If no  teacher was found</response>
+        /// <returns>The teacher</returns>
+        [HttpGet("{id}")]
+        [ScheduleHasPermission(SchedulePermissionType.ReadSubject)]
+        [ProducesResponseType(typeof(ApiResponseDto<GetAllTeacherResponseDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(EmptyResponseDto), StatusCodes.Status404NotFound)]
+        [Produces(MediaTypeNames.Application.Json)]
+        public async Task<IActionResult> GetTeacher(long id)
+        {
+            Logger.LogInformation($"{nameof(GetTeacher)}: Getting teacherId = {id}...");
+            var response = await Mediator.Send(new GetTeacherQuery(id));
+
+            Logger.LogInformation($"{nameof(GetTeacher)}: Got teacherId = {id}");
             return Ok(response);
         }
 

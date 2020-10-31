@@ -5,6 +5,7 @@ using Microsoft.Extensions.Logging;
 using Schedule.Application.Careers.Commands.Create;
 using Schedule.Application.Careers.Commands.Delete;
 using Schedule.Application.Careers.Commands.Update;
+using Schedule.Application.Careers.Queries.Get;
 using Schedule.Application.Careers.Queries.GetAll;
 using Schedule.Domain.Dto;
 using Schedule.Domain.Dto.Careers.Requests;
@@ -42,6 +43,27 @@ namespace Schedule.Api.Controllers
             var response = await Mediator.Send(new GetAllCareersQuery());
 
             Logger.LogInformation($"{nameof(GetAllCareers)}: Got = {response.Result.Count} careers");
+            return Ok(response);
+        }
+
+        /// <summary>
+        /// Gets a particular career
+        /// </summary>
+        /// <param name="id">The career id</param>
+        /// <response code="200">The career</response>
+        /// <response code="404">If no  career was found</response>
+        /// <returns>The career</returns>
+        [HttpGet("{id}")]
+        [ScheduleHasPermission(SchedulePermissionType.ReadCareer)]
+        [ProducesResponseType(typeof(ApiResponseDto<GetAllCareersResponseDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(EmptyResponseDto), StatusCodes.Status404NotFound)]
+        [Produces(MediaTypeNames.Application.Json)]
+        public async Task<IActionResult> GetCareer(long id)
+        {
+            Logger.LogInformation($"{nameof(GetCareer)}: Getting careerId = {id}...");
+            var response = await Mediator.Send(new GetCareerQuery(id));
+
+            Logger.LogInformation($"{nameof(GetCareer)}: Got careerId = {id}");
             return Ok(response);
         }
 
