@@ -5,6 +5,7 @@ using Microsoft.Extensions.Logging;
 using Schedule.Application.Priorities.Commands.Create;
 using Schedule.Application.Priorities.Commands.Delete;
 using Schedule.Application.Priorities.Commands.Update;
+using Schedule.Application.Priorities.Queries.Get;
 using Schedule.Application.Priorities.Queries.GetAll;
 using Schedule.Application.Teachers.Commands.Create;
 using Schedule.Application.Teachers.Commands.Delete;
@@ -206,6 +207,27 @@ namespace Schedule.Api.Controllers
             var response = await Mediator.Send(new GetAllPrioritiesQuery());
 
             Logger.LogInformation($"{nameof(GetAllPriorities)}: Got {response.Result.Count} priorities");
+            return Ok(response);
+        }
+
+        /// <summary>
+        /// Gets a particular priority
+        /// </summary>
+        /// <param name="id">The priority id</param>
+        /// <response code="200">The priority</response>
+        /// <response code="404">If no  priority was found</response>
+        /// <returns>The priority</returns>
+        [HttpGet("Priorities/{id}")]
+        [ScheduleHasPermission(SchedulePermissionType.ReadSubject)]
+        [ProducesResponseType(typeof(ApiResponseDto<GetAllPrioritiesResponseDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(EmptyResponseDto), StatusCodes.Status404NotFound)]
+        [Produces(MediaTypeNames.Application.Json)]
+        public async Task<IActionResult> GetPriority(long id)
+        {
+            Logger.LogInformation($"{nameof(GetPriority)}: Getting priorityId = {id}...");
+            var response = await Mediator.Send(new GetPriorityQuery(id));
+
+            Logger.LogInformation($"{nameof(GetPriority)}: Got priorityId = {id}");
             return Ok(response);
         }
 

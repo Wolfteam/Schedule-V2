@@ -367,6 +367,15 @@
             <response code="400">If some of the properties in the request are not valid</response>
             <returns>A paginated list of priority</returns>
         </member>
+        <member name="M:Schedule.Api.Controllers.TeacherController.GetPriority(System.Int64)">
+            <summary>
+            Gets a particular priority
+            </summary>
+            <param name="id">The priority id</param>
+            <response code="200">The priority</response>
+            <response code="404">If no  priority was found</response>
+            <returns>The priority</returns>
+        </member>
         <member name="M:Schedule.Api.Controllers.TeacherController.CreatePriority(Schedule.Domain.Dto.Priorities.Requests.SavePriorityRequestDto)">
             <summary>
             Creates a new priority
