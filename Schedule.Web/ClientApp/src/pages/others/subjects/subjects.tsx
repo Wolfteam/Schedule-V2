@@ -40,7 +40,7 @@ function Subjects() {
   const [state, setState] = useState<State>({
     isBusy: true,
     currentPage: 1,
-    totalPages: 0,
+    totalPages: 1,
     itemsPerPage: 5,
     totalRecords: 0,
     orderBy: 'Code',
@@ -79,18 +79,17 @@ function Subjects() {
     refreshSubjects(request);
   }, [state.currentPage, state.itemsPerPage, state.searchTerm, state.orderBy, state.orderByAsc]);
 
-  const sortDirectionChanged = (orderBy: string, orderByAsc: boolean) => {
+  const sortDirectionChanged = useCallback((orderBy: string, orderByAsc: boolean) => {
     setState({ ...state, isBusy: true, orderBy: orderBy, orderByAsc: orderByAsc });
-  };
+  }, []);
 
-  const itemsPerPageChanged = (newVal: number) => {
+  const itemsPerPageChanged = useCallback((newVal: number) => {
     setState({ ...state, isBusy: true, itemsPerPage: newVal });
-  };
+  }, []);
 
-  //TODO: HANDLE THE REST OF THE SEARCH COLUMNS WITH A VIEW
-  const searchTermChanged = (newVal: string) => {
+  const searchTermChanged = useCallback((newVal: string) => {
     setState({ ...state, isBusy: true, searchTerm: newVal });
-  };
+  }, []);
 
   const pageChanged = (newVal: number) => {
     setState({ ...state, isBusy: true, currentPage: newVal });
@@ -106,14 +105,14 @@ function Subjects() {
     setSelectedSubjects(newValues);
   };
 
-  const onEditClick = () => {
+  const onEditClick = useCallback(() => {
     if (selectedSubjects.length === 0)
       return;
 
     const id = selectedSubjects[0];
     const path = `${subjectsPath}/${id}`;
     history.push(path);
-  };
+  }, [history, selectedSubjects, subjectsPath]);
 
   const onDeleteClick = async () => {
     if (selectedSubjects.length === 0)
@@ -176,7 +175,7 @@ function Subjects() {
       isOrderable: true
     },
     {
-      orderByKey: 'SubjectType',
+      orderByKey: 'ClassroomType',
       text: translations.subjectType,
       isOrderable: true
     },

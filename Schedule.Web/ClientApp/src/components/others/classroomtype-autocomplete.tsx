@@ -85,7 +85,7 @@ function ClassroomtypeAutocomplete(props: Props) {
     }, [state.searchTerm]);
 
     useEffect(() => {
-        if (!props.isInEditMode)
+        if (!props.isInEditMode || props.selectedValue <= 0)
             return;
 
         getClassroomType(props.selectedValue).then(response => {

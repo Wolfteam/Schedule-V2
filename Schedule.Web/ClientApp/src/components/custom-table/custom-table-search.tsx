@@ -14,16 +14,16 @@ import translations from '../../services/translations';
 
 const rowsToTake = [5, 10, 20, 50];
 
+interface State {
+    itemsPerPage: number;
+    searchTerm: string;
+}
+
 interface Props {
     searchText: string;
     isBusy: boolean;
     onItemsPerPageChanged: (take: number) => void;
     onSearchTermChanged: (newVal: string) => void;
-}
-
-interface State {
-    itemsPerPage: number;
-    searchTerm: string;
 }
 
 function CustomTableSearch(props: Props) {

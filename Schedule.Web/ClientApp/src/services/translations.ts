@@ -75,6 +75,7 @@ interface ITranslations {
     editSubject: string;
     subjectWasSaved: string;
     classroomType: string;
+    createdAt: string;
     errorCodes: IAppMessageTranslations;
 }
 
@@ -171,6 +172,7 @@ const enTrans: ITranslations = {
     editSubject: 'Edit subject',
     subjectWasSaved: 'Subject was successfully saved',
     classroomType: 'Classrooom type',
+    createdAt: 'Created at',
     errorCodes: {
         SCH_100: 'Invalid api request',
         SCH_101: 'Unknown error occurred in api',
@@ -262,6 +264,7 @@ const esTrans: ITranslations = {
     editSubject: 'Editar materia',
     subjectWasSaved: 'La materia fue creada exitosamente',
     classroomType: 'Tipos de aula',
+    createdAt: 'Created at',
     errorCodes: {
         SCH_100: 'La solicitud hecha a la api no es válida',
         SCH_101: 'Un error desconocido ocurrió en la api',

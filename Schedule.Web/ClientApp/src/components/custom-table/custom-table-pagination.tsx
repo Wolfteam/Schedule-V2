@@ -25,10 +25,12 @@ interface Props {
 function CustomTablePagination(props: Props) {
     const classes = useStyles();
     const exceedsPage = props.totalPages < props.currentPage;
+    const notFound = props.totalPages === 0;
     const currentPage = exceedsPage ? 1 : props.currentPage;
 
     useEffect(() => {
-        if (exceedsPage) {
+        if (exceedsPage && !notFound) {
+            console.log("pagination exceeds")
             props.onPageChanged(currentPage);
         }
     }, [props.totalPages, exceedsPage, currentPage]);

@@ -108,4 +108,4 @@ function CustomTableToolbar(props: Props) {
     </Toolbar>;
 }
 
-export default CustomTableToolbar;
+export default React.memo(CustomTableToolbar);

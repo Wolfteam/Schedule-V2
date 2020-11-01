@@ -53,7 +53,7 @@ const styles = (theme: Theme) => createStyles({
         backgroundPosition: 'center',
         backgroundRepeat: 'no-repeat',
         width: '100%',
-        backgroundImage: 'url(https://scontent.fuio7-1.fna.fbcdn.net/v/t31.0-8/1049096_10201132489971690_72266505_o.jpg?_nc_cat=100&_nc_sid=e3f864&_nc_eui2=AeEDI9ZbJ9xZ2PYvILX3pHNyE-9tPqnKST4T720-qcpJPnQmr1b1-mk_UOluDKOvkrY&_nc_ohc=b4Nkl8VneNsAX8bKKNn&_nc_ht=scontent.fuio7-1.fna&oh=7b69e78d5466d234dc10e3e25c1100e2&oe=5F9A5974)'
+        backgroundImage: 'url(https://scontent.fuio7-1.fna.fbcdn.net/v/t31.0-8/1049096_10201132489971690_72266505_o.jpg?_nc_cat=100&ccb=2&_nc_sid=e3f864&_nc_eui2=AeEDI9ZbJ9xZ2PYvILX3pHNyE-9tPqnKST4T720-qcpJPnQmr1b1-mk_UOluDKOvkrY&_nc_ohc=TfIyvoVoqFYAX_LCGOr&_nc_ht=scontent.fuio7-1.fna&oh=ca6f4ae04ad172c87656929389594240&oe=5FC5DAF4)'
     },
     largeAvatar: {
         width: theme.spacing(10),
