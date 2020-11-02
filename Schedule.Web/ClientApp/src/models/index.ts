@@ -42,3 +42,9 @@ export type { IGetAllCareersResponseDto } from './responses/career/get-all-caree
 export type { ISaveSemesterRequestDto } from './requests/semester/save-semester.model';
 
 export type { ISaveCareerRequestDto } from './requests/career/save-career.model';
+
+export type { ISaveTeacherRequestDto } from './requests/teacher/save-teacher.model';
+
+export type { IGetAllPrioritiesResponseDto } from './responses/priorities/get-all-priorities.model';
+
+export type { ISavePriorityRequestDto } from './requests/priorities/save-priority.model';

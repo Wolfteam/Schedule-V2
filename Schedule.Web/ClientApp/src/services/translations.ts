@@ -76,6 +76,14 @@ interface ITranslations {
     subjectWasSaved: string;
     classroomType: string;
     createdAt: string;
+    firstName: string;
+    firstLastName: string;
+    secondName: string;
+    secondLastName: string;
+    invalidIdentifierNumber: string;
+    invalidLastName: string;
+    addX: string;
+    editX: string;
     errorCodes: IAppMessageTranslations;
 }
 
@@ -173,6 +181,14 @@ const enTrans: ITranslations = {
     subjectWasSaved: 'Subject was successfully saved',
     classroomType: 'Classrooom type',
     createdAt: 'Created at',
+    firstName: 'First name',
+    firstLastName: 'First last name',
+    secondName: 'Second name',
+    secondLastName: 'Second last name',
+    invalidIdentifierNumber: 'Invalid identifier number',
+    invalidLastName: 'Invalid last name',
+    addX: 'Add {0}',
+    editX: 'Edit {0}',
     errorCodes: {
         SCH_100: 'Invalid api request',
         SCH_101: 'Unknown error occurred in api',
@@ -265,6 +281,14 @@ const esTrans: ITranslations = {
     subjectWasSaved: 'La materia fue creada exitosamente',
     classroomType: 'Tipos de aula',
     createdAt: 'Created at',
+    firstName: 'Primer nombre',
+    firstLastName: 'Primer apellido',
+    secondName: 'Segundo nombre',
+    secondLastName: 'Segundo apellido',
+    invalidIdentifierNumber: 'El número de identificación no es válido',
+    invalidLastName: 'El apellido no es válido',
+    addX: 'Agregar {0}',
+    editX: 'Editar {0}',
     errorCodes: {
         SCH_100: 'La solicitud hecha a la api no es válida',
         SCH_101: 'Un error desconocido ocurrió en la api',
