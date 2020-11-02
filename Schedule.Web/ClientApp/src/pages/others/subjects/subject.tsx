@@ -1,4 +1,5 @@
-import React, { useCallback, useEffect, useState } from 'react'
+import { faCode, faHourglassEnd, faHourglassStart, faIdCard } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
     Button,
     Container,
@@ -8,27 +9,25 @@ import {
     makeStyles,
     TextField,
     Theme
-} from '@material-ui/core'
-import { useHistory, useParams } from 'react-router-dom';
+} from '@material-ui/core';
 import { useSnackbar } from 'notistack';
-import { faIdCard, faCode, faHourglassStart, faHourglassEnd } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-
-import SemestersAutocomplete from '../../../components/others/semesters-autocomplete';
+import React, { useEffect, useState } from 'react';
+import { useHistory, useParams } from 'react-router-dom';
+import { String } from 'typescript-string-operations';
+import validator from 'validator';
 import CareersAutocomplete from '../../../components/others/careers-autocomplete';
 import ClassroomtypeAutocomplete from '../../../components/others/classroomtype-autocomplete';
+import SemestersAutocomplete from '../../../components/others/semesters-autocomplete';
 import PageTitle from '../../../components/page-title/page-title';
-import translations, { getErrorCodeTranslation } from '../../../services/translations';
 import {
-    IGetAllSemestersResponseDto,
-    IGetAllClassroomTypesResponseDto,
     IGetAllCareersResponseDto,
+    IGetAllClassroomTypesResponseDto,
+    IGetAllSemestersResponseDto,
     ISaveSubjectRequestDto
 } from '../../../models';
-
 import { subjectsPath } from '../../../routes';
-import { getSubject, createSubject, updateSubject } from '../../../services/subject.service';
-import validator from 'validator';
+import { createSubject, getSubject, updateSubject } from '../../../services/subject.service';
+import translations, { getErrorCodeTranslation } from '../../../services/translations';
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -51,7 +50,6 @@ interface SubjectState {
     careerId: number;
     semesterId: number;
     classroomSubjectId: number;
-
 }
 
 interface SubjectValidationState {
@@ -258,7 +256,7 @@ function Subject() {
 
     const isFormValid = Object.values(subjectValidation).every((val: boolean) => val);
     const btnEnabled = !state.isBusy && isFormValid && careersLoaded && semestersLoaded && classroomTypesLoaded;
-    const pageTitle = !isInEditMode ? translations.addSubject : translations.editSubject;
+    const pageTitle = String.Format(!isInEditMode ? translations.addX : translations.editX, translations.subjects);
 
     return <Container maxWidth="md">
         <PageTitle title={pageTitle} showLoading={state.isBusy} showBackIcon backPath={subjectsPath} />

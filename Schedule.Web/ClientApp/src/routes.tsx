@@ -7,19 +7,20 @@ const Availability = React.lazy(() => import("./pages/availability/availability"
 const ChangePassword = React.lazy(() => import("./pages/change-password/change-password"));
 const Careers = React.lazy(() => import("./pages/others/careers"));
 const CareersPeriod = React.lazy(() => import("./pages/others/careers-period"));
-const Classrooms = React.lazy(() => import("./pages/others/clasrooms"));
-const Priorities = React.lazy(() => import("./pages/others/priorities"));
+const Classrooms = React.lazy(() => import("./pages/others/classrooms/clasrooms"));
+const Priorities = React.lazy(() => import("./pages/others/teachers/priorities"));
 const Sections = React.lazy(() => import("./pages/others/sections"));
 const Semesters = React.lazy(() => import("./pages/others/semesters"));
 const SubjectClassroomTypes = React.lazy(() => import("./pages/others/subject-classroom-types"));
 const Subjects = React.lazy(() => import("./pages/others/subjects/subjects"));
-const Teachers = React.lazy(() => import("./pages/others/teachers"));
+const Teachers = React.lazy(() => import("./pages/others/teachers/teachers"));
 const TeacherSubject = React.lazy(() => import("./pages/others/teachers-subjects"));
-const Users = React.lazy(() => import("./pages/others/users"));
+const Users = React.lazy(() => import("./pages/others/users/users"));
 const Home = React.lazy(() => import("./pages/home/home"));
 const Login = React.lazy(() => import("./pages/login/login"));
 const NotFound = React.lazy(() => import("./pages/not-found/not-found"));
 const Subject = React.lazy(() => import("./pages/others/subjects/subject"));
+const Teacher = React.lazy(() => import("./pages/others/teachers/teacher"));
 
 export const loginPath = '/login';
 export const homePath = "/";
@@ -37,6 +38,7 @@ export const teachersPerSubjectsPath = '/teachers-subjects';
 export const teachersPath = '/teachers';
 export const usersPath = '/users';
 export const subjectPath = `${subjectsPath}/:id`;
+export const teacherPath = `${teachersPath}/:id`;
 
 export const AppRoutes: React.FC = () => {
     const [authContext] = useContext(AuthContext);
@@ -75,6 +77,7 @@ const AdminAppRoutes: React.FC = () => {
         <Route exact path={subjectsPath} component={Subjects} />
         <Route exact path={teachersPerSubjectsPath} component={TeacherSubject} />
         <Route exact path={teachersPath} component={Teachers} />
+        <Route exact path={teacherPath} component={Teacher} />
         <Route exact path={usersPath} component={Users} />
         <Route exact path={homePath} component={Home} />
         <Route path="*" component={NotFound} />

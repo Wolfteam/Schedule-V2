@@ -38,20 +38,20 @@ function CustomTableHeader(props: Props) {
     };
 
     const sortDirection = props.orderByAsc ? 'asc' : 'desc';
-    const header = props.cells.map(el => {
+    const header = props.cells.map((el, index) => {
         if (validator.isEmpty(el.text)) {
             return <TableCell key="selected-items" align='center' padding='none' />
         }
 
         const isBeingUsed = props.orderBy === el.orderByKey;
-
         const visualSortIndicator = isBeingUsed && el.isOrderable ? (
             <span className={classes.visuallyHidden}>
                 {!props.orderByAsc ? 'sorted descending' : 'sorted ascending'}
             </span>
         ) : null;
+
         return <TableCell
-            key={el.orderByKey}
+            key={el.orderByKey ?? `GeneratedKey_${index}`}
             align='center'
             padding='none'
             sortDirection={isBeingUsed ? sortDirection : false}>
