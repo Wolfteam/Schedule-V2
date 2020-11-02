@@ -31,7 +31,7 @@ namespace Schedule.Application.Teachers.Commands.Create
             {
                 var msg = $"IdentificationNumber = {request.Dto.IdentifierNumber} already exists";
                 Logger.LogWarning($"{nameof(Handle)}: {msg}");
-                throw new InvalidRequestException(msg);
+                throw new ResourceAlreadyExistsException(msg);
             }
 
             bool priorityExists = await AppDataService.Priorities.ExistsAsync(p => p.Id == request.Dto.PriorityId && p.SchoolId == AppUserManager.SchoolId);

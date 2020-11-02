@@ -4,6 +4,7 @@ using Schedule.Application.Interfaces.Managers;
 using Schedule.Application.Interfaces.Services;
 using Schedule.Domain.Dto;
 using Schedule.Domain.Dto.Subjects.Responses;
+using Schedule.Domain.Entities;
 using Schedule.Shared.Exceptions;
 using System.Threading;
 using System.Threading.Tasks;
@@ -25,7 +26,12 @@ namespace Schedule.Application.Subjects.Queries.Get
 
         public override async Task<ApiResponseDto<GetAllSubjectsResponseDto>> Handle(GetSubjectQuery request, CancellationToken cancellationToken)
         {
-            var subject = await AppDataService.Subjects.FirstOrDefaultAsync(f => f.Id == request.Id && f.SchoolId == AppUserManager.SchoolId);
+            var includes = new[]
+            {
+                nameof(Subject.Semester), nameof(Subject.ClassroomTypePerSubject), nameof(Subject.Career)
+            };
+            var subject = await AppDataService.Subjects
+                .FirstOrDefaultAsync(f => f.Id == request.Id && f.SchoolId == AppUserManager.SchoolId, string.Join(",", includes));
             if (subject != null)
                 return new ApiResponseDto<GetAllSubjectsResponseDto>(_mapper.Map<GetAllSubjectsResponseDto>(subject));
             var msg = $"SubjectId = {request.Id} was not found";

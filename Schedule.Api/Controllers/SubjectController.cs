@@ -85,7 +85,7 @@ namespace Schedule.Api.Controllers
             var response = await Mediator.Send(new CreateSubjectCommand(dto));
 
             Logger.LogInformation($"{nameof(CreateSubject)}: SubjectId = {response.Result.Id} was successfully created");
-            return Ok(response);
+            return await GetSubject(response.Result.Id);
         }
 
         /// <summary>
@@ -106,10 +106,10 @@ namespace Schedule.Api.Controllers
         public async Task<IActionResult> UpdateSubject(long id, SaveSubjectRequestDto dto)
         {
             Logger.LogInformation($"{nameof(UpdateSubject)}: Updating subjectId = {id}...");
-            var response = await Mediator.Send(new UpdateSubjectCommand(id, dto));
+            await Mediator.Send(new UpdateSubjectCommand(id, dto));
 
             Logger.LogInformation($"{nameof(UpdateSubject)}: SubjectId = {id} was successfully updated");
-            return Ok(response);
+            return await GetSubject(id);
         }
 
         /// <summary>
