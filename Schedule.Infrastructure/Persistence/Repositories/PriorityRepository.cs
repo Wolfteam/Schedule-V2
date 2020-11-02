@@ -24,7 +24,7 @@ namespace Schedule.Infrastructure.Persistence.Repositories
             var query = Context.Priorities.Where(p => p.SchoolId == schoolId);
             if (!string.IsNullOrEmpty(request.SearchTerm))
             {
-                var searchTerm = request.SearchTerm;
+                var searchTerm = request.SearchTerm.Trim();
                 query = query.Where(t =>
                     t.HoursToComplete.ToString().Contains(searchTerm) ||
                     t.Name.Contains(searchTerm));

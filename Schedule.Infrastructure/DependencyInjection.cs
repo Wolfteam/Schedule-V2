@@ -1,4 +1,4 @@
-﻿using System;
+﻿using AutoMapper;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -12,6 +12,8 @@ using Schedule.Infrastructure.Persistence.Repositories;
 using Schedule.Infrastructure.Services;
 using Schedule.Shared;
 using Serilog;
+using System;
+using System.Reflection;
 
 namespace Schedule.Infrastructure
 {
@@ -46,7 +48,8 @@ namespace Schedule.Infrastructure
 
         public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration config)
         {
-            return services.AddAppDbContext(config)
+            return services.AddAutoMapper(Assembly.GetExecutingAssembly())
+                .AddAppDbContext(config)
                 .AddAppRepos()
                 .AddAppServices();
         }

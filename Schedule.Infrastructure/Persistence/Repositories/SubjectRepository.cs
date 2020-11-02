@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Schedule.Application.Interfaces.Repositories;
 using Schedule.Domain.Entities;
 using Schedule.Domain.Interfaces.Dto;
+using Schedule.Infrastructure.Persistence.Queries;
 using Schedule.Shared.Exceptions;
 using Schedule.Shared.Extensions;
 using System.Collections.Generic;
@@ -22,18 +23,22 @@ namespace Schedule.Infrastructure.Persistence.Repositories
         public Task<List<TMapTo>> GetAll<TMapTo>(long schoolId, IPaginatedRequestDto request, IPaginatedResponseDto response)
             where TMapTo : class, new()
         {
-            var query = Context.Subjects.Where(s => s.SchoolId == schoolId);
+            var query = Context.SubjectView
+                .Where(s => s.SchoolId == schoolId);
             if (!string.IsNullOrEmpty(request.SearchTerm))
             {
-                var searchTerm = request.SearchTerm;
-                query = query.Where(t =>
-                    t.Code.ToString().Contains(searchTerm) ||
-                    t.Name.Contains(searchTerm) ||
-                    t.AcademicHoursPerWeek.ToString().Contains(searchTerm) ||
-                    t.TotalAcademicHours.ToString().Contains(searchTerm));
+                var searchTerm = request.SearchTerm.Trim();
+                query = query.Where(s =>
+                    s.Code.ToString().Contains(searchTerm) ||
+                    s.Name.Contains(searchTerm) ||
+                    s.AcademicHoursPerWeek.ToString().Contains(searchTerm) ||
+                    s.TotalAcademicHours.ToString().Contains(searchTerm) ||
+                    s.Career.Contains(searchTerm) ||
+                    s.Semester.Contains(searchTerm) ||
+                    s.ClassroomType.Contains(searchTerm));
             }
 
-            return query.Paginate<Subject, TMapTo>(request, response, _mapper.ConfigurationProvider).ToListAsync();
+            return query.Paginate<SubjectView, TMapTo>(request, response, _mapper.ConfigurationProvider).ToListAsync();
         }
 
         public async Task CheckBeforeSaving(long schoolId, long semesterId, long careerId, long classroomTypeId)

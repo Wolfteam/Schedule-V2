@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Schedule.Domain.Entities;
 using Schedule.Domain.Interfaces.Managers;
+using Schedule.Infrastructure.Persistence.Queries;
 using System;
 using System.Linq;
 using System.Threading;
@@ -11,6 +12,23 @@ namespace Schedule.Infrastructure.Persistence
     public class AppDbContext : DbContext
     {
         public const string ScheduleDbScheme = "sch";
+        private const string DateFormat = "'%d/%m/%Y'";
+
+        private const string SubjectsViewName = "subjects_view";
+        private static readonly string SubjectsViewFullName = $"{ScheduleDbScheme}_{SubjectsViewName}";
+        public static readonly string SubjectsViewQuery = $@"
+        DROP VIEW IF EXISTS {SubjectsViewFullName};
+        CREATE VIEW {SubjectsViewFullName}
+        AS
+        SELECT ss.*,
+               sc.Name                            as Career,
+               st.Name                            AS ClassroomType,
+               se.Name                            AS Semester,
+               date_format(ss.CreatedAt, {DateFormat}) as CreatedAtString
+        FROM sch_subjects ss
+                 INNER JOIN sch_careers sc on ss.CareerId = sc.Id
+                 INNER JOIN sch_classroomtypepersubject st on ss.ClassroomTypePerSubjectId = st.Id
+                 INNER JOIN sch_semesters se on ss.SemesterId = se.Id;";
 
         private readonly IDefaultAppUserManager _appUserManager;
 
@@ -28,6 +46,8 @@ namespace Schedule.Infrastructure.Persistence
         public DbSet<TeacherAvailability> TeacherAvailabilities { get; set; }
         public DbSet<TeacherSubject> TeacherPerSubjects { get; set; }
         public DbSet<TeacherSchedule> TeacherSchedules { get; set; }
+
+        public DbSet<SubjectView> SubjectView { get; set; }
         #endregion
 
         public AppDbContext(
@@ -43,6 +63,8 @@ namespace Schedule.Infrastructure.Persistence
             base.OnModelCreating(modelBuilder);
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(AppDbContext).Assembly);
             modelBuilder.HasDefaultSchema(ScheduleDbScheme);
+
+            modelBuilder.Entity<SubjectView>().HasNoKey().ToView(SubjectsViewName);
         }
 
         public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
