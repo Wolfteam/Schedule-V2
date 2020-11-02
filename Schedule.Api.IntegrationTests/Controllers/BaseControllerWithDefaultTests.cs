@@ -95,7 +95,9 @@ namespace Schedule.Api.IntegrationTests.Controllers
             apiResponse.Result.CareerId.ShouldBe(dto.CareerId);
             apiResponse.Result.SemesterId.ShouldBe(dto.SemesterId);
             apiResponse.Result.ClassroomTypePerSubjectId.ShouldBe(dto.ClassroomTypePerSubjectId);
-
+            apiResponse.Result.Career.ShouldNotBeNullOrEmpty();
+            apiResponse.Result.ClassroomType.ShouldNotBeNullOrEmpty();
+            apiResponse.Result.Semester.ShouldNotBeNullOrEmpty();
             return apiResponse.Result;
         }
 

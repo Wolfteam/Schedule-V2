@@ -30,6 +30,9 @@ namespace Schedule.Api.IntegrationTests.Controllers
 
             //Assert
             AssertPaginatedResponse(response, apiResponse);
+            apiResponse.Result.ShouldAllBe(r => r.Career != null);
+            apiResponse.Result.ShouldAllBe(r => r.ClassroomType != null);
+            apiResponse.Result.ShouldAllBe(r => r.Semester != null);
         }
 
         [Fact]
@@ -45,6 +48,9 @@ namespace Schedule.Api.IntegrationTests.Controllers
             //Assert
             AssertApiResponse(response, apiResponse);
             apiResponse.Result.Id.ShouldBe(subject.Id);
+            apiResponse.Result.Career.ShouldNotBeNullOrEmpty();
+            apiResponse.Result.ClassroomType.ShouldNotBeNullOrEmpty();
+            apiResponse.Result.Semester.ShouldNotBeNullOrEmpty();
         }
 
         [Fact]
@@ -74,12 +80,12 @@ namespace Schedule.Api.IntegrationTests.Controllers
             apiResponse.Result.Name.ShouldBe(dto.Name);
             apiResponse.Result.AcademicHoursPerWeek.ShouldBe(dto.AcademicHoursPerWeek);
             apiResponse.Result.TotalAcademicHours.ShouldBe(dto.TotalAcademicHours);
-            //apiResponse.Result.Career.ShouldNotBeEmpty();
+            apiResponse.Result.Career.ShouldNotBeEmpty();
             apiResponse.Result.CareerId.ShouldBe(dto.CareerId);
-            //apiResponse.Result.Semester.ShouldNotBeEmpty();
+            apiResponse.Result.Semester.ShouldNotBeEmpty();
             apiResponse.Result.SemesterId.ShouldBe(dto.SemesterId);
             apiResponse.Result.ClassroomTypePerSubjectId.ShouldBe(dto.ClassroomTypePerSubjectId);
-            //apiResponse.Result.ClassroomType.ShouldNotBeEmpty();
+            apiResponse.Result.ClassroomType.ShouldNotBeEmpty();
         }
 
         [Fact]
