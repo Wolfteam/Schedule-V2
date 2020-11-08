@@ -1,8 +1,8 @@
 import axios from 'axios';
 import {
-    IApiResponseDto,
+    IApiListResponseDto, IApiResponseDto,
     IEmptyResponseDto,
-    IApiListResponseDto,
+
     IGetAllCareersResponseDto,
     ISaveCareerRequestDto
 } from '../models';
@@ -19,6 +19,14 @@ export const getAllCareers = async (): Promise<IApiListResponseDto<IGetAllCareer
     }
 };
 
+export const getCareer = async (id: number): Promise<IApiResponseDto<IGetAllCareersResponseDto>> => {
+    try {
+        const response = await axios.get<IApiResponseDto<IGetAllCareersResponseDto>>(`${careerPath}/${id}`);
+        return response.data;
+    } catch (error) {
+        return handleErrorResponse<IApiResponseDto<IGetAllCareersResponseDto>>(error);
+    }
+};
 
 export const createCareer = async (dto: ISaveCareerRequestDto): Promise<IApiResponseDto<IGetAllCareersResponseDto>> => {
     try {

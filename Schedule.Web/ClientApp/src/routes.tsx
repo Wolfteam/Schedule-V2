@@ -1,11 +1,11 @@
 import React, { useContext } from "react";
-import { Switch, Route, useRouteMatch, Redirect } from "react-router-dom";
-
+import { Redirect, Route, Switch, useRouteMatch } from "react-router-dom";
 import { AuthContext } from "./contexts/auth-context";
+
 
 const Availability = React.lazy(() => import("./pages/availability/availability"));
 const ChangePassword = React.lazy(() => import("./pages/change-password/change-password"));
-const Careers = React.lazy(() => import("./pages/others/careers"));
+const Careers = React.lazy(() => import("./pages/others/careers/careers"));
 const CareersPeriod = React.lazy(() => import("./pages/others/careers-period"));
 const Classrooms = React.lazy(() => import("./pages/others/classrooms/clasrooms"));
 const Priorities = React.lazy(() => import("./pages/others/teachers/priorities"));
@@ -21,6 +21,7 @@ const Login = React.lazy(() => import("./pages/login/login"));
 const NotFound = React.lazy(() => import("./pages/not-found/not-found"));
 const Subject = React.lazy(() => import("./pages/others/subjects/subject"));
 const Teacher = React.lazy(() => import("./pages/others/teachers/teacher"));
+const Career = React.lazy(() => import("./pages/others/careers/career"));
 
 export const loginPath = '/login';
 export const homePath = "/";
@@ -39,6 +40,7 @@ export const teachersPath = '/teachers';
 export const usersPath = '/users';
 export const subjectPath = `${subjectsPath}/:id`;
 export const teacherPath = `${teachersPath}/:id`;
+export const careerPath = `${careersPath}/:id`;
 
 export const AppRoutes: React.FC = () => {
     const [authContext] = useContext(AuthContext);
@@ -67,6 +69,7 @@ const AdminAppRoutes: React.FC = () => {
         <Route exact path={changePasswordPath} component={ChangePassword} />
         <Route exact path={availabilityPath} component={Availability} />
         <Route exact path={careersPeriodPath} component={CareersPeriod} />
+        <Route exact path={careerPath} component={Career} />
         <Route exact path={careersPath} component={Careers} />
         <Route exact path={classRoomsPath} component={Classrooms} />
         <Route exact path={prioritiesPath} component={Priorities} />

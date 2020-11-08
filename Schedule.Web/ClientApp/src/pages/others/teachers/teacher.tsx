@@ -218,10 +218,18 @@ function Teacher() {
     const isFormValid = Object.values(teacherValidation).every((val: boolean) => val);
     const btnEnabled = !state.isBusy && isFormValid && prioritiesLoaded;
     const pageTitle = String.Format(!isInEditMode ? translations.addX : translations.editX, translations.teachers);
-    
+
+    const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        if (!btnEnabled)
+            return;
+
+        await saveChanges();
+    };
+
     return <Container maxWidth="md">
         <PageTitle title={pageTitle} showLoading={state.isBusy} showBackIcon backPath={teachersPath} />
-        <form>
+        <form onSubmit={onSubmit}>
             <Grid container justify="center" direction="row" spacing={1}>
                 <Grid item xs={12} sm={6}>
                     <TextField

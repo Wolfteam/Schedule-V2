@@ -1,10 +1,11 @@
 import {
-  Checkbox, Container,
-  Grid, Table,
-
-
-  TableBody, TableCell, TableContainer,
-
+  Checkbox,
+  Container,
+  Grid,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
   TableRow
 } from '@material-ui/core';
 import { useSnackbar } from 'notistack';
@@ -171,23 +172,20 @@ function Teachers() {
 
     setState({ ...state, isBusy: true });
 
-    let subjectsNotDeleted = 0;
+    let notDeleted = 0;
     for (let index = 0; index < selectedTeachers.length; index++) {
       const id = selectedTeachers[index];
       const response = await deleteTeacher(id);
       if (!response.succeed) {
         console.log(response);
-        subjectsNotDeleted++;
+        notDeleted++;
+        enqueueSnackbar(getErrorCodeTranslation(response.errorMessageId), { variant: 'error' });
       }
     }
 
-    if (subjectsNotDeleted === 0) {
+    if (notDeleted === 0) {
       const msg = String.Format(translations.xItemsWereDeleted, selectedTeachers.length, translations.subjects);
       enqueueSnackbar(msg, { variant: 'success' });
-    } else if (subjectsNotDeleted !== selectedTeachers.length) {
-      enqueueSnackbar(translations.notAllSelectedItemsWereDeleted, { variant: 'warning' });
-    } else {
-      enqueueSnackbar(translations.unknownError, { variant: 'error' });
     }
 
     setSelectedTeachers([]);

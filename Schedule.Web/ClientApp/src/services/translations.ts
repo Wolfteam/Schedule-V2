@@ -84,6 +84,8 @@ interface ITranslations {
     invalidLastName: string;
     addX: string;
     editX: string;
+    deleteCareers: string;
+    careerWasSaved: string;
     errorCodes: IAppMessageTranslations;
 }
 
@@ -91,6 +93,8 @@ interface IAppMessageTranslations {
     SCH_100: string;
     SCH_101: string;
     SCH_102: string;
+    SCH_103: string;
+    SCH_104: string;
 
     IDS_1000: string;
     IDS_1001: string;
@@ -189,10 +193,14 @@ const enTrans: ITranslations = {
     invalidLastName: 'Invalid last name',
     addX: 'Add {0}',
     editX: 'Edit {0}',
+    deleteCareers: 'Delete careers',
+    careerWasSaved: 'Career was successfully saved',
     errorCodes: {
         SCH_100: 'Invalid api request',
         SCH_101: 'Unknown error occurred in api',
         SCH_102: 'Resource was not found in api',
+        SCH_103: 'The resource already exists',
+        SCH_104: 'Resource cannot be deleted because it is being used',
 
         IDS_1000: 'Invalid request sent to identity server',
         IDS_1001: 'Unknown error occurred in the identity server',
@@ -278,7 +286,7 @@ const esTrans: ITranslations = {
     invalidHours: 'Las horas no son válidas',
     addSubject: 'Agregar materia',
     editSubject: 'Editar materia',
-    subjectWasSaved: 'La materia fue creada exitosamente',
+    subjectWasSaved: 'La materia fue guardada exitosamente',
     classroomType: 'Tipos de aula',
     createdAt: 'Created at',
     firstName: 'Primer nombre',
@@ -289,10 +297,14 @@ const esTrans: ITranslations = {
     invalidLastName: 'El apellido no es válido',
     addX: 'Agregar {0}',
     editX: 'Editar {0}',
+    deleteCareers: 'Borrar carreras',
+    careerWasSaved: 'La carrera fue guardada exitosamente',
     errorCodes: {
         SCH_100: 'La solicitud hecha a la api no es válida',
         SCH_101: 'Un error desconocido ocurrió en la api',
         SCH_102: 'El recurso no fue encontrado en la api',
+        SCH_103: 'El recurso ya existe',
+        SCH_104: 'El recurso no puede ser borrado debido a que esta siendo usado',
 
         IDS_1000: 'La solicitud hecha al servidor de identidad no es válida',
         IDS_1001: 'Un error desconocido ocurrió en el servidor de identidad',

@@ -253,14 +253,21 @@ function Subject() {
         enqueueSnackbar(translations.subjectWasSaved, { variant: 'success' });
         history.replace(subjectsPath);
     };
-
     const isFormValid = Object.values(subjectValidation).every((val: boolean) => val);
     const btnEnabled = !state.isBusy && isFormValid && careersLoaded && semestersLoaded && classroomTypesLoaded;
     const pageTitle = String.Format(!isInEditMode ? translations.addX : translations.editX, translations.subjects);
 
+    const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        if (!btnEnabled)
+            return;
+        
+        await saveChanges();
+    };
+
     return <Container maxWidth="md">
         <PageTitle title={pageTitle} showLoading={state.isBusy} showBackIcon backPath={subjectsPath} />
-        <form>
+        <form onSubmit={onSubmit}>
             <Grid container justify="center" direction="row" spacing={1}>
                 <Grid item xs={12} sm={6}>
                     <TextField

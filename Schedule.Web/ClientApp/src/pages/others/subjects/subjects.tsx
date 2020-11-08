@@ -1,4 +1,3 @@
-import React, { useCallback, useEffect, useState } from 'react';
 import {
   Checkbox,
   Container,
@@ -9,19 +8,20 @@ import {
   TableContainer,
   TableRow
 } from '@material-ui/core';
+import { useSnackbar } from 'notistack';
+import React, { useCallback, useEffect, useState } from 'react';
+import { useHistory } from 'react-router-dom';
 import { String } from 'typescript-string-operations';
-import PageTitle from '../../../components/page-title/page-title';
-import CustomFab from '../../../components/others/custom-fab';
-import CustomTableSearch from '../../../components/custom-table/custom-table-search';
 import CustomTableHeader, { Header } from '../../../components/custom-table/custom-table-header';
 import CustomTablePagination from '../../../components/custom-table/custom-table-pagination';
+import CustomTableSearch from '../../../components/custom-table/custom-table-search';
 import CustomTableToolbar from '../../../components/custom-table/custom-table-toolbar';
-import { IGetAllSubjectResponseDto, IPaginatedRequestDto, buildPaginatedRequest } from '../../../models';
-import translations, { getErrorCodeTranslation } from '../../../services/translations';
-import { useSnackbar } from 'notistack';
-import { getAllSubjects, deleteSubject } from '../../../services/subject.service';
-import { useHistory } from 'react-router-dom';
+import CustomFab from '../../../components/others/custom-fab';
+import PageTitle from '../../../components/page-title/page-title';
+import { buildPaginatedRequest, IGetAllSubjectResponseDto, IPaginatedRequestDto } from '../../../models';
 import { subjectsPath } from '../../../routes';
+import { deleteSubject, getAllSubjects } from '../../../services/subject.service';
+import translations, { getErrorCodeTranslation } from '../../../services/translations';
 
 interface State {
   isBusy: boolean;
@@ -120,24 +120,21 @@ function Subjects() {
 
     setState({ ...state, isBusy: true });
 
-    let subjectsNotDeleted = 0;
+    let notDeleted = 0;
     for (let index = 0; index < selectedSubjects.length; index++) {
       const id = selectedSubjects[index];
       const response = await deleteSubject(id);
       if (!response.succeed) {
         console.log(response);
-        subjectsNotDeleted++;
+        notDeleted++;
+        enqueueSnackbar(getErrorCodeTranslation(response.errorMessageId), { variant: 'error' });
       }
     }
 
-    if (subjectsNotDeleted === 0) {
+    if (notDeleted === 0) {
       const msg = String.Format(translations.xItemsWereDeleted, selectedSubjects.length, translations.subjects);
       enqueueSnackbar(msg, { variant: 'success' });
-    } else if (subjectsNotDeleted !== selectedSubjects.length) {
-      enqueueSnackbar(translations.notAllSelectedItemsWereDeleted, { variant: 'warning' });
-    } else {
-      enqueueSnackbar(translations.unknownError, { variant: 'error' });
-    }
+    } 
 
     setSelectedSubjects([]);
     const request = buildPaginatedRequest(state.currentPage, state.itemsPerPage, state.searchTerm, state.orderBy, state.orderByAsc);
