@@ -86,6 +86,11 @@ interface ITranslations {
     editX: string;
     deleteCareers: string;
     careerWasSaved: string;
+    capacity: string;
+    deleteX: string;
+    classroomWasSaved: string;
+    invalidCapacity: string;
+    createdBy: string;
     errorCodes: IAppMessageTranslations;
 }
 
@@ -195,6 +200,11 @@ const enTrans: ITranslations = {
     editX: 'Edit {0}',
     deleteCareers: 'Delete careers',
     careerWasSaved: 'Career was successfully saved',
+    capacity: 'Capacity',
+    deleteX: 'Delete {0}',
+    classroomWasSaved: 'Classroom was successfully saved',
+    invalidCapacity: 'Invalid capacity',
+    createdBy: 'Created by',
     errorCodes: {
         SCH_100: 'Invalid api request',
         SCH_101: 'Unknown error occurred in api',
@@ -299,6 +309,11 @@ const esTrans: ITranslations = {
     editX: 'Editar {0}',
     deleteCareers: 'Borrar carreras',
     careerWasSaved: 'La carrera fue guardada exitosamente',
+    capacity: 'Capacidad',
+    deleteX: 'Borrar {0}',
+    classroomWasSaved: 'La aula fue guardada exitosamente',
+    invalidCapacity: 'La capacidad no es válida',
+    createdBy: 'Creado por',
     errorCodes: {
         SCH_100: 'La solicitud hecha a la api no es válida',
         SCH_101: 'Un error desconocido ocurrió en la api',

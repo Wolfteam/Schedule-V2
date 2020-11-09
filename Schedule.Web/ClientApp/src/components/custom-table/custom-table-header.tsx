@@ -1,5 +1,5 @@
-import React from 'react'
 import { createStyles, makeStyles, TableCell, TableHead, TableRow, TableSortLabel, Theme } from '@material-ui/core';
+import React from 'react';
 import validator from 'validator';
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
@@ -16,23 +16,23 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
     }
 }));
 
-export interface Header {
-    orderByKey?: string;
+export interface Header<T> {
+    orderByKey?: keyof T;
     text: string;
     isOrderable: boolean;
 }
 
-interface Props {
+interface Props<T> {
     orderBy: string;
     orderByAsc: boolean;
-    cells: Header[];
-    onOrderByChanged: (orderBy: string, orderByAsc: boolean) => void;
+    cells: Header<T>[];
+    onOrderByChanged: (orderBy: keyof T, orderByAsc: boolean) => void;
 }
 
-function CustomTableHeader(props: Props) {
+function CustomTableHeader<T>(props: Props<T>) {
     const classes = useStyles();
 
-    const sortDirectionChanged = (orderBy: string, orderByAsc: boolean) => {
+    const sortDirectionChanged = (orderBy: keyof T, orderByAsc: boolean) => {
         if (orderBy !== props.orderBy || orderByAsc !== props.orderByAsc)
             props.onOrderByChanged(orderBy, orderByAsc);
     };
@@ -51,7 +51,7 @@ function CustomTableHeader(props: Props) {
         ) : null;
 
         return <TableCell
-            key={el.orderByKey ?? `GeneratedKey_${index}`}
+            key={el.orderByKey?.toString() ?? `GeneratedKey_${index}`}
             align='center'
             padding='none'
             sortDirection={isBeingUsed ? sortDirection : false}>
@@ -71,4 +71,4 @@ function CustomTableHeader(props: Props) {
     </TableHead>;
 }
 
-export default React.memo(CustomTableHeader);
+export default React.memo(CustomTableHeader) as typeof CustomTableHeader;

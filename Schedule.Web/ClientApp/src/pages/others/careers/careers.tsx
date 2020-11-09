@@ -21,7 +21,7 @@ interface State {
     totalPages: number;
     itemsPerPage: number;
     totalRecords: number;
-    orderBy: string;
+    orderBy: keyof IGetAllCareersResponseDto;
     orderByAsc: boolean;
     searchTerm: string;
     filteredCareers: IGetAllCareersResponseDto[],
@@ -35,7 +35,7 @@ function Careers() {
         totalPages: 1,
         itemsPerPage: 5,
         totalRecords: 0,
-        orderBy: '',
+        orderBy: 'id',
         orderByAsc: true,
         searchTerm: '',
         filteredCareers: [],
@@ -120,20 +120,20 @@ function Careers() {
     };
 
 
-    const sortDirectionChanged = (orderBy: string, orderByAsc: boolean) => {
-        onCareersLoaded(state.careers, state.currentPage, state.itemsPerPage, state.searchTerm, orderBy as keyof IGetAllCareersResponseDto, orderByAsc);
+    const sortDirectionChanged = (orderBy: keyof IGetAllCareersResponseDto, orderByAsc: boolean) => {
+        onCareersLoaded(state.careers, state.currentPage, state.itemsPerPage, state.searchTerm, orderBy, orderByAsc);
     };
 
     const itemsPerPageChanged = (newVal: number) => {
-        onCareersLoaded(state.careers, state.currentPage, newVal, state.searchTerm, state.orderBy as keyof IGetAllCareersResponseDto, state.orderByAsc);
+        onCareersLoaded(state.careers, state.currentPage, newVal, state.searchTerm, state.orderBy, state.orderByAsc);
     };
 
     const searchTermChanged = (newVal: string) => {
-        onCareersLoaded(state.careers, state.currentPage, state.itemsPerPage, newVal, state.orderBy as keyof IGetAllCareersResponseDto, state.orderByAsc);
+        onCareersLoaded(state.careers, state.currentPage, state.itemsPerPage, newVal, state.orderBy, state.orderByAsc);
     }
 
     const pageChanged = (newVal: number) => {
-        onCareersLoaded(state.careers, newVal, state.itemsPerPage, state.searchTerm, state.orderBy as keyof IGetAllCareersResponseDto, state.orderByAsc);
+        onCareersLoaded(state.careers, newVal, state.itemsPerPage, state.searchTerm, state.orderBy, state.orderByAsc);
     };
 
     const onEditClick = useCallback(() => {
@@ -176,7 +176,7 @@ function Careers() {
         history.push(path);
     };
 
-    const headerCells: Header[] = [
+    const headerCells: Header<IGetAllCareersResponseDto>[] = [
         {
             isOrderable: false,
             text: '',

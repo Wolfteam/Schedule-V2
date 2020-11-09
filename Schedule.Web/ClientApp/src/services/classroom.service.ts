@@ -2,10 +2,10 @@ import axios from 'axios';
 import {
     IApiResponseDto,
     IEmptyResponseDto,
+    IGetAllClassroomsResponseDto,
+    IGetAllClassroomTypesResponseDto,
     IPaginatedRequestDto,
     IPaginatedResponseDto,
-    IGetAllClassroomTypesResponseDto,
-    IGetAllClassroomsResponseDto,
     ISaveClassroomRequestDto,
     ISaveClassroomTypeRequestDto
 } from '../models';
@@ -20,6 +20,15 @@ export const getAllClassrooms = async (dto: IPaginatedRequestDto): Promise<IPagi
         return response.data;
     } catch (error) {
         return handleErrorResponse<IPaginatedResponseDto<IGetAllClassroomsResponseDto>>(error);
+    }
+};
+
+export const getClassroom = async (id: number): Promise<IApiResponseDto<IGetAllClassroomsResponseDto>> => {
+    try {
+        const response = await axios.get<IApiResponseDto<IGetAllClassroomsResponseDto>>(`${classroomBasePath}/${id}`);
+        return response.data;
+    } catch (error) {
+        return handleErrorResponse<IApiResponseDto<IGetAllClassroomsResponseDto>>(error);
     }
 };
 

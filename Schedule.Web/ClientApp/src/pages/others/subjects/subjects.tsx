@@ -29,7 +29,7 @@ interface State {
   totalPages: number;
   itemsPerPage: number;
   totalRecords: number;
-  orderBy: string;
+  orderBy: keyof IGetAllSubjectResponseDto;
   orderByAsc: boolean;
   searchTerm: string;
   subjects: IGetAllSubjectResponseDto[];
@@ -43,7 +43,7 @@ function Subjects() {
     totalPages: 1,
     itemsPerPage: 5,
     totalRecords: 0,
-    orderBy: 'Code',
+    orderBy: 'code',
     orderByAsc: true,
     searchTerm: '',
     subjects: [],
@@ -79,7 +79,7 @@ function Subjects() {
     refreshSubjects(request);
   }, [state.currentPage, state.itemsPerPage, state.searchTerm, state.orderBy, state.orderByAsc]);
 
-  const sortDirectionChanged = useCallback((orderBy: string, orderByAsc: boolean) => {
+  const sortDirectionChanged = useCallback((orderBy: keyof IGetAllSubjectResponseDto, orderByAsc: boolean) => {
     setState({ ...state, isBusy: true, orderBy: orderBy, orderByAsc: orderByAsc });
   }, []);
 
@@ -146,43 +146,43 @@ function Subjects() {
     history.push(path);
   };
 
-  const headerCells: Header[] = [
+  const headerCells: Header<IGetAllSubjectResponseDto>[] = [
     {
       text: '',
       isOrderable: false
     },
     {
-      orderByKey: 'Code',
+      orderByKey: 'code',
       text: translations.code,
       isOrderable: true
     },
     {
-      orderByKey: 'Name',
+      orderByKey: 'name',
       text: translations.name,
       isOrderable: true
     },
     {
-      orderByKey: 'Semester',
+      orderByKey: 'semester',
       text: translations.semester,
       isOrderable: true
     },
     {
-      orderByKey: 'Career',
+      orderByKey: 'career',
       text: translations.career,
       isOrderable: true
     },
     {
-      orderByKey: 'ClassroomType',
+      orderByKey: 'classroomType',
       text: translations.subjectType,
       isOrderable: true
     },
     {
-      orderByKey: 'AcademicHoursPerWeek',
+      orderByKey: 'academicHoursPerWeek',
       text: translations.academicHoursPerWeeek,
       isOrderable: true
     },
     {
-      orderByKey: 'TotalAcademicHours',
+      orderByKey: 'totalAcademicHours',
       text: translations.totalAcademicHours,
       isOrderable: true
     },

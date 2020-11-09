@@ -22,6 +22,7 @@ const NotFound = React.lazy(() => import("./pages/not-found/not-found"));
 const Subject = React.lazy(() => import("./pages/others/subjects/subject"));
 const Teacher = React.lazy(() => import("./pages/others/teachers/teacher"));
 const Career = React.lazy(() => import("./pages/others/careers/career"));
+const Classroom = React.lazy(() => import("./pages/others/classrooms/classroom"));
 
 export const loginPath = '/login';
 export const homePath = "/";
@@ -41,6 +42,7 @@ export const usersPath = '/users';
 export const subjectPath = `${subjectsPath}/:id`;
 export const teacherPath = `${teachersPath}/:id`;
 export const careerPath = `${careersPath}/:id`;
+export const classroomPath = `${classRoomsPath}/:id`;
 
 export const AppRoutes: React.FC = () => {
     const [authContext] = useContext(AuthContext);
@@ -71,6 +73,7 @@ const AdminAppRoutes: React.FC = () => {
         <Route exact path={careersPeriodPath} component={CareersPeriod} />
         <Route exact path={careerPath} component={Career} />
         <Route exact path={careersPath} component={Careers} />
+        <Route exact path={classroomPath} component={Classroom} />
         <Route exact path={classRoomsPath} component={Classrooms} />
         <Route exact path={prioritiesPath} component={Priorities} />
         <Route exact path={sectionsPath} component={Sections} />

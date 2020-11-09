@@ -31,7 +31,7 @@ interface State {
   totalPages: number;
   itemsPerPage: number;
   totalRecords: number;
-  orderBy: string;
+  orderBy: keyof IGetAllTeacherResponseDto;
   orderByAsc: boolean;
   searchTerm: string;
   filteredTeachers: IGetAllTeacherResponseDto[],
@@ -45,7 +45,7 @@ function Teachers() {
     totalPages: 1,
     itemsPerPage: 5,
     totalRecords: 0,
-    orderBy: '',
+    orderBy: 'firstName',
     orderByAsc: true,
     searchTerm: '',
     filteredTeachers: [],
@@ -141,20 +141,20 @@ function Teachers() {
     setSelectedTeachers(newValues);
   };
 
-  const sortDirectionChanged = (orderBy: string, orderByAsc: boolean) => {
-    onTeachersLoaded(state.teachers, state.currentPage, state.itemsPerPage, state.searchTerm, orderBy as keyof IGetAllTeacherResponseDto, orderByAsc);
+  const sortDirectionChanged = (orderBy: keyof IGetAllTeacherResponseDto, orderByAsc: boolean) => {
+    onTeachersLoaded(state.teachers, state.currentPage, state.itemsPerPage, state.searchTerm, orderBy, orderByAsc);
   };
 
   const itemsPerPageChanged = (newVal: number) => {
-    onTeachersLoaded(state.teachers, state.currentPage, newVal, state.searchTerm, state.orderBy as keyof IGetAllTeacherResponseDto, state.orderByAsc);
+    onTeachersLoaded(state.teachers, state.currentPage, newVal, state.searchTerm, state.orderBy, state.orderByAsc);
   };
 
   const searchTermChanged = (newVal: string) => {
-    onTeachersLoaded(state.teachers, state.currentPage, state.itemsPerPage, newVal, state.orderBy as keyof IGetAllTeacherResponseDto, state.orderByAsc);
+    onTeachersLoaded(state.teachers, state.currentPage, state.itemsPerPage, newVal, state.orderBy, state.orderByAsc);
   }
 
   const pageChanged = (newVal: number) => {
-    onTeachersLoaded(state.teachers, newVal, state.itemsPerPage, state.searchTerm, state.orderBy as keyof IGetAllTeacherResponseDto, state.orderByAsc);
+    onTeachersLoaded(state.teachers, newVal, state.itemsPerPage, state.searchTerm, state.orderBy, state.orderByAsc);
   };
 
   const onEditClick = useCallback(() => {
@@ -197,7 +197,7 @@ function Teachers() {
     history.push(path);
   };
 
-  const headerCells: Header[] = [
+  const headerCells: Header<IGetAllTeacherResponseDto>[] = [
     {
       isOrderable: false,
       text: '',
