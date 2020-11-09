@@ -5,8 +5,8 @@
         SchApiInvalidRequest = 100,
         SchApiUnknownErrorOccurred = 101,
         SchApiNotFound = 102,
-        SchApiResourceAlreadyExists = 104,
-        SchApiResourceCantBeDeletedIsBeingUsed = 105,
+        SchApiResourceAlreadyExists = 103,
+        SchApiResourceCantBeDeletedIsBeingUsed = 104,
 
         IdsInvalidRequest = 1000,
         IdsUnknownErrorOccurred = 1001,

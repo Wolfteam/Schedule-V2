@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Schedule.Application.Interfaces.Repositories;
 using Schedule.Domain.Entities;
 using Schedule.Domain.Interfaces.Dto;
+using Schedule.Infrastructure.Persistence.Queries;
 using Schedule.Shared.Extensions;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,14 +22,16 @@ namespace Schedule.Infrastructure.Persistence.Repositories
         public Task<List<TMapTo>> GetAll<TMapTo>(long schoolId, IPaginatedRequestDto request, IPaginatedResponseDto response)
             where TMapTo : class, new()
         {
-            var query = Context.Classrooms.Where(c => c.SchoolId == schoolId);
+            var query = Context.ClassroomView.Where(c => c.SchoolId == schoolId);
             if (!string.IsNullOrEmpty(request.SearchTerm))
             {
                 var searchTerm = request.SearchTerm.Trim();
-                query = query.Where(t => t.Name.Contains(searchTerm) || t.Capacity.ToString().Contains(searchTerm));
+                query = query.Where(t => t.Name.Contains(searchTerm) ||
+                                         t.Capacity.ToString().Contains(searchTerm) ||
+                                         t.CreatedAtString.Contains(searchTerm));
             }
 
-            return query.Paginate<Classroom, TMapTo>(request, response, _mapper.ConfigurationProvider).ToListAsync();
+            return query.Paginate<ClassroomView, TMapTo>(request, response, _mapper.ConfigurationProvider).ToListAsync();
         }
     }
 }

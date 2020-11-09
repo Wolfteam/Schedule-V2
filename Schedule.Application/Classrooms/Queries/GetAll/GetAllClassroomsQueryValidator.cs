@@ -10,7 +10,9 @@ namespace Schedule.Application.Classrooms.Queries.GetAll
         {
             nameof(GetAllClassroomsResponseDto.Name),
             nameof(GetAllClassroomsResponseDto.ClassroomSubject),
-            nameof(GetAllClassroomsResponseDto.Capacity)
+            nameof(GetAllClassroomsResponseDto.Capacity),
+            nameof(GetAllClassroomsResponseDto.CreatedAt),
+            nameof(GetAllClassroomsResponseDto.CreatedBy),
         };
     }
 }
