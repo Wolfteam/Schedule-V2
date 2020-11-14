@@ -1,16 +1,16 @@
-import React, { useEffect, useState } from 'react'
 import {
     CircularProgress,
     FormControl,
-    TextField,
-} from '@material-ui/core'
+    TextField
+} from '@material-ui/core';
 import { Autocomplete } from '@material-ui/lab';
 import { useSnackbar } from 'notistack';
-import translations, { getErrorCodeTranslation } from '../../services/translations';
+import React, { useEffect, useState } from 'react';
 import {
     IGetAllCareersResponseDto
 } from '../../models';
 import { getAllCareers } from '../../services/career.service';
+import translations, { getErrorCodeTranslation } from '../../services/translations';
 
 interface State {
     loaded: boolean;
@@ -29,19 +29,20 @@ function CareersAutocomplete(props: Props) {
         careers: []
     });
     const { enqueueSnackbar } = useSnackbar();
+    const { onCareerLoaded } = props;
 
     useEffect(() => {
         getAllCareers().then(resp => {
             if (!resp.succeed) {
                 enqueueSnackbar(getErrorCodeTranslation(resp.errorMessageId), { variant: 'error' });
-                setState({ ...state, loaded: true });
+                setState(s => ({ ...s, loaded: true }));
                 return;
             }
 
             setState({ loaded: true, careers: resp.result });
-            props.onCareerLoaded();
+            onCareerLoaded();
         });
-    }, [])
+    }, [enqueueSnackbar, onCareerLoaded])
 
     const onChange = (event: React.ChangeEvent<{}>, newValue: IGetAllCareersResponseDto | null) => {
         props.onCareerSelected(newValue);
@@ -51,7 +52,7 @@ function CareersAutocomplete(props: Props) {
         return <CircularProgress />;
     }
 
-    const selectedVal = state.careers.find(c => c.id == props.selectedValue) ?? null;
+    const selectedVal = state.careers.find(c => c.id === props.selectedValue) ?? null;
 
     return <FormControl fullWidth margin="normal">
         <Autocomplete

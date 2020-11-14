@@ -11,7 +11,7 @@ import {
     Theme
 } from '@material-ui/core';
 import { useSnackbar } from 'notistack';
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 import { String } from 'typescript-string-operations';
 import validator from 'validator';
@@ -71,16 +71,16 @@ function Career() {
     const params = useParams<ParamTypes>();
     const isInEditMode = validator.isInt(params.id) && +params.id > 0;
 
-    const loadCareer = async () => {
+    const loadCareer = useCallback(async () => {
         if (!isInEditMode) {
             return;
         }
 
-        setState({ ...state, isBusy: true });
+        setState(s => ({ ...s, isBusy: true }));
         const response = await getCareer(+params.id);
         if (!response.succeed) {
             enqueueSnackbar(getErrorCodeTranslation(response.errorMessageId), { variant: 'error' });
-            setState({ ...state, isBusy: false });
+            setState(s => ({ ...s, isBusy: false }));
             return;
         }
         const career = response.result;
@@ -92,12 +92,12 @@ function Career() {
             isNameDirty: true,
             isNameValid: true
         });
-        setState({ ...state, isBusy: false });
-    };
+        setState(s => ({ ...s, isBusy: false }));
+    }, [isInEditMode, params.id, enqueueSnackbar]);
 
     useEffect(() => {
         loadCareer();
-    }, []);
+    }, [loadCareer]);
 
     const handleChange = (prop: keyof CareerState) => (event: React.ChangeEvent<HTMLInputElement>) => {
         let newVal = event.target.value;

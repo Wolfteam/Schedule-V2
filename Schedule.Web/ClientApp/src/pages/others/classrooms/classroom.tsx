@@ -11,7 +11,7 @@ import {
     Theme
 } from '@material-ui/core';
 import { useSnackbar } from 'notistack';
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 import { String } from 'typescript-string-operations';
 import validator from 'validator';
@@ -83,16 +83,16 @@ function Classroom() {
     const params = useParams<ParamTypes>();
     const isInEditMode = validator.isInt(params.id) && +params.id > 0;
 
-    const loadClassroom = async () => {
+    const loadClassroom = useCallback(async () => {
         if (!isInEditMode) {
             return;
         }
 
-        setState({ ...state, isBusy: true });
+        setState(s => ({ ...s, isBusy: true }));
         const response = await getClassroom(+params.id);
         if (!response.succeed) {
             enqueueSnackbar(getErrorCodeTranslation(response.errorMessageId), { variant: 'error' });
-            setState({ ...state, isBusy: false });
+            setState(s => ({ ...s, isBusy: false }));
             return;
         }
         const classroom = response.result;
@@ -109,22 +109,22 @@ function Classroom() {
             isNameDirty: true,
             isNameValid: true
         });
-        setState({ ...state, isBusy: false });
-    };
+        setState(s => ({ ...s, isBusy: false }));
+    }, [isInEditMode, params.id, enqueueSnackbar]);
 
     useEffect(() => {
         loadClassroom();
+    }, [loadClassroom]);
+
+    const handleClassroomTypesLoaded = useCallback(() => {
+        setClassroomTypesLoaded(true);
     }, []);
 
-    const handleClassroomTypesLoaded = () => {
-        setClassroomTypesLoaded(true);
-    };
-
-    const handleClassroomTypeChange = (item: IGetAllClassroomTypesResponseDto | null) => {
+    const handleClassroomTypeChange = useCallback((item: IGetAllClassroomTypesResponseDto | null) => {
         const id = item?.id ?? 0;
-        setClassroom({ ...classroom, classroomSubjectId: id });
-        setClassroomValidation({ ...classroomValidation, isClassroomSubjectIdValid: id > 0 });
-    };
+        setClassroom(c => ({ ...c, classroomSubjectId: id }));
+        setClassroomValidation(cv => ({ ...cv, isClassroomSubjectIdValid: id > 0 }));
+    }, []);
 
     const handleChange = (prop: keyof ClassroomState) => (event: React.ChangeEvent<HTMLInputElement>) => {
         let newVal = event.target.value;

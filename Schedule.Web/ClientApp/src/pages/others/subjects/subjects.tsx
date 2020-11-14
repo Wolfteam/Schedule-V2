@@ -56,43 +56,43 @@ function Subjects() {
 
   const history = useHistory();
 
-  const refreshSubjects = async (request: IPaginatedRequestDto) => {
+  const refreshSubjects = useCallback(async (request: IPaginatedRequestDto) => {
     const response = await getAllSubjects(request);
     if (!response.succeed) {
       enqueueSnackbar(getErrorCodeTranslation(response.errorMessageId), { variant: 'error' });
-      setState({ ...state, isBusy: false });
+      setState(s => ({ ...s, isBusy: false }));
       return;
     }
-    setState({
-      ...state,
+    setState(s => ({
+      ...s,
       isBusy: false,
       currentPage: response.currentPage,
       itemsPerPage: response.take,
       subjects: response.result,
       totalPages: response.totalPages,
       totalRecords: response.totalRecords
-    });
-  };
+    }));
+  }, [enqueueSnackbar]);
 
   useEffect(() => {
     const request = buildPaginatedRequest(state.currentPage, state.itemsPerPage, state.searchTerm, state.orderBy, state.orderByAsc);
     refreshSubjects(request);
-  }, [state.currentPage, state.itemsPerPage, state.searchTerm, state.orderBy, state.orderByAsc]);
+  }, [state.currentPage, state.itemsPerPage, state.searchTerm, state.orderBy, state.orderByAsc, refreshSubjects]);
 
   const sortDirectionChanged = useCallback((orderBy: keyof IGetAllSubjectResponseDto, orderByAsc: boolean) => {
-    setState({ ...state, isBusy: true, orderBy: orderBy, orderByAsc: orderByAsc });
+    setState(s => ({ ...s, isBusy: true, orderBy: orderBy, orderByAsc: orderByAsc }));
   }, []);
 
   const itemsPerPageChanged = useCallback((newVal: number) => {
-    setState({ ...state, isBusy: true, itemsPerPage: newVal });
+    setState(s => ({ ...s, isBusy: true, itemsPerPage: newVal }));
   }, []);
 
   const searchTermChanged = useCallback((newVal: string) => {
-    setState({ ...state, isBusy: true, searchTerm: newVal });
+    setState(s => ({ ...s, isBusy: true, searchTerm: newVal }));
   }, []);
 
   const pageChanged = (newVal: number) => {
-    setState({ ...state, isBusy: true, currentPage: newVal });
+    setState(s => ({ ...s, isBusy: true, currentPage: newVal }));
   };
 
   const subjectSelectionChanged = (id: number, isSelected: boolean) => {
@@ -112,7 +112,7 @@ function Subjects() {
     const id = selectedSubjects[0];
     const path = `${subjectsPath}/${id}`;
     history.push(path);
-  }, [history, selectedSubjects, subjectsPath]);
+  }, [history, selectedSubjects]);
 
   const onDeleteClick = async () => {
     if (selectedSubjects.length === 0)
@@ -134,7 +134,7 @@ function Subjects() {
     if (notDeleted === 0) {
       const msg = String.Format(translations.xItemsWereDeleted, selectedSubjects.length, translations.subjects);
       enqueueSnackbar(msg, { variant: 'success' });
-    } 
+    }
 
     setSelectedSubjects([]);
     const request = buildPaginatedRequest(state.currentPage, state.itemsPerPage, state.searchTerm, state.orderBy, state.orderByAsc);
@@ -214,6 +214,8 @@ function Subjects() {
       onDeleteClick={onDeleteClick}
       onEditClick={onEditClick} />
     <CustomTableSearch
+      showSearch
+      showItemsPerPage
       searchText={state.searchTerm}
       isBusy={state.isBusy}
       onItemsPerPageChanged={itemsPerPageChanged}

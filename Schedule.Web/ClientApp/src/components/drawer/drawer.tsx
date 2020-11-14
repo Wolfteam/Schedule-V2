@@ -1,4 +1,23 @@
-import React, { PureComponent } from 'react'
+import { IconProp } from '@fortawesome/fontawesome-svg-core';
+import {
+    faAddressBook,
+    faAddressCard,
+    faCalendarDay,
+    faChalkboard,
+    faChalkboardTeacher,
+    faDatabase,
+    faExclamationCircle,
+    faGraduationCap,
+    faHome,
+    faHourglassStart,
+    faLock,
+    faProjectDiagram,
+    faSchool,
+    faSignOutAlt,
+    faTasks,
+    faUsers
+} from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
     Avatar,
     Collapse,
@@ -14,32 +33,13 @@ import {
     WithStyles,
     withStyles
 } from '@material-ui/core';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import {
-    faHome,
-    faDatabase,
-    faTasks,
-    faLock,
-    faSignOutAlt,
-    faSchool,
-    faGraduationCap,
-    faChalkboard,
-    faChalkboardTeacher,
-    faAddressCard,
-    faAddressBook,
-    faUsers,
-    faProjectDiagram,
-    faHourglassStart,
-    faExclamationCircle,
-    faCalendarDay
-} from '@fortawesome/free-solid-svg-icons'
-import translations from '../../services/translations'
 import { ExpandLess, ExpandMore } from '@material-ui/icons';
-import { IconProp } from '@fortawesome/fontawesome-svg-core';
+import React, { PureComponent } from 'react';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
-import * as routes from '../../routes';
 import { AuthContext } from '../../contexts/auth-context';
-import { logout } from '../../services/account.service'
+import * as routes from '../../routes';
+import { logout } from '../../services/account.service';
+import translations from '../../services/translations';
 
 const styles = (theme: Theme) => createStyles({
     fullName: {
@@ -187,7 +187,7 @@ class Drawer extends PureComponent<Props, State> {
 
     signOut = async () => {
         await logout();
-        const [authContext, setAuthContext] = this.context;
+        const [, setAuthContext] = this.context;
         this.props.onDrawerStateChanged(false);
         setAuthContext({ isAuthenticated: false, username: '' });
     }

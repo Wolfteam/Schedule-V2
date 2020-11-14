@@ -1,28 +1,19 @@
-import React, { useEffect, useState } from 'react'
 import {
     CircularProgress,
     FormControl,
-    TextField,
-} from '@material-ui/core'
+    TextField
+} from '@material-ui/core';
 import { Autocomplete } from '@material-ui/lab';
 import { useSnackbar } from 'notistack';
-import translations, { getErrorCodeTranslation } from '../../services/translations';
-import {
-    IGetAllClassroomTypesResponseDto, IPaginatedRequestDto, buildPaginatedRequest
-} from '../../models';
+import React, { useCallback, useEffect, useState } from 'react';
+import { buildPaginatedRequest, IGetAllClassroomTypesResponseDto, IPaginatedRequestDto } from '../../models';
 import { getAllClassroomTypes, getClassroomType } from '../../services/classroom.service';
-
+import translations, { getErrorCodeTranslation } from '../../services/translations';
 
 interface State {
     loaded: boolean;
-    currentPage: number;
-    totalPages: number;
-    itemsPerPage: number;
-    totalRecords: number;
-    orderBy: string;
-    orderByAsc: boolean;
+    canSearch: boolean;
     searchTerm: string;
-    searchTimeout: number;
     classroomsTypes: IGetAllClassroomTypesResponseDto[];
 }
 
@@ -34,95 +25,106 @@ interface Props {
     onClassroomTypeSelected: (newVal: IGetAllClassroomTypesResponseDto | null) => void;
 }
 
+const initialState: State = {
+    loaded: false,
+    canSearch: false,
+    classroomsTypes: [],
+    searchTerm: '',
+};
+
 function ClassroomtypeAutocomplete(props: Props) {
-    const [state, setState] = useState<State>({
-        loaded: false,
-        classroomsTypes: [],
-        currentPage: 1,
-        totalPages: 0,
-        itemsPerPage: 5,
-        totalRecords: 0,
-        orderBy: 'Name',
-        orderByAsc: true,
-        searchTerm: '',
-        searchTimeout: 0
-    });
+    const [state, setState] = useState<State>(initialState);
+
     const { enqueueSnackbar } = useSnackbar();
 
-    const refreshClassroomTypes = async (request: IPaginatedRequestDto) => {
+    const { isInEditMode, selectedValue, onClassroomTypesLoaded } = props;
+
+    const refreshClassroomTypes = useCallback(async (request: IPaginatedRequestDto) => {
         const response = await getAllClassroomTypes(request);
         if (!response.succeed) {
             enqueueSnackbar(getErrorCodeTranslation(response.errorMessageId), { variant: 'error' });
-            setState({ ...state, loaded: true });
+            setState(s => ({ ...s, loaded: true }));
             return;
         }
 
         let types = response.result;
-        if (props.selectedValue > 0 && !types.find(t => t.id === props.selectedValue)) {
-            types = types.concat(state.classroomsTypes);
-        }
-        setState({
-            ...state,
+        const concat = isInEditMode && !types.find(t => t.id === selectedValue);
+
+        setState(s => ({
+            ...s,
             loaded: true,
             currentPage: response.currentPage,
             itemsPerPage: response.take,
-            classroomsTypes: types,
+            classroomsTypes: concat ? types.concat(s.classroomsTypes) : types,
             totalPages: response.totalPages,
             totalRecords: response.totalRecords
-        });
-        props.onClassroomTypesLoaded();
-    };
-    //TODO: FIX THIS CRAP
+        }));
+        onClassroomTypesLoaded();
+    }, [selectedValue, isInEditMode, onClassroomTypesLoaded, enqueueSnackbar]);
+
+    //TODO: WHEN YOU SELECT AN ITEM, A REFRESH HAPPENS BECAUSE THE SEARCH TERM CHANGED.....
     useEffect(() => {
-        if (!props.canSearch)
+        if (!state.canSearch && isInEditMode)
             return;
+
         const timeout = setTimeout(async () => {
-            const request = buildPaginatedRequest(state.currentPage, state.itemsPerPage, state.searchTerm, state.orderBy, state.orderByAsc);
+            console.log("getting all", isInEditMode);
+
+            const request = buildPaginatedRequest(1, 10, state.searchTerm, 'Name', true);
             await refreshClassroomTypes(request);
         }, 500);
 
         return () => clearTimeout(timeout);
-    }, [state.searchTerm]);
+    }, [state.canSearch, isInEditMode, state.searchTerm, refreshClassroomTypes]);
 
     useEffect(() => {
-        if (!props.isInEditMode || props.selectedValue <= 0)
+        if (state.loaded || !isInEditMode || selectedValue <= 0)
             return;
-
-        getClassroomType(props.selectedValue).then(response => {
+        console.log("loading one");
+        getClassroomType(selectedValue).then(response => {
             if (!response.succeed) {
                 enqueueSnackbar(getErrorCodeTranslation(response.errorMessageId), { variant: 'error' });
-                setState({ ...state, loaded: true });
+                setState(s => ({ ...s, loaded: true }));
                 return;
             }
 
-            const types = state.classroomsTypes.concat(response.result);
-            setState({ ...state, classroomsTypes: types, loaded: true });
-            props.onClassroomTypesLoaded();
+            //Here we need to set the search term, otherwise the onInputChange will be triggered
+            //becuase state.searchterm = '' && newVal = response.result.name
+            setState(s => ({
+                ...s,
+                loaded: true,
+                classroomsTypes: [response.result],
+                searchTerm: response.result.name
+            }));
+            onClassroomTypesLoaded();
         });
-    }, [props.selectedValue]);
+    }, [state.loaded, selectedValue, isInEditMode, onClassroomTypesLoaded, enqueueSnackbar]);
 
     const onInputChange = (newVal: string) => {
-        if (state.searchTerm !== newVal)
-            setState({ ...state, searchTerm: newVal });
+        if (state.searchTerm !== newVal) {
+            setState(s => ({ ...s, searchTerm: newVal, canSearch: true }));
+        }
     };
 
     const onChange = (event: React.ChangeEvent<{}>, newValue: IGetAllClassroomTypesResponseDto | null) => {
-        if (props.selectedValue !== newValue?.id)
+        if (selectedValue !== newValue?.id) {
+            setState(s => ({ ...s, canSearch: false }));
             props.onClassroomTypeSelected(newValue);
+        }
     };
 
     if (!state.loaded) {
         return <CircularProgress />;
     }
 
-    const selectedValue = state.classroomsTypes.find(t => t.id == props.selectedValue) ?? null;
+    const currentSelectedValue = state.classroomsTypes.find(t => t.id === selectedValue) ?? null;
 
     return <FormControl fullWidth margin="normal">
         <Autocomplete
             fullWidth
             size="small"
             onInputChange={(e, v) => onInputChange(v)}
-            value={selectedValue}
+            value={currentSelectedValue}
             onChange={onChange}
             options={state.classroomsTypes}
             getOptionLabel={(item: IGetAllClassroomTypesResponseDto) => `${item.name}`}

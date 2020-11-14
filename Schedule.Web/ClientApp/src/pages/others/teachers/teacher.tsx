@@ -11,7 +11,7 @@ import {
     Theme
 } from '@material-ui/core';
 import { useSnackbar } from 'notistack';
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 import { String } from 'typescript-string-operations';
 import validator from 'validator';
@@ -102,16 +102,16 @@ function Teacher() {
     const params = useParams<ParamTypes>();
     const isInEditMode = validator.isInt(params.id) && +params.id > 0;
 
-    const loadTeacher = async () => {
+    const loadTeacher = useCallback(async () => {
         if (!isInEditMode) {
             return;
         }
 
-        setState({ ...state, isBusy: true });
+        setState(s => ({ ...s, isBusy: true }));
         const response = await getTeacher(+params.id);
         if (!response.succeed) {
             enqueueSnackbar(getErrorCodeTranslation(response.errorMessageId), { variant: 'error' });
-            setState({ ...state, isBusy: false });
+            setState(s => ({ ...s, isBusy: false }));
             return;
         }
         const teacher = response.result;
@@ -124,8 +124,8 @@ function Teacher() {
             priorityId: teacher.priorityId
         });
 
-        setTeacherValidation({
-            ...teacherValidation,
+        setTeacherValidation(tv => ({
+            ...tv,
             isIdentifierNumberValid: true,
             isFirstNameValid: true,
             isFirstLastNameValid: true,
@@ -133,13 +133,13 @@ function Teacher() {
             isIdentifierNumberDirty: true,
             isFirstNameDirty: true,
             isFirstLastNameDirty: true,
-        });
-        setState({ ...state, isBusy: false });
-    };
+        }));
+        setState(s => ({ ...s, isBusy: false }));
+    }, [isInEditMode, params.id, enqueueSnackbar]);
 
     useEffect(() => {
         loadTeacher();
-    }, []);
+    }, [loadTeacher]);
 
     const handleChange = (prop: keyof TeacherState) => (event: React.ChangeEvent<HTMLInputElement>) => {
         let newVal = event.target.value;
@@ -182,12 +182,12 @@ function Teacher() {
         return !teacherValidation[isValid] && teacherValidation[isDirty];
     };
 
-    const onPrioritiesLoaded = () => setPrioritiesLoaded(true);
+    const onPrioritiesLoaded = useCallback(() => setPrioritiesLoaded(true), []);
 
     const onPrioritySelected = (item: IGetAllPrioritiesResponseDto | null) => {
         const id = item?.id ?? 0;
-        setTeacher({ ...teacher, priorityId: id });
-        setTeacherValidation({ ...teacherValidation, isPriorityIdValid: id > 0 });
+        setTeacher(t => ({ ...t, priorityId: id }));
+        setTeacherValidation(tv => ({ ...tv, isPriorityIdValid: id > 0 }));
     };
 
     const saveChanges = async () => {
@@ -211,7 +211,7 @@ function Teacher() {
             return;
         }
 
-        enqueueSnackbar(translations.subjectWasSaved, { variant: 'success' });
+        enqueueSnackbar(translations.teacherWasSaved, { variant: 'success' });
         history.replace(teachersPath);
     };
 
@@ -343,7 +343,7 @@ function Teacher() {
                 </Grid>
                 <Grid item xs={12}>
                     <Button
-                        type="button"
+                        type="submit"
                         variant="contained"
                         color="primary"
                         onClick={saveChanges}

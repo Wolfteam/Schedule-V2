@@ -89,12 +89,12 @@ const AdminAppRoutes: React.FC = () => {
         <Route path="*" component={NotFound} />
     </Switch>;
 };
-
-const UserAppRoutes: React.FC = () => {
-    return <Switch>
-        <Route exact path={changePasswordPath} component={ChangePassword} />
-        <Route exact path={availabilityPath} component={Availability} />
-        <Route exact path={homePath} component={Home} />
-        <Route path="*" component={NotFound} />
-    </Switch>;
-};
+//Commented until we can use them
+// const UserAppRoutes: React.FC = () => {
+//     return <Switch>
+//         <Route exact path={changePasswordPath} component={ChangePassword} />
+//         <Route exact path={availabilityPath} component={Availability} />
+//         <Route exact path={homePath} component={Home} />
+//         <Route path="*" component={NotFound} />
+//     </Switch>;
+// };

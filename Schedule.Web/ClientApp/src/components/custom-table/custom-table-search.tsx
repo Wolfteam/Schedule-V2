@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from 'react'
+import { faSearch } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
     FormControl,
     Grid,
@@ -6,10 +7,9 @@ import {
     InputLabel,
     MenuItem,
     Select,
-    TextField,
+    TextField
 } from '@material-ui/core';
-import { faSearch } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import React, { useEffect, useState } from 'react';
 import translations from '../../services/translations';
 
 const rowsToTake = [5, 10, 20, 50];
@@ -20,10 +20,12 @@ interface State {
 }
 
 interface Props {
+    showSearch: boolean;
+    showItemsPerPage: boolean;
     searchText: string;
     isBusy: boolean;
-    onItemsPerPageChanged: (take: number) => void;
-    onSearchTermChanged: (newVal: string) => void;
+    onItemsPerPageChanged?: (take: number) => void;
+    onSearchTermChanged?: (newVal: string) => void;
 }
 
 function CustomTableSearch(props: Props) {
@@ -32,20 +34,23 @@ function CustomTableSearch(props: Props) {
         searchTerm: props.searchText
     });
 
+    const { onSearchTermChanged } = props;
+
     useEffect(() => {
         const timeout = setTimeout(async () => {
-            if (state.searchTerm !== props.searchText)
-                props.onSearchTermChanged(state.searchTerm);
+            if (state.searchTerm !== props.searchText && onSearchTermChanged)
+                onSearchTermChanged(state.searchTerm);
         }, 500);
 
         return () => clearTimeout(timeout);
-    }, [state.searchTerm]);
+    }, [onSearchTermChanged, props.searchText, state.searchTerm]);
 
     const menuItems = rowsToTake.map(el => <MenuItem key={el} value={el}>{el}</MenuItem>);
     const itemsPerPageChanged = (newVal: number) => {
         if (state.itemsPerPage !== newVal) {
             setState({ ...state, itemsPerPage: newVal });
-            props.onItemsPerPageChanged(newVal);
+            if (props.onItemsPerPageChanged)
+                props.onItemsPerPageChanged(newVal);
         }
     };
 
@@ -57,34 +62,38 @@ function CustomTableSearch(props: Props) {
         <FontAwesomeIcon icon={faSearch} />
     </InputAdornment>;
 
+    const itemsPerPage = props.showItemsPerPage ? <FormControl fullWidth>
+        <InputLabel id="rows-to-take">{translations.itemsPerPage}</InputLabel>
+        <Select
+            labelId="rows-to-take"
+            value={state.itemsPerPage}
+            fullWidth
+            onChange={(e) => itemsPerPageChanged(e.target.value as number)}>
+            {menuItems}
+        </Select>
+    </FormControl> : null;
+
+    const search = props.showSearch ? <TextField key="search"
+        variant="outlined"
+        margin="normal"
+        fullWidth
+        required
+        size="small"
+        disabled={props.isBusy}
+        label={translations.search}
+        onChange={(e) => searchTermChanged(e.target.value)}
+        type="text"
+        InputProps={{
+            startAdornment: (searchIcon)
+        }} /> : null;
+
     return <Grid container justify="space-between" alignItems="center">
         <Grid item xs={12} sm={3}>
-            <FormControl fullWidth>
-                <InputLabel id="rows-to-take">{translations.itemsPerPage}</InputLabel>
-                <Select
-                    labelId="rows-to-take"
-                    value={state.itemsPerPage}
-                    fullWidth
-                    onChange={(e) => itemsPerPageChanged(e.target.value as number)}>
-                    {menuItems}
-                </Select>
-            </FormControl>
+            {itemsPerPage}
         </Grid>
         <Grid item xs={12} sm={6}></Grid>
         <Grid item xs={12} sm={3}>
-            <TextField key="search"
-                variant="outlined"
-                margin="normal"
-                fullWidth
-                required
-                size="small"
-                disabled={props.isBusy}
-                label={translations.search}
-                onChange={(e) => searchTermChanged(e.target.value)}
-                type="text"
-                InputProps={{
-                    startAdornment: (searchIcon)
-                }} />
+            {search}
         </Grid>
     </Grid>;
 }

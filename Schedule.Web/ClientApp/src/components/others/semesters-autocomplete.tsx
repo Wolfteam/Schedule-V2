@@ -1,16 +1,16 @@
-import React, { useEffect, useState } from 'react'
 import {
     CircularProgress,
     FormControl,
-    TextField,
-} from '@material-ui/core'
+    TextField
+} from '@material-ui/core';
 import { Autocomplete } from '@material-ui/lab';
 import { useSnackbar } from 'notistack';
-import translations, { getErrorCodeTranslation } from '../../services/translations';
+import React, { useEffect, useState } from 'react';
 import {
     IGetAllSemestersResponseDto
 } from '../../models';
 import { getAllSemesters } from '../../services/semester.service';
+import translations, { getErrorCodeTranslation } from '../../services/translations';
 
 interface State {
     loaded: boolean;
@@ -29,19 +29,20 @@ function SemestersAutocomplete(props: Props) {
         semesters: []
     });
     const { enqueueSnackbar } = useSnackbar();
+    const { onSemesterLoaded } = props;
 
     useEffect(() => {
         getAllSemesters().then(resp => {
             if (!resp.succeed) {
                 enqueueSnackbar(getErrorCodeTranslation(resp.errorMessageId), { variant: 'error' });
-                setState({ ...state, loaded: true });
+                setState(s => ({ ...s, loaded: true }));
                 return;
             }
 
             setState({ loaded: true, semesters: resp.result });
-            props.onSemesterLoaded();
+            onSemesterLoaded();
         });
-    }, [])
+    }, [enqueueSnackbar, onSemesterLoaded])
 
     const onChange = (event: React.ChangeEvent<{}>, newValue: IGetAllSemestersResponseDto | null) => {
         props.onSemesterSelected(newValue);
@@ -51,7 +52,7 @@ function SemestersAutocomplete(props: Props) {
         return <CircularProgress />;
     }
 
-    const selectedVal = state.semesters.find(s => s.id == props.selectedValue) ?? null;
+    const selectedVal = state.semesters.find(s => s.id === props.selectedValue) ?? null;
     return <FormControl fullWidth margin="normal">
         <Autocomplete
             fullWidth

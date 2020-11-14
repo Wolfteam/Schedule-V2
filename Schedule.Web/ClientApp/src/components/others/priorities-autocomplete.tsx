@@ -30,18 +30,20 @@ function PrioritiesAutocomplete(props: Props) {
     });
     const { enqueueSnackbar } = useSnackbar();
 
+    const { onPrioritiesLoaded } = props;
+
     useEffect(() => {
         getAllPriorities().then(resp => {
             if (!resp.succeed) {
                 enqueueSnackbar(getErrorCodeTranslation(resp.errorMessageId), { variant: 'error' });
-                setState({ ...state, loaded: true });
+                setState(s => ({ ...s, loaded: true }));
                 return;
             }
 
             setState({ loaded: true, priorities: resp.result });
-            props.onPrioritiesLoaded();
+            onPrioritiesLoaded();
         });
-    }, [])
+    }, [enqueueSnackbar, onPrioritiesLoaded])
 
     const onChange = (event: React.ChangeEvent<{}>, newValue: IGetAllPrioritiesResponseDto | null) => {
         props.onPrioritySelected(newValue);
@@ -51,7 +53,7 @@ function PrioritiesAutocomplete(props: Props) {
         return <CircularProgress />;
     }
 
-    const selectedVal = state.priorities.find(c => c.id == props.selectedValue) ?? null;
+    const selectedVal = state.priorities.find(c => c.id === props.selectedValue) ?? null;
 
     return <FormControl fullWidth margin="normal">
         <Autocomplete
@@ -61,7 +63,7 @@ function PrioritiesAutocomplete(props: Props) {
             onChange={onChange}
             options={state.priorities}
             getOptionLabel={item => `${item.name}`}
-            renderInput={(params: any) => <TextField {...params} label={translations.careers} variant="outlined" />} />
+            renderInput={(params: any) => <TextField {...params} label={translations.priorities} variant="outlined" />} />
     </FormControl>;
 }
 

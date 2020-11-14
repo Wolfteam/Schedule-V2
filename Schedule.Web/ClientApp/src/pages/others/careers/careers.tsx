@@ -1,13 +1,10 @@
-import { Checkbox, Container, Grid, Table, TableBody, TableCell, TableContainer, TableRow } from '@material-ui/core';
+import { Container, Grid } from '@material-ui/core';
 import { useSnackbar } from 'notistack';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
-import { String } from 'typescript-string-operations';
 import validator from 'validator';
-import CustomTableHeader, { Header } from '../../../components/custom-table/custom-table-header';
-import CustomTablePagination from '../../../components/custom-table/custom-table-pagination';
+import CareerCard from '../../../components/career/career-card';
 import CustomTableSearch from '../../../components/custom-table/custom-table-search';
-import CustomTableToolbar from '../../../components/custom-table/custom-table-toolbar';
 import CustomFab from '../../../components/others/custom-fab';
 import PageTitle from '../../../components/page-title/page-title';
 import { IGetAllCareersResponseDto } from '../../../models';
@@ -17,9 +14,6 @@ import translations, { getErrorCodeTranslation } from '../../../services/transla
 
 interface State {
     isBusy: boolean;
-    currentPage: number;
-    totalPages: number;
-    itemsPerPage: number;
     totalRecords: number;
     orderBy: keyof IGetAllCareersResponseDto;
     orderByAsc: boolean;
@@ -31,9 +25,6 @@ interface State {
 function Careers() {
     const [state, setState] = useState<State>({
         isBusy: true,
-        currentPage: 1,
-        totalPages: 1,
-        itemsPerPage: 5,
         totalRecords: 0,
         orderBy: 'id',
         orderByAsc: true,
@@ -41,15 +32,12 @@ function Careers() {
         filteredCareers: [],
         careers: []
     });
-    const [selectedCareers, setSelectedCareers] = useState<number[]>([]);
 
     const { enqueueSnackbar } = useSnackbar();
     const history = useHistory();
 
     const onCareersLoaded = useCallback((
         careers: IGetAllCareersResponseDto[],
-        currentPage: number,
-        itemsPerPage: number,
         searchTerm: string,
         orderBy: keyof IGetAllCareersResponseDto,
         orderByAsc: boolean) => {
@@ -77,98 +65,49 @@ function Careers() {
         });
 
         const totalRecords = isFiltering ? c.length : careers.length;
-        const totalPages = Math.ceil(totalRecords / itemsPerPage);
-        const page = currentPage > totalPages ? 1 : currentPage;
-        const skip = itemsPerPage * (page - 1);
 
-        c = c.slice(skip, itemsPerPage + skip);
-
-        setState({
-            ...state,
+        setState(s => ({
+            ...s,
             isBusy: false,
             searchTerm: searchTerm,
             filteredCareers: c,
             careers: careers,
-            currentPage: page,
-            itemsPerPage: itemsPerPage,
-            totalPages: totalPages,
             totalRecords: totalRecords,
             orderBy: orderBy,
             orderByAsc: orderByAsc
-        });
+        }));
     }, []);
 
-    const refreshCareers = async () => {
+    const refreshCareers = useCallback(async () => {
         const response = await getAllCareers();
         if (!response.succeed) {
-            setState({ ...state, isBusy: false });
+            setState(s => ({ ...s, isBusy: false }));
             enqueueSnackbar(getErrorCodeTranslation(response.errorMessageId), { variant: 'error', });
             return;
         }
-        onCareersLoaded(response.result, state.currentPage, state.itemsPerPage, state.searchTerm, 'name', true);
-    };
+        onCareersLoaded(response.result, '', 'name', true);
+    }, [onCareersLoaded, enqueueSnackbar]);
 
     useEffect(() => {
         refreshCareers();
-    }, []);
-
-    const careerSelectionChanged = (id: number, isSelected: boolean) => {
-        const newValues: number[] = !isSelected
-            ? selectedCareers.filter(el => el !== id)
-            : selectedCareers.concat(id);
-        setSelectedCareers(newValues);
-    };
-
-
-    const sortDirectionChanged = (orderBy: keyof IGetAllCareersResponseDto, orderByAsc: boolean) => {
-        onCareersLoaded(state.careers, state.currentPage, state.itemsPerPage, state.searchTerm, orderBy, orderByAsc);
-    };
-
-    const itemsPerPageChanged = (newVal: number) => {
-        onCareersLoaded(state.careers, state.currentPage, newVal, state.searchTerm, state.orderBy, state.orderByAsc);
-    };
+    }, [refreshCareers]);
 
     const searchTermChanged = (newVal: string) => {
-        onCareersLoaded(state.careers, state.currentPage, state.itemsPerPage, newVal, state.orderBy, state.orderByAsc);
+        onCareersLoaded(state.careers, newVal, state.orderBy, state.orderByAsc);
     }
 
-    const pageChanged = (newVal: number) => {
-        onCareersLoaded(state.careers, newVal, state.itemsPerPage, state.searchTerm, state.orderBy, state.orderByAsc);
-    };
-
-    const onEditClick = useCallback(() => {
-        if (selectedCareers.length === 0)
-            return;
-
-        const id = selectedCareers[0];
-        const path = `${careersPath}/${id}`;
-        history.push(path);
-    }, [history, selectedCareers, careersPath]);
-
-    const onDeleteClick = async () => {
-        if (selectedCareers.length === 0)
-            return;
-
+    const onDeleteClick = async (id: number) => {
         setState({ ...state, isBusy: true });
-
-        let subjectsNotDeleted = 0;
-        for (let index = 0; index < selectedCareers.length; index++) {
-            const id = selectedCareers[index];
-            const response = await deleteCareer(id);
-            if (!response.succeed) {
-                console.log(response);
-                subjectsNotDeleted++;
-                enqueueSnackbar(getErrorCodeTranslation(response.errorMessageId), { variant: 'error' });
-            }
+        const response = await deleteCareer(id);
+        let careers = state.careers;
+        if (response.succeed) {
+            careers = careers.filter(t => t.id !== id);
+            enqueueSnackbar(translations.itemWasDeleted, { variant: 'success' });
+        } else {
+            enqueueSnackbar(getErrorCodeTranslation(response.errorMessageId), { variant: 'error' });
         }
 
-        if (subjectsNotDeleted === 0) {
-            const msg = String.Format(translations.xItemsWereDeleted, selectedCareers.length, translations.careers);
-            enqueueSnackbar(msg, { variant: 'success' });
-        }
-
-        setSelectedCareers([]);
-        await refreshCareers();
+        onCareersLoaded(careers, state.searchTerm, state.orderBy, state.orderByAsc);
     };
 
     const onFabClick = () => {
@@ -176,70 +115,23 @@ function Careers() {
         history.push(path);
     };
 
-    const headerCells: Header<IGetAllCareersResponseDto>[] = [
-        {
-            isOrderable: false,
-            text: '',
-        },
-        {
-            isOrderable: true,
-            text: 'Id',
-            orderByKey: 'id'
-        },
-        {
-            isOrderable: true,
-            text: translations.name,
-            orderByKey: 'name'
-        }
-    ];
-
-    const rows = state.filteredCareers.map(t => {
-        const isSelected = selectedCareers.includes(t.id);
-        return <TableRow key={t.id}
-            onClick={() => careerSelectionChanged(t.id, !isSelected)}
-            style={{ cursor: 'pointer' }}>
-            <TableCell padding="checkbox">
-                <Checkbox checked={isSelected} onChange={(e, isChecked) => careerSelectionChanged(t.id, isChecked)} />
-            </TableCell>
-            <TableCell align="center">{t.id}</TableCell>
-            <TableCell align="center">{t.name}</TableCell>
-        </TableRow>;
+    const cards = state.filteredCareers.map(x => {
+        return <Grid key={x.id} item sm={4} style={{ width: '100%' }}>
+            <CareerCard {...x} onDelete={onDeleteClick} isBusy={state.isBusy} />
+        </Grid>;
     });
 
     return <Container>
         <PageTitle title={translations.careers} showLoading={state.isBusy} />
-        <CustomTableToolbar
-            deleteDialogTitle={translations.deleteCareers}
-            selectedNumberOfItems={selectedCareers.length}
-            onDeleteClick={onDeleteClick}
-            onEditClick={onEditClick} />
         <CustomTableSearch
+            showSearch
+            showItemsPerPage={false}
             searchText={state.searchTerm}
             isBusy={state.isBusy}
-            onItemsPerPageChanged={itemsPerPageChanged}
             onSearchTermChanged={searchTermChanged} />
-        <Grid container justify="center" direction="column">
-            <Grid item xs>
-                <TableContainer>
-                    <Table size="small">
-                        <CustomTableHeader
-                            cells={headerCells}
-                            orderBy={state.orderBy}
-                            orderByAsc={state.orderByAsc}
-                            onOrderByChanged={sortDirectionChanged} />
-                        <TableBody>
-                            {rows}
-                        </TableBody>
-                    </Table>
-                </TableContainer>
-            </Grid>
+        <Grid container justify="center" direction="row" spacing={5}>
+            {cards}
         </Grid>
-        <CustomTablePagination
-            isBusy={state.isBusy}
-            currentPage={state.currentPage}
-            totalPages={state.totalPages}
-            totalRecords={state.totalRecords}
-            onPageChanged={pageChanged} />
         <CustomFab onClick={onFabClick} />
     </Container>;
 }

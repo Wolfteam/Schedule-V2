@@ -1,20 +1,17 @@
-import React, { useEffect, useState } from 'react';
 import {
     Container,
     CssBaseline,
-    Grid,
-    LinearProgress
+    Grid
 } from '@material-ui/core';
 import { useSnackbar } from 'notistack';
-
-import translations, { getErrorCodeTranslation } from '../../services/translations';
-import PageTitle from '../../components/page-title/page-title';
-import * as responses from '../../models';
+import React, { useEffect, useState } from 'react';
 import AvailabilityTable from '../../components/availability/availability-table';
 import AvailabilityTeachersCard from '../../components/availability/availability-teachers-card';
-import { getLaboralDays } from '../../utils/academic-hours';
+import PageTitle from '../../components/page-title/page-title';
+import * as responses from '../../models';
 import { getAllTeachers, getTeacherAvailability, saveTeacherAvailability } from '../../services/teacher.service';
-
+import translations, { getErrorCodeTranslation } from '../../services/translations';
+import { getLaboralDays } from '../../utils/academic-hours';
 
 interface State {
     isLoadingTeachers: boolean,
@@ -35,18 +32,20 @@ const initialState: State = {
     availability: []
 };
 
-//TODO: BETTER HANDLING OF ERRORS
 function Availability() {
     const [state, setState] = useState<State>(initialState);
 
     const { enqueueSnackbar } = useSnackbar();
 
     useEffect(() => {
-        getAllTeachers().then(resp => {
-            console.log(resp);
-            setState({ ...state, teachers: resp.result });
+        getAllTeachers().then(response => {
+            if (response.succeed) {
+                enqueueSnackbar(getErrorCodeTranslation(response.errorMessageId), { variant: 'error', });
+                return;
+            }
+            setState(s => ({ ...s, teachers: response.result }));
         });
-    }, []);
+    }, [enqueueSnackbar]);
 
     const calculateRemainingHours = (hoursToComplete: number, availability: responses.ITeacherAvailabilityRequestDto[]): number => {
         const asignedHours = availability.map(a => {

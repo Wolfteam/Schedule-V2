@@ -1,6 +1,6 @@
-import React, { useEffect } from 'react'
 import { createStyles, Grid, makeStyles, Theme } from '@material-ui/core';
 import { Pagination } from '@material-ui/lab';
+import React, { useEffect } from 'react';
 import { String } from 'typescript-string-operations';
 import translations from '../../services/translations';
 
@@ -28,12 +28,14 @@ function CustomTablePagination(props: Props) {
     const notFound = props.totalPages === 0;
     const currentPage = exceedsPage ? 1 : props.currentPage;
 
+    const { onPageChanged } = props;
+
     useEffect(() => {
         if (exceedsPage && !notFound) {
             console.log("pagination exceeds")
-            props.onPageChanged(currentPage);
+            onPageChanged(currentPage);
         }
-    }, [props.totalPages, exceedsPage, currentPage]);
+    }, [onPageChanged, exceedsPage, notFound, currentPage]);
 
     const handlePageChange = (newVal: number) => {
         if (props.currentPage !== newVal)

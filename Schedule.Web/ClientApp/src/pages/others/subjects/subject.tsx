@@ -11,7 +11,7 @@ import {
     Theme
 } from '@material-ui/core';
 import { useSnackbar } from 'notistack';
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 import { String } from 'typescript-string-operations';
 import validator from 'validator';
@@ -109,16 +109,16 @@ function Subject() {
     const params = useParams<ParamTypes>();
     const isInEditMode = validator.isInt(params.id) && +params.id > 0;
 
-    const loadSubject = async () => {
+    const loadSubject = useCallback(async () => {
         if (!isInEditMode) {
             return;
         }
 
-        setState({ ...state, isBusy: true });
+        setState(s => ({ ...s, isBusy: true }));
         const response = await getSubject(+params.id);
         if (!response.succeed) {
             enqueueSnackbar(getErrorCodeTranslation(response.errorMessageId), { variant: 'error' });
-            setState({ ...state, isBusy: false });
+            setState(s => ({ ...s, isBusy: false }));
             return;
         }
         const subject = response.result;
@@ -132,8 +132,8 @@ function Subject() {
             semesterId: subject.semesterId
         });
 
-        setSubjectValidation({
-            ...subjectValidation,
+        setSubjectValidation(sv => ({
+            ...sv,
             isCodeValid: true,
             isCodeDirty: true,
             isNameValid: true,
@@ -141,17 +141,17 @@ function Subject() {
             isCareerIdValid: true,
             isSemesterIdValid: true,
             isClassroomSubjectIdValid: true,
-        });
-        setState({ ...state, isBusy: false });
-    };
+        }));
+        setState(s => ({ ...s, isBusy: false }));
+    }, [isInEditMode, params.id, enqueueSnackbar]);
 
     useEffect(() => {
         loadSubject();
-    }, []);
+    }, [loadSubject]);
 
-    const handleSemestersLoaded = () => {
+    const handleSemestersLoaded = useCallback(() => {
         setSemestersLoaded(true);
-    };
+    }, []);
 
     const handleSemesterChange = (item: IGetAllSemestersResponseDto | null) => {
         const id = item?.id ?? 0;
@@ -159,9 +159,9 @@ function Subject() {
         setSubjectValidation({ ...subjectValidation, isSemesterIdValid: id > 0 });
     };
 
-    const handleClassroomTypesLoaded = () => {
+    const handleClassroomTypesLoaded = useCallback(() => {
         setClassroomTypesLoaded(true);
-    };
+    }, []);
 
     const handleClassroomTypeChange = (item: IGetAllClassroomTypesResponseDto | null) => {
         const id = item?.id ?? 0;
@@ -169,9 +169,9 @@ function Subject() {
         setSubjectValidation({ ...subjectValidation, isClassroomSubjectIdValid: id > 0 });
     };
 
-    const handleCareersLoaded = () => {
+    const handleCareersLoaded = useCallback(() => {
         setCareersLoaded(true);
-    };
+    }, []);
 
     const handleCareerChange = (item: IGetAllCareersResponseDto | null) => {
         const id = item?.id ?? 0;
@@ -261,7 +261,7 @@ function Subject() {
         e.preventDefault();
         if (!btnEnabled)
             return;
-        
+
         await saveChanges();
     };
 

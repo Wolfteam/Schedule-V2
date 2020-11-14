@@ -1,12 +1,9 @@
-import { Checkbox, Container, Grid, Table, TableBody, TableCell, TableContainer, TableRow } from '@material-ui/core';
+import { Button, Container, Grid } from '@material-ui/core';
 import { useSnackbar } from 'notistack';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
-import { String } from 'typescript-string-operations';
-import CustomTableHeader, { Header } from '../../../components/custom-table/custom-table-header';
-import CustomTablePagination from '../../../components/custom-table/custom-table-pagination';
+import ClassroomCard from '../../../components/classroom/classroom-card';
 import CustomTableSearch from '../../../components/custom-table/custom-table-search';
-import CustomTableToolbar from '../../../components/custom-table/custom-table-toolbar';
 import CustomFab from '../../../components/others/custom-fab';
 import PageTitle from '../../../components/page-title/page-title';
 import { buildPaginatedRequest, IGetAllClassroomsResponseDto, IPaginatedRequestDto } from '../../../models';
@@ -23,8 +20,8 @@ interface State {
     orderBy: keyof IGetAllClassroomsResponseDto;
     orderByAsc: boolean;
     searchTerm: string;
+    canLoadMore: boolean;
     classrooms: IGetAllClassroomsResponseDto[];
-    searchTimeout: number;
 }
 
 function Classrooms() {
@@ -37,98 +34,52 @@ function Classrooms() {
         orderBy: 'name',
         orderByAsc: true,
         searchTerm: '',
+        canLoadMore: false,
         classrooms: [],
-        searchTimeout: 0
     });
-
-    const [selectedClassrooms, setSelectedClassrooms] = useState<number[]>([]);
 
     const { enqueueSnackbar } = useSnackbar();
 
     const history = useHistory();
 
-    const refreshClassrooms = async (request: IPaginatedRequestDto) => {
+    const refreshClassrooms = useCallback(async (request: IPaginatedRequestDto) => {
         const response = await getAllClassrooms(request);
         if (!response.succeed) {
             enqueueSnackbar(getErrorCodeTranslation(response.errorMessageId), { variant: 'error' });
-            setState({ ...state, isBusy: false });
+            setState(s => ({ ...s, isBusy: false }));
             return;
         }
-        setState({
-            ...state,
+
+        const hasReachedMax = response.result.length === 0 || response.result.length < response.take || response.totalPages === 1;
+        setState(s => ({
+            ...s,
             isBusy: false,
+            canLoadMore: !hasReachedMax,
             currentPage: response.currentPage,
             itemsPerPage: response.take,
-            classrooms: response.result,
+            classrooms: s.classrooms.concat(response.result),
             totalPages: response.totalPages,
             totalRecords: response.totalRecords
-        });
-    };
+        }));
+    }, [enqueueSnackbar]);
 
     useEffect(() => {
         const request = buildPaginatedRequest(state.currentPage, state.itemsPerPage, state.searchTerm, state.orderBy, state.orderByAsc);
         refreshClassrooms(request);
-    }, [state.currentPage, state.itemsPerPage, state.searchTerm, state.orderBy, state.orderByAsc]);
+    }, [state.currentPage, state.itemsPerPage, state.searchTerm, state.orderBy, state.orderByAsc, refreshClassrooms]);
 
-    const sortDirectionChanged = useCallback((orderBy: keyof IGetAllClassroomsResponseDto, orderByAsc: boolean) => {
-        setState({ ...state, isBusy: true, orderBy: orderBy, orderByAsc: orderByAsc });
-    }, []);
-
-    const itemsPerPageChanged = useCallback((newVal: number) => {
-        setState({ ...state, isBusy: true, itemsPerPage: newVal });
-    }, []);
-
-    const searchTermChanged = useCallback((newVal: string) => {
-        setState({ ...state, isBusy: true, searchTerm: newVal });
-    }, []);
-
-    const pageChanged = (newVal: number) => {
-        setState({ ...state, isBusy: true, currentPage: newVal });
+    const searchTermChanged = (newVal: string) => {
+        setState(s => ({ ...s, isBusy: true, searchTerm: newVal, currentPage: 1, classrooms: [] }));
     };
 
-    const classroomSelectionChanged = (id: number, isSelected: boolean) => {
-        let newValues: number[] = [];
-        if (!isSelected) {
-            newValues = selectedClassrooms.filter(el => el !== id);
-        } else {
-            newValues = selectedClassrooms.concat(id);
-        }
-        console.log(newValues);
-        setSelectedClassrooms(newValues);
-    };
-
-    const onEditClick = useCallback(() => {
-        if (selectedClassrooms.length === 0)
-            return;
-
-        const id = selectedClassrooms[0];
-        const path = `${classRoomsPath}/${id}`;
-        history.push(path);
-    }, [history, selectedClassrooms, classRoomsPath]);
-
-    const onDeleteClick = async () => {
-        if (selectedClassrooms.length === 0)
-            return;
-
+    const onDeleteClick = async (id: number) => {
         setState({ ...state, isBusy: true });
-
-        let notDeleted = 0;
-        for (let index = 0; index < selectedClassrooms.length; index++) {
-            const id = selectedClassrooms[index];
-            const response = await deleteClassroom(id);
-            if (!response.succeed) {
-                console.log(response);
-                notDeleted++;
-                enqueueSnackbar(getErrorCodeTranslation(response.errorMessageId), { variant: 'error' });
-            }
+        const response = await deleteClassroom(id);
+        if (response.succeed) {
+            enqueueSnackbar(translations.itemWasDeleted, { variant: 'success' });
+        } else {
+            enqueueSnackbar(getErrorCodeTranslation(response.errorMessageId), { variant: 'error' });
         }
-
-        if (notDeleted === 0) {
-            const msg = String.Format(translations.xItemsWereDeleted, selectedClassrooms.length, translations.classrooms);
-            enqueueSnackbar(msg, { variant: 'success' });
-        }
-
-        setSelectedClassrooms([]);
         const request = buildPaginatedRequest(state.currentPage, state.itemsPerPage, state.searchTerm, state.orderBy, state.orderByAsc);
         await refreshClassrooms(request);
     };
@@ -138,100 +89,34 @@ function Classrooms() {
         history.push(path);
     };
 
-    const headerCells: Header<IGetAllClassroomsResponseDto>[] = [
-        {
-            text: '',
-            isOrderable: false
-        },
-        {
-            text: translations.name,
-            isOrderable: true,
-            orderByKey: 'name',
-        },
-        {
-            text: translations.capacity,
-            isOrderable: true,
-            orderByKey: 'capacity',
-        },
-        {
-            text: translations.classroomType,
-            isOrderable: true,
-            orderByKey: 'classroomSubject',
-        },
-        {
-            text: translations.createdAt,
-            isOrderable: true,
-            orderByKey: 'createdAt',
-        },
-        {
-            text: translations.createdBy,
-            isOrderable: true,
-            orderByKey: 'createdBy',
-        },
-    ];
+    const onLoadMoreClick = async () => {
+        setState({ ...state, isBusy: true, currentPage: state.currentPage + 1 });
+    };
 
-
-    const rows = state.classrooms.map(x => {
-        const isSelected = selectedClassrooms.includes(x.id);
-        const date = new Date(x.createdAt).toLocaleDateString('es-us', {
-            year: 'numeric',
-            month: '2-digit',
-            day: 'numeric',
-            hour: '2-digit',
-            minute: '2-digit',
-            second: '2-digit',
-            timeZone: 'UTC'
-        });
-        return <TableRow key={x.id}
-            onClick={() => classroomSelectionChanged(x.id, !isSelected)}
-            style={{ cursor: 'pointer' }}>
-            <TableCell padding="checkbox">
-                <Checkbox checked={isSelected} onChange={(e, isChecked) => classroomSelectionChanged(x.id, isChecked)} />
-            </TableCell>
-            <TableCell align="center">{x.name}</TableCell>
-            <TableCell align="center">{x.capacity}</TableCell>
-            <TableCell align="center">{x.classroomSubject}</TableCell>
-            <TableCell align="center">{date}</TableCell>
-            <TableCell align="center">{x.createdBy}</TableCell>
-        </TableRow>;
+    const cards = state.classrooms.map(x => {
+        return <Grid key={x.id} item sm={4} style={{ width: '100%' }}>
+            <ClassroomCard {...x} isBusy={state.isBusy} onDelete={onDeleteClick} />
+        </Grid>;
     });
 
-    const deleteDialogTitle = String.Format(translations.deleteX, translations.classrooms.toLowerCase());
+    if (state.canLoadMore) {
+        const item = <Grid key="load-more" style={{ margin: 'auto' }}>
+            <Button disabled={state.isBusy} onClick={onLoadMoreClick}>Load More</Button>
+        </Grid>
+        cards.push(item);
+    }
 
     return <Container>
         <PageTitle title={translations.classrooms} showLoading={state.isBusy} />
-        <CustomTableToolbar
-            deleteDialogTitle={deleteDialogTitle}
-            selectedNumberOfItems={selectedClassrooms.length}
-            onDeleteClick={onDeleteClick}
-            onEditClick={onEditClick} />
         <CustomTableSearch
+            showSearch
+            showItemsPerPage={false}
             searchText={state.searchTerm}
             isBusy={state.isBusy}
-            onItemsPerPageChanged={itemsPerPageChanged}
             onSearchTermChanged={searchTermChanged} />
-        <Grid container justify="center" direction="column">
-            <Grid item xs>
-                <TableContainer>
-                    <Table size="small">
-                        <CustomTableHeader
-                            cells={headerCells}
-                            orderBy={state.orderBy}
-                            orderByAsc={state.orderByAsc}
-                            onOrderByChanged={sortDirectionChanged} />
-                        <TableBody>
-                            {rows}
-                        </TableBody>
-                    </Table>
-                </TableContainer>
-            </Grid>
+        <Grid container justify="center" direction="row" alignItems="center" spacing={5}>
+            {cards}
         </Grid>
-        <CustomTablePagination
-            isBusy={state.isBusy}
-            currentPage={state.currentPage}
-            totalPages={state.totalPages}
-            totalRecords={state.totalRecords}
-            onPageChanged={pageChanged} />
         <CustomFab onClick={onFabClick} />
     </Container>;
 }

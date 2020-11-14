@@ -91,6 +91,8 @@ interface ITranslations {
     classroomWasSaved: string;
     invalidCapacity: string;
     createdBy: string;
+    teacherWasSaved: string;
+    itemWasDeleted: string;
     errorCodes: IAppMessageTranslations;
 }
 
@@ -205,6 +207,8 @@ const enTrans: ITranslations = {
     classroomWasSaved: 'Classroom was successfully saved',
     invalidCapacity: 'Invalid capacity',
     createdBy: 'Created by',
+    teacherWasSaved: 'Teacher was successfully saved',
+    itemWasDeleted: 'Item was successfully deleted',
     errorCodes: {
         SCH_100: 'Invalid api request',
         SCH_101: 'Unknown error occurred in api',
@@ -314,6 +318,8 @@ const esTrans: ITranslations = {
     classroomWasSaved: 'La aula fue guardada exitosamente',
     invalidCapacity: 'La capacidad no es válida',
     createdBy: 'Creado por',
+    teacherWasSaved: 'El profesor fue guardado exitosamente',
+    itemWasDeleted: 'El item fue borrado exitosamente',
     errorCodes: {
         SCH_100: 'La solicitud hecha a la api no es válida',
         SCH_101: 'Un error desconocido ocurrió en la api',

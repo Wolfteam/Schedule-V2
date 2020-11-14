@@ -10,9 +10,9 @@ import {
     Typography
 } from '@material-ui/core';
 import { grey } from '@material-ui/core/colors';
-import React, { useEffect, useState } from 'react'
-import translations from '../../services/translations';
+import React, { useEffect, useState } from 'react';
 import { getCurrentPeriod } from '../../services/period.service';
+import translations from '../../services/translations';
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -44,7 +44,7 @@ function CurrentAcademicPeriod() {
     useEffect(() => {
         getCurrentPeriod().then(r => {
             const period = r.result?.name ?? "N/A";
-            setState({ ...state, period: period, isBusy: false });
+            setState(s => ({ ...s, period: period, isBusy: false }));
         });
     }, []);
 

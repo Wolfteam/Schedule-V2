@@ -1,32 +1,31 @@
-import React, { useContext, useState } from 'react'
 import {
     Avatar,
     Button,
     Card,
     CardContent,
     Checkbox,
-    CssBaseline,
     Container,
+    CssBaseline,
     FormControlLabel,
     Grid,
+    IconButton,
+    InputAdornment,
+    LinearProgress,
     Link,
     makeStyles,
     TextField,
-    Typography,
-    InputAdornment,
-    IconButton,
-    LinearProgress
+    Typography
 } from '@material-ui/core';
 import { AccountCircle, LockOutlined, Visibility, VisibilityOff } from '@material-ui/icons';
+import { useSnackbar } from 'notistack';
+import React, { useContext, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import validator from 'validator';
-
 import { AuthContext } from '../../contexts/auth-context';
-import { TranslationContext } from '../../contexts/translations-context';
 import * as routes from '../../routes';
+import { login } from '../../services/account.service';
 import translations, { getErrorCodeTranslation } from '../../services/translations';
-import { login } from '../../services/account.service'
-import { useSnackbar } from 'notistack';
+
 
 interface State {
     username: string;
@@ -64,9 +63,9 @@ const useStyles = makeStyles((theme) => ({
 function Login() {
     const classes = useStyles();
 
-    const [transContext, setTransContext] = useContext(TranslationContext);
+    // const [transContext, setTransContext] = useContext(TranslationContext);
 
-    const [authContext, setAuthContext] = useContext(AuthContext);
+    const [, setAuthContext] = useContext(AuthContext);
 
     const [formState, setFormState] = useState<State>({
         username: '',
@@ -145,15 +144,15 @@ function Login() {
     //     return <Redirect to={HomePath} />;
     // }
 
-    const handleChangeLang = () => {
-        let lang = 'es';
-        if (transContext?.currentLanguage === 'es') {
-            lang = 'en';
-        }
-        setTransContext!({ currentLanguage: lang });
-    };
+    // const handleChangeLang = () => {
+    //     let lang = 'es';
+    //     if (transContext?.currentLanguage === 'es') {
+    //         lang = 'en';
+    //     }
+    //     setTransContext!({ currentLanguage: lang });
+    // };
 
-    const testBtn = <Button onClick={handleChangeLang}>Change lang</Button>
+    // const testBtn = <Button onClick={handleChangeLang}>Change lang</Button>
 
     const emailInput = <TextField
         variant="outlined"

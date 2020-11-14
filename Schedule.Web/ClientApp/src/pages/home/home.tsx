@@ -1,16 +1,13 @@
 import { Container, CssBaseline, Grid } from '@material-ui/core';
-import React, { useContext } from 'react'
+import React from 'react';
 import { String } from 'typescript-string-operations';
-
-import Downloads from '../../components/home/downloads';
 import CurrentAcademicPeriod from '../../components/home/current-academic-period';
-import { AuthContext } from '../../contexts/auth-context';
+import Downloads from '../../components/home/downloads';
 import PageTitle from '../../components/page-title/page-title';
 import translations from '../../services/translations';
 
-
 function Home() {
-    const [authContext, setAuthContext] = useContext(AuthContext);
+    // const [authContext, setAuthContext] = useContext(AuthContext);
 
     const welcomeMsg = String.Format(translations.welcomeX, 'unexpolcm');
 

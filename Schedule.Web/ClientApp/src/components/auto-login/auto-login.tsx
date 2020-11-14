@@ -1,10 +1,10 @@
-import React, { Suspense, useContext, useEffect, useState } from 'react'
 import { CircularProgress, Container, Grid } from '@material-ui/core';
-
-import { AuthContext } from '../../contexts/auth-context';
-import { isUserLogged } from '../../services/account.service';
-import { AppRoutes, homePath, loginPath } from '../../routes';
+import React, { Suspense, useCallback, useContext, useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
+import { AuthContext } from '../../contexts/auth-context';
+import { AppRoutes, homePath, loginPath } from '../../routes';
+import { isUserLogged } from '../../services/account.service';
+
 
 interface State {
     isCheckingAuth: boolean;
@@ -17,7 +17,7 @@ function AutoLogin() {
     });
     const history = useHistory();
 
-    const checkCurrentUser = async () => {
+    const checkCurrentUser = useCallback(async () => {
         const isInLoginPath = history.location.pathname !== loginPath;
         const pathToUse = isInLoginPath ? history.location.pathname : homePath;
         const response = await isUserLogged();
@@ -42,11 +42,11 @@ function AutoLogin() {
         }
         setState({ isCheckingAuth: false });
         history.replace(pathToUse);
-    };
+    }, [history, setAuthContext]);
 
     useEffect(() => {
         checkCurrentUser();
-    }, []);
+    }, [checkCurrentUser]);
 
     useEffect(() => {
         if (!authContext.isAuthenticated)
@@ -55,10 +55,10 @@ function AutoLogin() {
         const timeout = setInterval(async () => {
             console.log("Checking if im logged");
             await checkCurrentUser();
-        }, 1000 * 30);
+        }, 1000 * 300);
 
         return () => clearInterval(timeout);
-    }, [authContext.isAuthenticated]);
+    }, [authContext.isAuthenticated, checkCurrentUser]);
 
     const loading = <Container>
         <Grid container justify="center" alignItems="center" direction="column" style={{ minHeight: '60vh' }}>

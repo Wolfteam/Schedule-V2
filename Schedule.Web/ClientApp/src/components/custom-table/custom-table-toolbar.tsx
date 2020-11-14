@@ -1,24 +1,24 @@
-import React, { useState } from 'react';
 import {
-    Toolbar,
-    Typography,
-    Tooltip,
-    IconButton,
+    Button,
     createStyles,
     darken,
-    makeStyles,
-    Theme,
-    Button,
     Dialog,
     DialogActions,
     DialogContent,
     DialogContentText,
-    DialogTitle
+    DialogTitle,
+    IconButton,
+    makeStyles,
+    Theme,
+    Toolbar,
+    Tooltip,
+    Typography
 } from '@material-ui/core';
 import { Delete, Edit } from '@material-ui/icons';
-import translations from '../../services/translations';
+import React, { useState } from 'react';
 import { String } from 'typescript-string-operations';
 import validator from 'validator';
+import translations from '../../services/translations';
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
     selectedItemsText: {
@@ -33,11 +33,11 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
 }));
 
 interface Props {
-    deleteDialogTitle: string;
+    deleteDialogTitle?: string;
     deleteDialogContent?: string;
-    selectedNumberOfItems: number;
-    onEditClick: () => void;
-    onDeleteClick: () => void;
+    selectedNumberOfItems?: number;
+    onEditClick?: () => void;
+    onDeleteClick?: () => void;
 }
 
 interface State {
@@ -61,12 +61,12 @@ function CustomTableToolbar(props: Props) {
 
     const onDeleteDialogBtnClick = (deleteItems: boolean) => {
         setState({ ...state, showDeleteDialog: false });
-        if (deleteItems)
+        if (deleteItems && props.onDeleteClick)
             props.onDeleteClick();
     };
 
     const content = validator.isEmpty(props.deleteDialogContent ?? "")
-        ? String.Format(translations.deleteItemsConfirm, props.selectedNumberOfItems)
+        ? String.Format(translations.deleteItemsConfirm, props.selectedNumberOfItems ?? 0)
         : props.deleteDialogContent;
 
     const editButton = props.selectedNumberOfItems === 1
